@@ -14,7 +14,7 @@ public class ChessPiece {
     private final ChessGame.TeamColor pieceColor;
     private final PieceType pieceType;
 
-    public ChessPiece(ChessGame.TeamColor pieceColor, ChessPiece.PieceType type) {
+    public ChessPiece(ChessGame.TeamColor pieceColor, PieceType type) {
         this.pieceColor = pieceColor;
         this.pieceType = type;
     }
@@ -53,6 +53,7 @@ public class ChessPiece {
      * @return Collection of valid moves
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
-        return new ArrayList<>();
+        PiecesMovesCalculator allMoves = new PiecesMovesCalculator(board, myPosition, getPieceType());
+        return allMoves.pieceMoves();
     }
 }
