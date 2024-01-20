@@ -1,5 +1,7 @@
 package chess;
 
+import chess.Pieces.BishopMovesCalculator;
+
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -49,7 +51,8 @@ public class PiecesMovesCalculator {
             case BISHOP:
                 System.out.println("This is a bishop piece.");
                 //Find out how to import BishopMovesCalculator class
-                break;
+                BishopMovesCalculator bishopPiece = new BishopMovesCalculator(this);
+                return bishopPiece.pieceMoves();
             case KNIGHT:
                 throw new RuntimeException("Not implemented");
                 //break;
