@@ -22,7 +22,7 @@ public class BishopMovesCalculator {
         System.out.println("Made it to BishopMovesCalculator.");
         //Initialize Array and all the inputs per array slot
         ArrayList<ChessMove> movePositions = new ArrayList<>();
-        ChessMove newMove;
+        ChessMove newMove = new ChessMove(piece.getPosition(), piece.getPosition(), piece.getPieceType());
         ChessPosition currPosition = piece.getPosition();
         ChessPosition nextPosition;
         ChessPiece.PieceType pieceType = piece.getPieceType();
@@ -39,29 +39,38 @@ public class BishopMovesCalculator {
             bound = col;
         }
 
-        for(int i = bound; i < 8; i++) {
-            row += 1;
-            col += 1;
-            nextPosition = new ChessPosition(row, col);
+        row += 1;
+        col += 1;
+        nextPosition = new ChessPosition(row, col);
+        boolean canMove = true;
 
-            if(piece.getBoard().getPiece(nextPosition) != null) {
-                //We will check for capture later
-                System.out.println("Not Null");
-            }
-            else {
-                newMove = new ChessMove(currPosition, nextPosition, pieceType);
+        while(canMove){
+            canMove = ValidateMove(piece, nextPosition, newMove);
+            if(canMove){
+                newMove = new ChessMove(piece.getPosition(), nextPosition, piece.getPieceType());
                 System.out.println("(" + newMove.getEndPosition().getRow() + ", " + newMove.getEndPosition().getColumn()+ ")");
                 movePositions.add(newMove);
             }
+            row += 1;
+            col += 1;
+            nextPosition = new ChessPosition(row, col);
         }
+
         return movePositions;
     }
 
-    private static void addPosition(ArrayList<ArrayList<Integer>> possiblePositions, int x, int y) {
-        ArrayList<Integer> newPosition = new ArrayList<>();
-        newPosition.add(x);
-        newPosition.add(y);
-        possiblePositions.add(newPosition);
+    public boolean ValidateMove(PiecesMovesCalculator piece, ChessPosition nextPosition, ChessMove newMove){
+        if(nextPosition.getColumn() > 8 || nextPosition.getRow() > 8 || nextPosition.getRow() < 0 || nextPosition.getColumn() < 0) {
+            return false;
+        }
+        if(piece.getBoard().getPiece(nextPosition) != null) {
+            //We will check for capture later
+            System.out.println("Not Null");
+            return false;
+        }
+        else {
+            return true;
+        }
     }
 
 }
