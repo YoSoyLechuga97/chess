@@ -29,38 +29,76 @@ public class BishopMovesCalculator {
         System.out.println("Starting position: " + piece.getPosition().getRow() + ", " + piece.getPosition().getColumn());
 
         //Create if statement calculations
-        //Set Wall Bound and Starting location
-        int row = piece.getPosition().getRow();
-        int col = piece.getPosition().getColumn();
-        int bound;
-        if (row > col){
-            bound = row;
-        } else {
-            bound = col;
-        }
+        for(int i = 0; i < 4; i++) {
+            //Set Wall Bound and Starting location
+            int row = piece.getPosition().getRow();
+            int col = piece.getPosition().getColumn();
+            boolean canMove = true;
 
-        row += 1;
-        col += 1;
-        nextPosition = new ChessPosition(row, col);
-        boolean canMove = true;
+            switch (i) {
+                //Up and to the Left
+                case 0:
+                    while (canMove) {
+                        row += 1;
+                        col += 1;
+                        nextPosition = new ChessPosition(row, col);
+                        canMove = ValidateMove(piece, nextPosition, newMove);
+                        if (canMove) {
+                            newMove = new ChessMove(piece.getPosition(), nextPosition, piece.getPieceType());
+                            System.out.println("(" + newMove.getEndPosition().getRow() + ", " + newMove.getEndPosition().getColumn() + ")");
+                            movePositions.add(newMove);
+                        }
+                    }
 
-        while(canMove){
-            canMove = ValidateMove(piece, nextPosition, newMove);
-            if(canMove){
-                newMove = new ChessMove(piece.getPosition(), nextPosition, piece.getPieceType());
-                System.out.println("(" + newMove.getEndPosition().getRow() + ", " + newMove.getEndPosition().getColumn()+ ")");
-                movePositions.add(newMove);
+                //Down and to the Left
+                case 1:
+                    while (canMove) {
+                        row -= 1;
+                        col += 1;
+                        nextPosition = new ChessPosition(row, col);
+                        canMove = ValidateMove(piece, nextPosition, newMove);
+                        if (canMove) {
+                            newMove = new ChessMove(piece.getPosition(), nextPosition, piece.getPieceType());
+                            System.out.println("(" + newMove.getEndPosition().getRow() + ", " + newMove.getEndPosition().getColumn() + ")");
+                            movePositions.add(newMove);
+                        }
+                    }
+
+                //Down and to the Right
+                case 2:
+                    while (canMove) {
+                        row -= 1;
+                        col -= 1;
+                        nextPosition = new ChessPosition(row, col);
+                        canMove = ValidateMove(piece, nextPosition, newMove);
+                        if (canMove) {
+                            newMove = new ChessMove(piece.getPosition(), nextPosition, piece.getPieceType());
+                            System.out.println("(" + newMove.getEndPosition().getRow() + ", " + newMove.getEndPosition().getColumn() + ")");
+                            movePositions.add(newMove);
+                        }
+                    }
+
+                //Up and to the Right
+                case 3:
+                    while (canMove) {
+                        row += 1;
+                        col -= 1;
+                        nextPosition = new ChessPosition(row, col);
+                        canMove = ValidateMove(piece, nextPosition, newMove);
+                        if (canMove) {
+                            newMove = new ChessMove(piece.getPosition(), nextPosition, piece.getPieceType());
+                            System.out.println("(" + newMove.getEndPosition().getRow() + ", " + newMove.getEndPosition().getColumn() + ")");
+                            movePositions.add(newMove);
+                        }
+                    }
             }
-            row += 1;
-            col += 1;
-            nextPosition = new ChessPosition(row, col);
         }
 
         return movePositions;
     }
 
     public boolean ValidateMove(PiecesMovesCalculator piece, ChessPosition nextPosition, ChessMove newMove){
-        if(nextPosition.getColumn() > 8 || nextPosition.getRow() > 8 || nextPosition.getRow() < 0 || nextPosition.getColumn() < 0) {
+        if(nextPosition.getColumn() > 8 || nextPosition.getRow() > 8 || nextPosition.getRow() < 1 || nextPosition.getColumn() < 1) {
             return false;
         }
         if(piece.getBoard().getPiece(nextPosition) != null) {
