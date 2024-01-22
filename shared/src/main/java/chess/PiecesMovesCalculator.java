@@ -49,7 +49,6 @@ public class PiecesMovesCalculator {
                 throw new RuntimeException("Not implemented");
                 //break;
             case BISHOP:
-                System.out.println("This is a bishop piece.");
                 //Call Bishop Child Class
                 BishopMovesCalculator bishopPiece = new BishopMovesCalculator(this);
                 return bishopPiece.pieceMoves();

@@ -20,14 +20,9 @@ public class BishopMovesCalculator extends PiecesMovesCalculator {
     }
 
     public Collection<ChessMove> pieceMoves(){
-        System.out.println("Made it to BishopMovesCalculator.");
         //Initialize Array and all the inputs per array slot
         ArrayList<ChessMove> movePositions = new ArrayList<>();
-        ChessMove newMove = new ChessMove(piece.getPosition(), piece.getPosition(), piece.getPieceType());
-        ChessPosition currPosition = piece.getPosition();
-        ChessPosition nextPosition;
-        ChessPiece.PieceType pieceType = piece.getPieceType();
-        System.out.println("Starting position: " + piece.getPosition().getRow() + ", " + piece.getPosition().getColumn());
+        ChessMove newMove;
 
         //Create if statement calculations
         for(int i = 0; i < 4; i++) {
