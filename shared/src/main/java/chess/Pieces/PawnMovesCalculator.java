@@ -105,7 +105,6 @@ public class PawnMovesCalculator extends PiecesMovesCalculator {
         canMove[0] = ValidatePawnCapture(piece, nextPosition);
         if (canMove[0] == 1) {
             newMove = new ChessMove(piece.getPosition(), nextPosition, piece.getPieceType());
-            System.out.println("(" + newMove.getEndPosition().getRow() + ", " + newMove.getEndPosition().getColumn() + ")");
             return newMove;
         }
         return null;
