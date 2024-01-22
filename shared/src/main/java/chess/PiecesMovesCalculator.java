@@ -58,8 +58,8 @@ public class PiecesMovesCalculator {
                 RookMovesCalculator rookPiece = new RookMovesCalculator(this);
                 return rookPiece.pieceMoves();
             case PAWN:
-                throw new RuntimeException("Not implemented");
-                //break;
+                PawnMovesCalculator pawnPiece = new PawnMovesCalculator(this);
+                return pawnPiece.pieceMoves();
 
 
         }
@@ -86,7 +86,7 @@ public class PiecesMovesCalculator {
         }
         if(piece.getBoard().getPiece(nextPosition) != null) {
             //Check to see if occupied space is capturable
-            if (CheckToCapture(piece, nextPosition)) {
+            if (CheckToCapture(piece, nextPosition) && piece.pieceType != ChessPiece.PieceType.PAWN) {
                 return 1;
             } else {
                 return 2;

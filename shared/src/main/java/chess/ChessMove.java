@@ -13,10 +13,12 @@ public class ChessMove {
     private ChessPosition start;
     private ChessPosition end;
 
-    public ChessMove(ChessPosition startPosition, ChessPosition endPosition,
-                     ChessPiece.PieceType promotionPiece) {
+    private ChessPiece.PieceType promoPiece;
+
+    public ChessMove(ChessPosition startPosition, ChessPosition endPosition, ChessPiece.PieceType promotionPiece) {
         start = startPosition;
         end = endPosition;
+        promoPiece = promotionPiece;
     }
 
     /**
@@ -53,6 +55,6 @@ public class ChessMove {
      * @return Type of piece to promote a pawn to, or null if no promotion
      */
     public ChessPiece.PieceType getPromotionPiece() {
-        throw new RuntimeException("Not implemented");
+        return promoPiece;
     }
 }

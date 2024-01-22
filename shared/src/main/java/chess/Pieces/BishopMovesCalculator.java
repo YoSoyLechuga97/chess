@@ -40,6 +40,7 @@ public class BishopMovesCalculator extends PiecesMovesCalculator {
                             movePositions.add(newMove);
                         }
                     }
+                    break;
 
                 //Down and to the Right
                 case 1:
@@ -51,6 +52,7 @@ public class BishopMovesCalculator extends PiecesMovesCalculator {
                             movePositions.add(newMove);
                         }
                     }
+                    break;
 
                 //Down and to the Left
                 case 2:
@@ -62,6 +64,7 @@ public class BishopMovesCalculator extends PiecesMovesCalculator {
                             movePositions.add(newMove);
                         }
                     }
+                    break;
 
                 //Up and to the Left
                 case 3:
@@ -73,6 +76,7 @@ public class BishopMovesCalculator extends PiecesMovesCalculator {
                             movePositions.add(newMove);
                         }
                     }
+                    break;
             }
         }
 
