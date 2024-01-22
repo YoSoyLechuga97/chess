@@ -1,9 +1,6 @@
 package chess.Pieces;
 
-import chess.ChessMove;
-import chess.ChessPiece;
-import chess.ChessPosition;
-import chess.PiecesMovesCalculator;
+import chess.*;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -22,7 +19,8 @@ public class PawnMovesCalculator extends PiecesMovesCalculator {
     public Collection<ChessMove> pieceMoves(){
         //Initialize Array and all the inputs per array slot
         ArrayList<ChessMove> movePositions = new ArrayList<>();
-        ChessMove newMove;
+        ArrayList<ChessMove> newMove;
+        boolean isPromotion = false;
 
         //Starting location
         int row = piece.getPosition().getRow();
@@ -34,15 +32,15 @@ public class PawnMovesCalculator extends PiecesMovesCalculator {
             case WHITE:
                 //Check moving up
                 row += 1;
-                newMove = CheckMove(piece, row, col, canMove);
+                newMove = CheckPawnMove(piece, row, col, canMove);
                 if (newMove != null) {
-                    movePositions.add(newMove);
+                    movePositions.addAll(newMove);
                     //Check to see if it is the first move for that pawn
                     if (piece.getPosition().getRow() == 2){
                         row += 1;
-                        newMove = CheckMove(piece, row, col, canMove);
+                        newMove = CheckPawnMove(piece, row, col, canMove);
                         if (newMove != null) {
-                            movePositions.add(newMove);
+                            movePositions.addAll(newMove);
                         }
                     }
                 }
@@ -55,9 +53,9 @@ public class PawnMovesCalculator extends PiecesMovesCalculator {
                     } else{
                         col += 1;
                     }
-                    newMove = CheckPawnCapture(piece, row, col, canMove);
+                    newMove = CheckPawnMove(piece, row, col, canMove);
                     if (newMove != null){
-                        movePositions.add(newMove);
+                        movePositions.addAll(newMove);
                     }
                 }
                 break;
@@ -65,15 +63,15 @@ public class PawnMovesCalculator extends PiecesMovesCalculator {
             case BLACK:
                 //Check moving down
                 row -= 1;
-                newMove = CheckMove(piece, row, col, canMove);
+                newMove = CheckPawnMove(piece, row, col, canMove);
                 if (newMove != null) {
-                    movePositions.add(newMove);
+                    movePositions.addAll(newMove);
                     //Check to see if it is the first move for that pawn
                     if (piece.getPosition().getRow() == 7){
                         row -= 1;
-                        newMove = CheckMove(piece, row, col, canMove);
+                        newMove = CheckPawnMove(piece, row, col, canMove);
                         if (newMove != null) {
-                            movePositions.add(newMove);
+                            movePositions.addAll(newMove);
                         }
                     }
                 }
@@ -86,43 +84,83 @@ public class PawnMovesCalculator extends PiecesMovesCalculator {
                     } else{
                         col += 1;
                     }
-                    newMove = CheckPawnCapture(piece, row, col, canMove);
+                    newMove = CheckPawnMove(piece, row, col, canMove);
                     if (newMove != null){
-                        movePositions.add(newMove);
+                        movePositions.addAll(newMove);
                     }
                 }
                 break;
         }
-
-
-
         return movePositions;
     }
 
-    public ChessMove CheckPawnCapture(PiecesMovesCalculator piece, int row, int col, int[] canMove) {
+    public ArrayList<ChessMove> CheckPawnMove(PiecesMovesCalculator piece, int row, int col, int[] canMove) {
         ChessPosition nextPosition = new ChessPosition(row, col);
-        ChessMove newMove;
-        canMove[0] = ValidatePawnCapture(piece, nextPosition);
-        if (canMove[0] == 1) {
-            newMove = new ChessMove(piece.getPosition(), nextPosition, piece.getPieceType());
+        ArrayList<ChessMove> newMove = new ArrayList<>();
+        ChessMove addMove;
+        boolean isPromotion;
+        boolean isAttack;
+        //Check to see if piece is promoting or not
+        if((piece.getBoard().getPiece(piece.getPosition()).getTeamColor() == ChessGame.TeamColor.WHITE && row == 8) || (piece.getBoard().getPiece(piece.getPosition()).getTeamColor() == ChessGame.TeamColor.BLACK && row == 1)) {
+            isPromotion = true;
+        } else {
+            isPromotion = false;
+        }
+        //Check to see if piece is attacking or not
+        if(piece.getPosition().getColumn() != col) {
+            isAttack = true;
+        } else {
+            isAttack = false;
+        }
+
+        //Check to see if space is available to move
+        canMove[0] = ValidatePawnMove(piece, nextPosition, isAttack);
+        if ((canMove[0] == 1 || canMove[0] == 0) && !isPromotion) {
+            addMove = new ChessMove(piece.getPosition(), nextPosition, null);
+            newMove.add(addMove);
+            return newMove;
+        }
+        if ((canMove[0] == 1 || canMove[0] == 0) && isPromotion) {
+            for (int i = 0; i < 4; i++) {
+                switch (i) {
+                    case 0:
+                        addMove = new ChessMove(piece.getPosition(), nextPosition, ChessPiece.PieceType.BISHOP);
+                        newMove.add(addMove);
+                        break;
+                    case 1:
+                        addMove = new ChessMove(piece.getPosition(), nextPosition, ChessPiece.PieceType.KNIGHT);
+                        newMove.add(addMove);
+                        break;
+                    case 2:
+                        addMove = new ChessMove(piece.getPosition(), nextPosition, ChessPiece.PieceType.QUEEN);
+                        newMove.add(addMove);
+                        break;
+                    case 3:
+                        addMove = new ChessMove(piece.getPosition(), nextPosition, ChessPiece.PieceType.ROOK);
+                        newMove.add(addMove);
+                        break;
+                }
+            }
             return newMove;
         }
         return null;
     }
 
-    public  int ValidatePawnCapture(PiecesMovesCalculator piece, ChessPosition nextPosition){
+    public  int ValidatePawnMove(PiecesMovesCalculator piece, ChessPosition nextPosition, boolean isAttack){
         if(nextPosition.getColumn() > 8 || nextPosition.getRow() > 8 || nextPosition.getRow() < 1 || nextPosition.getColumn() < 1) {
             return 2;
         }
         if(piece.getBoard().getPiece(nextPosition) != null) {
             //Check to see if occupied space is capturable
-            if (CheckToCapture(piece, nextPosition)) {
+            if (CheckToCapture(piece, nextPosition) && isAttack) {
                 return 1;
             } else {
                 return 2;
             }
         }
-        else {
+        else if (isAttack) {
+            return 2;
+        } else {
             return 0;
         }
     }

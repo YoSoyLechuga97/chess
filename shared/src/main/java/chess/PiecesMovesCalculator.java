@@ -72,7 +72,7 @@ public class PiecesMovesCalculator {
         ChessMove newMove;
         canMove[0] = ValidateMove(piece, nextPosition);
         if (canMove[0] == 0 || canMove[0] == 1) {
-            newMove = new ChessMove(piece.getPosition(), nextPosition, piece.getPieceType());
+            newMove = new ChessMove(piece.getPosition(), nextPosition, null);
             return newMove;
         }
         return null;
