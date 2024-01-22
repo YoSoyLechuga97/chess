@@ -3,6 +3,7 @@ package chess;
 import chess.Pieces.BishopMovesCalculator;
 import chess.Pieces.KingMovesCalculator;
 import chess.Pieces.KnightMovesCalculator;
+import chess.Pieces.QueenMovesCalculator;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -48,10 +49,9 @@ public class PiecesMovesCalculator {
                 KingMovesCalculator kingPiece = new KingMovesCalculator(this);
                 return kingPiece.pieceMoves();
             case QUEEN:
-                throw new RuntimeException("Not implemented");
-                //break;
+                QueenMovesCalculator queenPiece = new QueenMovesCalculator(this);
+                return queenPiece.pieceMoves();
             case BISHOP:
-                //Call Bishop Child Class
                 BishopMovesCalculator bishopPiece = new BishopMovesCalculator(this);
                 return bishopPiece.pieceMoves();
             case KNIGHT:
