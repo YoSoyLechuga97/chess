@@ -30,7 +30,7 @@ public class BishopMovesCalculator extends PiecesMovesCalculator {
             int[] canMove = {0};
 
             switch (i) {
-                //Up and to the Left
+                //Up and to the Right
                 case 0:
                     while (canMove[0] == 0) {
                         row += 1;
@@ -41,7 +41,7 @@ public class BishopMovesCalculator extends PiecesMovesCalculator {
                         }
                     }
 
-                //Down and to the Left
+                //Down and to the Right
                 case 1:
                     while (canMove[0] == 0) {
                         row -= 1;
@@ -52,7 +52,7 @@ public class BishopMovesCalculator extends PiecesMovesCalculator {
                         }
                     }
 
-                //Down and to the Right
+                //Down and to the Left
                 case 2:
                     while (canMove[0] == 0) {
                         row -= 1;
@@ -63,7 +63,7 @@ public class BishopMovesCalculator extends PiecesMovesCalculator {
                         }
                     }
 
-                //Up and to the Right
+                //Up and to the Left
                 case 3:
                     while (canMove[0] == 0) {
                         row += 1;

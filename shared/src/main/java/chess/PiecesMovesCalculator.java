@@ -1,9 +1,6 @@
 package chess;
 
-import chess.Pieces.BishopMovesCalculator;
-import chess.Pieces.KingMovesCalculator;
-import chess.Pieces.KnightMovesCalculator;
-import chess.Pieces.QueenMovesCalculator;
+import chess.Pieces.*;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -58,8 +55,8 @@ public class PiecesMovesCalculator {
                 KnightMovesCalculator knightPiece = new KnightMovesCalculator(this);
                 return knightPiece.pieceMoves();
             case ROOK:
-                throw new RuntimeException("Not implemented");
-                //break;
+                RookMovesCalculator rookPiece = new RookMovesCalculator(this);
+                return rookPiece.pieceMoves();
             case PAWN:
                 throw new RuntimeException("Not implemented");
                 //break;
