@@ -34,61 +34,49 @@ public class BishopMovesCalculator extends PiecesMovesCalculator {
             //Set Wall Bound and Starting location
             int row = piece.getPosition().getRow();
             int col = piece.getPosition().getColumn();
-            boolean canMove = true;
+            int[] canMove = {0};
 
             switch (i) {
                 //Up and to the Left
                 case 0:
-                    while (canMove) {
+                    while (canMove[0] == 0) {
                         row += 1;
                         col += 1;
-                        nextPosition = new ChessPosition(row, col);
-                        canMove = ValidateMove(piece, nextPosition, newMove);
-                        if (canMove) {
-                            newMove = new ChessMove(piece.getPosition(), nextPosition, piece.getPieceType());
-                            System.out.println("(" + newMove.getEndPosition().getRow() + ", " + newMove.getEndPosition().getColumn() + ")");
+                        newMove = CheckMove(piece, row, col, canMove);
+                        if (newMove != null) {
                             movePositions.add(newMove);
                         }
                     }
 
                 //Down and to the Left
                 case 1:
-                    while (canMove) {
+                    while (canMove[0] == 0) {
                         row -= 1;
                         col += 1;
-                        nextPosition = new ChessPosition(row, col);
-                        canMove = ValidateMove(piece, nextPosition, newMove);
-                        if (canMove) {
-                            newMove = new ChessMove(piece.getPosition(), nextPosition, piece.getPieceType());
-                            System.out.println("(" + newMove.getEndPosition().getRow() + ", " + newMove.getEndPosition().getColumn() + ")");
+                        newMove = CheckMove(piece, row, col, canMove);
+                        if (newMove != null) {
                             movePositions.add(newMove);
                         }
                     }
 
                 //Down and to the Right
                 case 2:
-                    while (canMove) {
+                    while (canMove[0] == 0) {
                         row -= 1;
                         col -= 1;
-                        nextPosition = new ChessPosition(row, col);
-                        canMove = ValidateMove(piece, nextPosition, newMove);
-                        if (canMove) {
-                            newMove = new ChessMove(piece.getPosition(), nextPosition, piece.getPieceType());
-                            System.out.println("(" + newMove.getEndPosition().getRow() + ", " + newMove.getEndPosition().getColumn() + ")");
+                        newMove = CheckMove(piece, row, col, canMove);
+                        if (newMove != null) {
                             movePositions.add(newMove);
                         }
                     }
 
                 //Up and to the Right
                 case 3:
-                    while (canMove) {
+                    while (canMove[0] == 0) {
                         row += 1;
                         col -= 1;
-                        nextPosition = new ChessPosition(row, col);
-                        canMove = ValidateMove(piece, nextPosition, newMove);
-                        if (canMove) {
-                            newMove = new ChessMove(piece.getPosition(), nextPosition, piece.getPieceType());
-                            System.out.println("(" + newMove.getEndPosition().getRow() + ", " + newMove.getEndPosition().getColumn() + ")");
+                        newMove = CheckMove(piece, row, col, canMove);
+                        if (newMove != null) {
                             movePositions.add(newMove);
                         }
                     }

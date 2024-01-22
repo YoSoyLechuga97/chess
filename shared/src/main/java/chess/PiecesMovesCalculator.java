@@ -50,7 +50,7 @@ public class PiecesMovesCalculator {
                 //break;
             case BISHOP:
                 System.out.println("This is a bishop piece.");
-                //Find out how to import BishopMovesCalculator class
+                //Call Bishop Child Class
                 BishopMovesCalculator bishopPiece = new BishopMovesCalculator(this);
                 return bishopPiece.pieceMoves();
             case KNIGHT:
@@ -68,17 +68,45 @@ public class PiecesMovesCalculator {
         return new ArrayList<>();
     }
 
-    public boolean ValidateMove(PiecesMovesCalculator piece, ChessPosition nextPosition, ChessMove newMove){
+    //Do Move
+    public ChessMove CheckMove(PiecesMovesCalculator piece, int row, int col, int[] canMove) {
+        ChessPosition nextPosition = new ChessPosition(row, col);
+        ChessMove newMove;
+        canMove[0] = ValidateMove(piece, nextPosition);
+        if (canMove[0] == 0 || canMove[0] == 1) {
+            newMove = new ChessMove(piece.getPosition(), nextPosition, piece.getPieceType());
+            System.out.println("(" + newMove.getEndPosition().getRow() + ", " + newMove.getEndPosition().getColumn() + ")");
+            return newMove;
+        }
+        return null;
+    }
+
+    //Validate that the place a piece wants to move is allowed
+    public int ValidateMove(PiecesMovesCalculator piece, ChessPosition nextPosition){
         if(nextPosition.getColumn() > 8 || nextPosition.getRow() > 8 || nextPosition.getRow() < 1 || nextPosition.getColumn() < 1) {
-            return false;
+            return 2;
         }
         if(piece.getBoard().getPiece(nextPosition) != null) {
-            //We will check for capture later
-            System.out.println("Not Null");
-            return false;
+            //Check to see if occupied space is capturable
+            if (CheckToCapture(piece, nextPosition)) {
+                return 1;
+            } else {
+                return 2;
+            }
         }
         else {
-            return true;
+            return 0;
         }
     }
+
+    //Check if occupied space can be captured
+    public boolean CheckToCapture(PiecesMovesCalculator piece, ChessPosition nextPosition){
+        //Check team colors
+        if (piece.getBoard().getPiece(nextPosition).getTeamColor() != piece.getBoard().getPiece(piece.position).getTeamColor()){
+            return true;
+        } else {
+            return false;
+        }
+    }
+
 }
