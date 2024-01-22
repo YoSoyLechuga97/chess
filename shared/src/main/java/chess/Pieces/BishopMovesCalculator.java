@@ -1,8 +1,6 @@
 package chess.Pieces;
 
 import chess.ChessMove;
-import chess.ChessPiece;
-import chess.ChessPosition;
 import chess.PiecesMovesCalculator;
 
 import java.util.ArrayList;
