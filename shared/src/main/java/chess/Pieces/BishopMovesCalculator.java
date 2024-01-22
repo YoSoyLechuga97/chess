@@ -8,13 +8,14 @@ import chess.PiecesMovesCalculator;
 import java.util.ArrayList;
 import java.util.Collection;
 
-public class BishopMovesCalculator {
+public class BishopMovesCalculator extends PiecesMovesCalculator {
     //Needs to be able to move in any diagonal until they are blocked
     //Returns a collection of possible moves for the piece
     //Check for mobility in CLOCKWISE FASHION
     private PiecesMovesCalculator piece = null;
 
     public BishopMovesCalculator(PiecesMovesCalculator chessPiece) {
+        super(chessPiece.getBoard(), chessPiece.getPosition(), chessPiece.getPieceType());
         piece = chessPiece;
     }
 
@@ -96,21 +97,6 @@ public class BishopMovesCalculator {
 
         return movePositions;
     }
-
-    public boolean ValidateMove(PiecesMovesCalculator piece, ChessPosition nextPosition, ChessMove newMove){
-        if(nextPosition.getColumn() > 8 || nextPosition.getRow() > 8 || nextPosition.getRow() < 1 || nextPosition.getColumn() < 1) {
-            return false;
-        }
-        if(piece.getBoard().getPiece(nextPosition) != null) {
-            //We will check for capture later
-            System.out.println("Not Null");
-            return false;
-        }
-        else {
-            return true;
-        }
-    }
-
 }
 
 

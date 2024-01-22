@@ -67,4 +67,18 @@ public class PiecesMovesCalculator {
         }
         return new ArrayList<>();
     }
+
+    public boolean ValidateMove(PiecesMovesCalculator piece, ChessPosition nextPosition, ChessMove newMove){
+        if(nextPosition.getColumn() > 8 || nextPosition.getRow() > 8 || nextPosition.getRow() < 1 || nextPosition.getColumn() < 1) {
+            return false;
+        }
+        if(piece.getBoard().getPiece(nextPosition) != null) {
+            //We will check for capture later
+            System.out.println("Not Null");
+            return false;
+        }
+        else {
+            return true;
+        }
+    }
 }
