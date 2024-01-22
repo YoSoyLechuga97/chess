@@ -40,7 +40,61 @@ public class ChessBoard {
      * (How the game of chess normally starts)
      */
     public void resetBoard() {
-        throw new RuntimeException("Not implemented");
+        ChessBoard resetBoard;
+        //Clear Board
+        for (int i = 0; i < squares.length; i++){
+            for (int j = 0; j < squares.length; j++) {
+                squares[i][j] = null;
+            }
+        }
+        //Add bottom and top rows
+        for (int x = 0; x < 2; x++) {
+            int i;
+            int p;
+            ChessGame.TeamColor color;
+            if (x == 0) {
+                i = 0;
+                color = ChessGame.TeamColor.WHITE;
+            } else {
+                i = 7;
+                color = ChessGame.TeamColor.BLACK;
+            }
+            for (int j = 0; j < 8; j++) {
+                //Add Rooks
+                if (j == 0 || j == 7) {
+                    ChessPiece newRook = new ChessPiece(color, ChessPiece.PieceType.ROOK);
+                    squares[i][j] = newRook;
+                }
+                //Add Knights
+                if (j == 1 || j == 6) {
+                    ChessPiece newKnight = new ChessPiece(color, ChessPiece.PieceType.KNIGHT);
+                    squares[i][j] = newKnight;
+                }
+                //Add Bishops
+                if (j == 2 || j == 5) {
+                    ChessPiece newBishop = new ChessPiece(color, ChessPiece.PieceType.BISHOP);
+                    squares[i][j] = newBishop;
+                }
+                //Add Queen
+                if (j == 3) {
+                    ChessPiece newQueen = new ChessPiece(color, ChessPiece.PieceType.QUEEN);
+                    squares[i][j] = newQueen;
+                }
+                //Add King
+                if (j == 4) {
+                    ChessPiece newKing = new ChessPiece(color, ChessPiece.PieceType.KING);
+                    squares[i][j] = newKing;
+                }
+                //Add Pawn
+                if (x == 0){
+                    p = i + 1;
+                } else {
+                    p = i - 1;
+                }
+                ChessPiece newPawn = new ChessPiece(color, ChessPiece.PieceType.PAWN);
+                squares[p][j] = newPawn;
+            }
+        }
     }
 
     @Override
@@ -48,11 +102,11 @@ public class ChessBoard {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ChessBoard that = (ChessBoard) o;
-        return Arrays.equals(squares, that.squares);
+        return Arrays.deepEquals(squares, that.squares);
     }
 
     @Override
     public int hashCode() {
-        return Arrays.hashCode(squares);
+        return Arrays.deepHashCode(squares);
     }
 }
