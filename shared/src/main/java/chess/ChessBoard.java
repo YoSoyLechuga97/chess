@@ -99,16 +99,16 @@ public class ChessBoard {
         }
     }
 
-    public boolean equals(Object object) {
-        if (this == object) return true;
-        if (!(object instanceof ChessBoard that)) return false;
-        if (!super.equals(object)) return false;
-        return java.util.Arrays.equals(squares, that.squares);
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ChessBoard that = (ChessBoard) o;
+        return Arrays.deepEquals(squares, that.squares);
     }
 
+    @Override
     public int hashCode() {
-        int result = super.hashCode();
-        result = 31 * result + java.util.Arrays.hashCode(squares);
-        return result;
+        return Arrays.deepHashCode(squares);
     }
 }
