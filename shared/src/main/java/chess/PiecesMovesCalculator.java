@@ -60,9 +60,9 @@ public class PiecesMovesCalculator {
 //            case ROOK:
 //                RookMovesCalculator rookPiece = new RookMovesCalculator(this);
 //                return rookPiece.pieceMoves();
-//            case PAWN:
-//                PawnMovesCalculator pawnPiece = new PawnMovesCalculator(this);
-//                return pawnPiece.pieceMoves();
+            case PAWN:
+                PawnMovesCalculator pawnPiece = new PawnMovesCalculator(this);
+                return pawnPiece.pieceMoves();
 
 
         }
