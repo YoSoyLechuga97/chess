@@ -54,9 +54,9 @@ public class PiecesMovesCalculator {
             case BISHOP:
                 BishopMovesCalculator bishopPiece = new BishopMovesCalculator(this);
                 return bishopPiece.pieceMoves();
-//            case KNIGHT:
-//                KnightMovesCalculator knightPiece = new KnightMovesCalculator(this);
-//                return knightPiece.pieceMoves();
+            case KNIGHT:
+                KnightMovesCalculator knightPiece = new KnightMovesCalculator(this);
+                return knightPiece.pieceMoves();
 //            case ROOK:
 //                RookMovesCalculator rookPiece = new RookMovesCalculator(this);
 //                return rookPiece.pieceMoves();
