@@ -48,9 +48,9 @@ public class PiecesMovesCalculator {
             case KING:
                 KingMovesCalculator kingPiece = new KingMovesCalculator(this);
                 return kingPiece.pieceMoves();
-//            case QUEEN:
-//                QueenMovesCalculator queenPiece = new QueenMovesCalculator(this);
-//                return queenPiece.pieceMoves();
+            case QUEEN:
+                QueenMovesCalculator queenPiece = new QueenMovesCalculator(this);
+                return queenPiece.pieceMoves();
             case BISHOP:
                 BishopMovesCalculator bishopPiece = new BishopMovesCalculator(this);
                 return bishopPiece.pieceMoves();
