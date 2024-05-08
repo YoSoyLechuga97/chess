@@ -45,9 +45,9 @@ public class PiecesMovesCalculator {
 
     public Collection<ChessMove> pieceMoves() {
         switch (pieceType) {
-//            case KING:
-//                KingMovesCalculator kingPiece = new KingMovesCalculator(this);
-//                return kingPiece.pieceMoves();
+            case KING:
+                KingMovesCalculator kingPiece = new KingMovesCalculator(this);
+                return kingPiece.pieceMoves();
 //            case QUEEN:
 //                QueenMovesCalculator queenPiece = new QueenMovesCalculator(this);
 //                return queenPiece.pieceMoves();
