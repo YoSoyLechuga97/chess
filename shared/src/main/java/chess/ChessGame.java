@@ -9,6 +9,8 @@ import java.util.Collection;
  * signature of the existing methods.
  */
 public class ChessGame {
+    //Variables
+    //color variable called turncolor?
 
     public ChessGame() {
 
@@ -18,6 +20,7 @@ public class ChessGame {
      * @return Which team's turn it is
      */
     public TeamColor getTeamTurn() {
+        //Return the color of the team currently playing (turnColor)
         throw new RuntimeException("Not implemented");
     }
 
@@ -27,6 +30,7 @@ public class ChessGame {
      * @param team the team whose turn it is
      */
     public void setTeamTurn(TeamColor team) {
+        //set the color of the team currently playing (turnColor)
         throw new RuntimeException("Not implemented");
     }
 
@@ -46,6 +50,7 @@ public class ChessGame {
      * startPosition
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
+        //Figure out possible moves for piece (piecesMoves but make sure that it doesn't go into check)
         throw new RuntimeException("Not implemented");
     }
 
@@ -56,6 +61,7 @@ public class ChessGame {
      * @throws InvalidMoveException if move is invalid
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
+        //update board to make sure that it shows the piece is in a new spot (learn how invalidMoveException works)
         throw new RuntimeException("Not implemented");
     }
 
@@ -66,6 +72,7 @@ public class ChessGame {
      * @return True if the specified team is in check
      */
     public boolean isInCheck(TeamColor teamColor) {
+        //Return true or false MAKE VARIABLE?
         throw new RuntimeException("Not implemented");
     }
 
@@ -76,6 +83,7 @@ public class ChessGame {
      * @return True if the specified team is in checkmate
      */
     public boolean isInCheckmate(TeamColor teamColor) {
+        //Return true or false MAKE VARIABLE?
         throw new RuntimeException("Not implemented");
     }
 
@@ -87,6 +95,7 @@ public class ChessGame {
      * @return True if the specified team is in stalemate, otherwise false
      */
     public boolean isInStalemate(TeamColor teamColor) {
+        //Return true or false MAKE VARIABLE?
         throw new RuntimeException("Not implemented");
     }
 
@@ -96,6 +105,7 @@ public class ChessGame {
      * @param board the new board to use
      */
     public void setBoard(ChessBoard board) {
+        //Look up what this is supposed to do (setup game ChessBoard?)
         throw new RuntimeException("Not implemented");
     }
 
@@ -105,6 +115,7 @@ public class ChessGame {
      * @return the chessboard
      */
     public ChessBoard getBoard() {
+        //Return current ChessBoard
         throw new RuntimeException("Not implemented");
     }
 }
