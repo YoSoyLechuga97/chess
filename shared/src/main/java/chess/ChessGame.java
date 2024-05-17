@@ -10,7 +10,6 @@ import java.util.Collection;
  */
 public class ChessGame {
     //Variables
-    //color variable called turncolor?
     private TeamColor turnColor;
 
     public ChessGame() {
