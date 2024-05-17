@@ -236,22 +236,7 @@ public class ChessGame {
      * @return True if the specified team is in stalemate, otherwise false
      */
     public boolean isInStalemate(TeamColor teamColor) {
-        //Return true or false
-        boolean isStalemate = true;
-
-        //Determine king is not in check
-        if (isInCheck(teamColor)) {
-            isStalemate = false;
-            return isStalemate;
-        }
-
-        //Determine team cannot move
-        if (movesAvailable(teamColor)) {
-            isStalemate = false;
-            return isStalemate;
-        }
-
-        return isStalemate;
+        return !isInCheck(teamColor) && !movesAvailable(teamColor);
     }
 
     /**
