@@ -128,21 +128,19 @@ public class ChessGame {
         }
 
         //Execute new move (provided it's legal)
-        if (isValidMove) {
-            ChessPiece movingPiece;
-            if (move.getPromotionPiece() == null) { //No promotion piece
-                movingPiece = board.getPiece(move.getStartPosition()); //Save piece moving
-            } else { //Yes Promotion
-                movingPiece = new ChessPiece(board.getPiece(move.getStartPosition()).getTeamColor(), move.getPromotionPiece());
-            }
-            board.addPiece(move.getStartPosition(), null); //Remove piece from original location
-            board.addPiece(move.getEndPosition(), movingPiece); //Update board with new piece position
-            //Change team turn
-            if (getTeamTurn() == TeamColor.WHITE) {
-                setTeamTurn(TeamColor.BLACK);
-            } else {
-                setTeamTurn(TeamColor.WHITE);
-            }
+        ChessPiece movingPiece;
+        if (move.getPromotionPiece() == null) { //No promotion piece
+            movingPiece = board.getPiece(move.getStartPosition()); //Save piece moving
+        } else { //Yes Promotion
+            movingPiece = new ChessPiece(board.getPiece(move.getStartPosition()).getTeamColor(), move.getPromotionPiece());
+        }
+        board.addPiece(move.getStartPosition(), null); //Remove piece from original location
+        board.addPiece(move.getEndPosition(), movingPiece); //Update board with new piece position
+        //Change team turn
+        if (getTeamTurn() == TeamColor.WHITE) {
+            setTeamTurn(TeamColor.BLACK);
+        } else {
+            setTeamTurn(TeamColor.WHITE);
         }
     }
 
