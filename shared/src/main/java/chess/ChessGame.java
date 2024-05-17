@@ -202,14 +202,9 @@ public class ChessGame {
     public boolean isInCheckmate(TeamColor teamColor) {
         //Return true or false
         boolean isCheckmate = true;
-        //Is in check
-        boolean isCheck = isInCheck(teamColor);
-        if (!isCheck) {
-            isCheckmate = false;
-            return isCheckmate;
-        }
-        //Check to see if any piece can move
-        if (movesAvailable(teamColor)) {
+
+        //Check to see that you are in check and no pieces can move
+        if (!isInCheck(teamColor) || movesAvailable(teamColor)) {
             isCheckmate = false;
             return isCheckmate;
         }
