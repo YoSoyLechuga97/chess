@@ -225,7 +225,7 @@ public class ChessGame {
                     if (board.getPiece(checkPosition).getTeamColor() == teamColor) { //friendly piece
                         Collection<ChessMove> pieceMoves = new ArrayList<>();
                         pieceMoves = validMoves(checkPosition);
-                        if (pieceMoves != null) { //Valid move that takes king out of check is available
+                        if (!pieceMoves.isEmpty()) { //Valid move that takes king out of check is available
                             return true;
                         }
                     }
