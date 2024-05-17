@@ -198,16 +198,7 @@ public class ChessGame {
      * @return True if the specified team is in checkmate
      */
     public boolean isInCheckmate(TeamColor teamColor) {
-        //Return true or false
-        boolean isCheckmate = true;
-
-        //Check to see that you are in check and no pieces can move
-        if (!isInCheck(teamColor) || movesAvailable(teamColor)) {
-            isCheckmate = false;
-            return isCheckmate;
-        }
-
-        return isCheckmate;
+        return isInCheck(teamColor) && !movesAvailable(teamColor);
     }
 
     public boolean movesAvailable(TeamColor teamColor) {
