@@ -52,6 +52,7 @@ public class ChessGame {
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
         //Figure out possible moves for piece (piecesMoves but make sure that it doesn't go into check)
+        //If no piece return null
         throw new RuntimeException("Not implemented");
     }
 
@@ -63,6 +64,8 @@ public class ChessGame {
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
         //update board to make sure that it shows the piece is in a new spot (learn how invalidMoveException works)
+        //Execute new move (provided it's legal)
+        //Illegal if: piece cannot move to specified position, leaves king in danger, or it is the other team's turn
         throw new RuntimeException("Not implemented");
     }
 
