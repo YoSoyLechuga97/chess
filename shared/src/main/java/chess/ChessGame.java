@@ -11,9 +11,10 @@ import java.util.Collection;
 public class ChessGame {
     //Variables
     //color variable called turncolor?
+    private TeamColor turnColor;
 
     public ChessGame() {
-
+        turnColor = TeamColor.WHITE;
     }
 
     /**
@@ -21,7 +22,7 @@ public class ChessGame {
      */
     public TeamColor getTeamTurn() {
         //Return the color of the team currently playing (turnColor)
-        throw new RuntimeException("Not implemented");
+        return turnColor;
     }
 
     /**
@@ -31,7 +32,7 @@ public class ChessGame {
      */
     public void setTeamTurn(TeamColor team) {
         //set the color of the team currently playing (turnColor)
-        throw new RuntimeException("Not implemented");
+        turnColor = team;
     }
 
     /**
