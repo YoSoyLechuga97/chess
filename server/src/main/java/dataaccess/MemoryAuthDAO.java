@@ -32,6 +32,11 @@ public class MemoryAuthDAO implements AuthDAO{
 
     @Override
     public boolean getAuth(String token) throws DataAccessException {
+        for (AuthData currToken : auths) {
+            if (currToken.authToken().equals(token)) {
+                return true;
+            }
+        }
         return false;
     }
 
