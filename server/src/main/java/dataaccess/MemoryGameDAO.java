@@ -9,6 +9,12 @@ import java.util.Random;
 
 public class MemoryGameDAO implements GameDAO{
     ArrayList<GameData> games = new ArrayList<>();
+
+    @Override
+    public void clear() throws DataAccessException {
+        games.clear();
+    }
+
     @Override
     public int createGame(String authToken, String gameName) throws DataAccessException {
         //Check to make sure game doesn't already exist:

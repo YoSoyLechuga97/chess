@@ -6,6 +6,7 @@ import model.GameData;
 import java.util.ArrayList;
 
 public interface GameDAO {
+    public void clear() throws DataAccessException;
     public int createGame(String authToken, String gameName) throws DataAccessException;
     public int getGame(String gameName) throws DataAccessException;
     public ArrayList<GameData> listGames() throws DataAccessException;
