@@ -3,12 +3,9 @@ package service;
 import dataaccess.DataAccessException;
 import model.AuthData;
 import model.UserData;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.*;
 import service.UserService;
 import org.eclipse.jetty.server.Authentication;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 
 import javax.xml.crypto.Data;
 
@@ -42,15 +39,26 @@ public class myTests {
         System.out.println("Using correct login information");
         UserData login1 = new UserData("newGuy", "newGuyPassword", "newGuyEmail@yahoo.com");
         AuthData actual1 = myService.login(login1);
-        if (actual1 == null) {
-            System.out.println("FAILED TO LOGIN");
-        }
+        Assertions.assertNotEquals(null, actual1, "Failed to successfully login");
 
         System.out.println("Using Incorrect information");
         UserData login2 = new UserData("newGuy", "newGuyPasswordWrong", "newGuyEmail@yahoo.com");
         AuthData actual2 = myService.login(login2);
-        if (actual2 != null) {
-            System.out.println("FAILED TO STOP LOGIN");
-        }
+        assertNull(actual2, "Failed to stop login with bad password");
+    }
+
+    @Test
+    @DisplayName("Register Tests")
+    public void register() throws DataAccessException {
+        UserService myService = new UserService();
+        //Successful Register
+        UserData register1 = new UserData("Chuga97", "Chuga97Password", "Chuga97@gmail.com");
+        AuthData actual1 = myService.register(register1);
+        assertNotNull(actual1, "Unable to register new user");
+
+        //Existing User
+        UserData register2 = new UserData("newGuy", "newGuyPassword", "newGuyEmail@yahoo.com");
+        AuthData actual2 = myService.register(register2);
+        assertNull(actual2, "Registered existing user");
     }
 }
