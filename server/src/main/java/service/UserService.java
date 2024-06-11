@@ -26,7 +26,14 @@ public class UserService {
         }
         return null;
     }
-    public void logout(UserData user) {};
+    public boolean logout(AuthData user) throws DataAccessException{
+        if (authDAO.getAuth(user.authToken())) {
+            authDAO.deleteAuth(user.authToken());
+            return true;
+        } else {
+            return false;
+        }
+    }
     public void clear() throws DataAccessException {
         userDAO.clear();
         authDAO.clear();

@@ -6,6 +6,7 @@ import model.UserData;
 import org.junit.jupiter.api.*;
 import service.UserService;
 import org.eclipse.jetty.server.Authentication;
+import spark.utils.Assert;
 
 import javax.xml.crypto.Data;
 
@@ -36,12 +37,11 @@ public class myTests {
     @DisplayName("Login Attempt")
     public void logginIn() throws DataAccessException {
         UserService myService = new UserService();
-        System.out.println("Using correct login information");
+        //Good Login
         UserData login1 = new UserData("newGuy", "newGuyPassword", "newGuyEmail@yahoo.com");
         AuthData actual1 = myService.login(login1);
         Assertions.assertNotEquals(null, actual1, "Failed to successfully login");
-
-        System.out.println("Using Incorrect information");
+        //Bad Login
         UserData login2 = new UserData("newGuy", "newGuyPasswordWrong", "newGuyEmail@yahoo.com");
         AuthData actual2 = myService.login(login2);
         assertNull(actual2, "Failed to stop login with bad password");
@@ -60,5 +60,21 @@ public class myTests {
         UserData register2 = new UserData("newGuy", "newGuyPassword", "newGuyEmail@yahoo.com");
         AuthData actual2 = myService.register(register2);
         assertNull(actual2, "Registered existing user");
+    }
+
+    @Test
+    @DisplayName("Logout Test")
+    public void logout() throws DataAccessException {
+        UserService myService = new UserService();
+        //Successful logout
+        UserData user1 = new UserData("newGuy", "newGuyPassword", "newGuyEmail@yahoo.com");
+        AuthData newPC = myService.login(user1);
+        boolean actual = myService.logout(newPC);
+        Assert.isTrue(actual, "Was unable to logout existing user");
+
+        //Unsuccessful logout
+        AuthData fakePC = new AuthData("notARealToken", "newGuy");
+        boolean actual2 = myService.logout(fakePC);
+        Assert.isTrue(!actual2, "Successfully Logged out fake token");
     }
 }
