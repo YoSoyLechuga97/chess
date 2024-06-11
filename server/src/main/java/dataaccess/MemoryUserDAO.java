@@ -21,18 +21,11 @@ public class MemoryUserDAO implements UserDAO{
 
     @Override
     public UserData getUser(String username) throws DataAccessException {
-        int userIndex = -1;
-        //Search through the array for the matching username
-        for (int i = 0; i < users.size(); i++) {
-            if (Objects.equals(users.get(i).username(), username)) {
-                userIndex = i;
+        for (UserData user : users) {
+            if (user.username().equals(username)) {
+                return user;
             }
         }
-        //Return userData if there, if not, return null
-        if (userIndex >= 0) {
-            return users.get(userIndex);
-        } else {
-            return null;
-        }
+        return null;
     }
 }
