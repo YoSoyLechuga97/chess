@@ -25,7 +25,7 @@ public class MemoryGameDAO implements GameDAO{
 
     @Override
     public ArrayList<GameData> listGames() throws DataAccessException {
-        return null;
+        return games;
     }
 
     @Override
