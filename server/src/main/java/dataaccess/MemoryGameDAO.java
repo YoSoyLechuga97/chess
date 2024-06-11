@@ -15,9 +15,9 @@ public class MemoryGameDAO implements GameDAO{
     @Override
     //Returns GameID if game exists, -1 if cannot find game
     public int getGame(String gameName) throws DataAccessException {
-        for (int i = 0; i < games.size(); i++) {
-            if (Objects.equals(games.get(i).gameName(), gameName)) {
-                return games.get(i).gameID();
+        for (GameData game : games) {
+            if (Objects.equals(game.gameName(), gameName)) {
+                return game.gameID();
             }
         }
         return -1;
@@ -29,7 +29,14 @@ public class MemoryGameDAO implements GameDAO{
     }
 
     @Override
+    //Search through list of games for game to update, make updates
     public GameData updateGame(GameData updatedGame) throws DataAccessException {
-        return null;
+        for (GameData game : games) {
+            if (game.gameID() == updatedGame.gameID()) {
+                games.remove(game);
+                games.add(updatedGame);
+            }
+        }
+        return updatedGame;
     }
 }
