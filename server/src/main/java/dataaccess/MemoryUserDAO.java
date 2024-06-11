@@ -7,8 +7,6 @@ import java.util.Objects;
 
 public class MemoryUserDAO implements UserDAO{
 
-    static final ArrayList<UserData> users = new ArrayList<>();
-
     @Override
     public void clear() throws DataAccessException {
         users.clear();

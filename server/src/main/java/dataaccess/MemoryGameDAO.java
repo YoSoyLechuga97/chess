@@ -8,7 +8,6 @@ import java.util.Objects;
 import java.util.Random;
 
 public class MemoryGameDAO implements GameDAO{
-    ArrayList<GameData> games = new ArrayList<>();
 
     @Override
     public void clear() throws DataAccessException {
