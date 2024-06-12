@@ -1,5 +1,6 @@
 package service;
 
+import chess.ChessGame;
 import dataaccess.*;
 import model.AuthData;
 import model.GameData;
@@ -50,9 +51,33 @@ public class GameService {
             System.out.println("Game does not exist");
             return false;
         }
+        //Extract game Data
+        String gameName = oldGame.gameName();
+        String whitePlayer = oldGame.whiteusername();
+        String blackPlayer = oldGame.blackUsername();
+        ChessGame game = oldGame.game();
+
+        //Make sure that player color isn't already taken
+        if (playerColor.equals("WHITE")) {
+            if (!whitePlayer.equals("NO USER")) {
+                System.out.println("This color is already taken");
+                return false;
+            } else {
+                whitePlayer = userToken.username();
+            }
+        } else {
+            if (!blackPlayer.equals("NO USER")) {
+                System.out.println("This color is already taken");
+                return false;
+            } else {
+                blackPlayer = userToken.username();
+            }
+        }
 
         //Create updated game
-        GameData updatedGame = new
+        GameData updatedGame = new GameData(gameID, whitePlayer, blackPlayer, gameName, game);
+        gameDAO.updateGame(updatedGame);
+        return true;
     }
     public boolean verifyToken(AuthData userToken) throws DataAccessException {
         return authDAO.getAuth(userToken.authToken());
