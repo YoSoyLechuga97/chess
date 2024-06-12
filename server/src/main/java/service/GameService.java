@@ -21,6 +21,19 @@ public class GameService {
         //List all games
         return gameDAO.listGames();
     }
+    public int createGame(AuthData userToken, String newGameName) throws DataAccessException {
+        //Verify token
+        if (!verifyToken(userToken)) { //Does not have authentication
+            System.out.println("You do not have access");
+            return -1;
+        }
+        //Check to see if game name is already in database
+        if (gameDAO.getGame(newGameName) == -1) {
+            return -2;
+        }
+        //Create game
+        return gameDAO.createGame(userToken.authToken(), newGameName);
+    }
     public boolean verifyToken(AuthData userToken) throws DataAccessException {
         return authDAO.getAuth(userToken.authToken());
     }
