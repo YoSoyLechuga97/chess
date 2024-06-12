@@ -140,5 +140,10 @@ public class myTests {
         //Fail to join game
         boolean noJoin = !gameService.joinGame(actual1, "WHITE", joinID);
         Assert.isTrue(noJoin, "Joined a game that you should not have");
+
+        //Join game that does not exist
+        int fakeGame = 12;
+        boolean fakeJoin = !gameService.joinGame(actual1, "WHITE", fakeGame);
+        Assert.isTrue(fakeJoin, "Joined a game that does not exist");
     }
 }
