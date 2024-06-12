@@ -28,9 +28,12 @@ public class GameService {
             return -1;
         }
         //Check to see if game name is already in database
-        if (gameDAO.getGame(newGameName) == -1) {
-            System.out.println("A game with this name already exists :/");
-            return -2;
+        ArrayList<GameData> allGames = gameDAO.listGames();
+        for (GameData game : allGames) {
+            if (game.gameName().equals(newGameName)) {
+                System.out.println("A game with this name already exists :/");
+                return -2;
+            }
         }
         //Create game
         return gameDAO.createGame(userToken.authToken(), newGameName);
