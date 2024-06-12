@@ -29,10 +29,22 @@ public class GameService {
         }
         //Check to see if game name is already in database
         if (gameDAO.getGame(newGameName) == -1) {
+            System.out.println("A game with this name already exists :/");
             return -2;
         }
         //Create game
         return gameDAO.createGame(userToken.authToken(), newGameName);
+    }
+    public boolean joinGame(AuthData userToken, String playerColor, int gameID) throws DataAccessException {
+        //Verify
+        if (!verifyToken(userToken)) { //Does not have authentication
+            System.out.println("You do not have access");
+            return false;
+        }
+        //Determine if game exists
+        GameData oldGame =
+        //Create updated game
+        GameData updatedGame = new
     }
     public boolean verifyToken(AuthData userToken) throws DataAccessException {
         return authDAO.getAuth(userToken.authToken());

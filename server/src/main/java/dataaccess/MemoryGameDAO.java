@@ -29,13 +29,13 @@ public class MemoryGameDAO implements GameDAO{
 
     @Override
     //Returns GameID if game exists, -1 if cannot find game
-    public int getGame(String gameName) throws DataAccessException {
+    public GameData getGame(int gameID) throws DataAccessException {
         for (GameData game : games) {
-            if (Objects.equals(game.gameName(), gameName)) {
-                return game.gameID();
+            if (game.gameID() == gameID) {
+                return game;
             }
         }
-        return -1;
+        return null;
     }
 
     @Override
