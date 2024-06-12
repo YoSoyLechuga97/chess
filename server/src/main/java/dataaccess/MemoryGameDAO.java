@@ -17,14 +17,17 @@ public class MemoryGameDAO implements GameDAO{
     @Override
     public int createGame(String authToken, String gameName) throws DataAccessException {
         //Check to make sure game doesn't already exist:
-        if (getGame(gameName) == -1) { //Game with this name doesn't currently exist
-            //Generate random gameID
-            Random random = new Random();
-            int newGameID = 10000000 + random.nextInt(90000000);
-            GameData newGame = new GameData(newGameID, "NO USER", "NO USER", "gameName", new ChessGame());
-            return newGameID;
+        ArrayList<GameData> allGames = listGames();
+        for (GameData game : allGames) {
+            if (game.gameName().equals(gameName)) { //Game with this name exists
+                return -1;
+            }
         }
-        return -1;
+        //Generate random gameID
+        Random random = new Random();
+        int newGameID = 10000000 + random.nextInt(90000000);
+        GameData newGame = new GameData(newGameID, "NO USER", "NO USER", "gameName", new ChessGame());
+        return newGameID;
     }
 
     @Override
