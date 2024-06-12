@@ -11,6 +11,8 @@ import spark.utils.Assert;
 
 import javax.xml.crypto.Data;
 
+import java.util.ArrayList;
+
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
@@ -90,14 +92,35 @@ public class myTests {
 
         //Successfully create a game
         int gameID = gameService.createGame(actual1, "NewGame!");
-        System.out.println(gameID);
         boolean createdNewGame = (gameID > 0);
         Assert.isTrue(createdNewGame, "New Game failed to be created");
 
         //Unsuccessfully create game
         int badGameID = gameService.createGame(actual1, "NewGame!");
-        System.out.println(badGameID);
         boolean noNewGame = (badGameID < 0);
         Assert.isTrue(noNewGame, "Game that should not have been made was created");
+    }
+
+    @Test
+    @DisplayName("ListGames")
+    public void listGames() throws DataAccessException{
+        UserService myService = new UserService();
+        GameService gameService = new GameService();
+        UserData login1 = new UserData("newGuy", "newGuyPassword", "newGuyEmail@yahoo.com");
+        AuthData actual1 = myService.login(login1);
+
+        //Create multiple games
+        gameService.createGame(actual1, "NewGame!");
+        gameService.createGame(actual1, "BattleTime");
+        gameService.createGame(actual1, "Cole's Game");
+
+        //Successfully List Games
+        ArrayList<GameData> allGames = gameService.listGames(actual1);
+        Assert.notNull(allGames, "No Games listed, expected three");
+
+        //Fail to List Games
+        AuthData falseData = new AuthData("a", "newGuy");
+        ArrayList<GameData> noGames = gameService.listGames(falseData);
+        assertNull(noGames, "Still listed games without authentication");
     }
 }
