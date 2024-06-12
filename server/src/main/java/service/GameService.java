@@ -45,7 +45,12 @@ public class GameService {
             return false;
         }
         //Determine if game exists
-        GameData oldGame =
+        GameData oldGame = gameDAO.getGame(gameID);
+        if (oldGame == null) {
+            System.out.println("Game does not exist");
+            return false;
+        }
+
         //Create updated game
         GameData updatedGame = new
     }
