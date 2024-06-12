@@ -2,6 +2,7 @@ package service;
 
 import dataaccess.DataAccessException;
 import model.AuthData;
+import model.GameData;
 import model.UserData;
 import org.junit.jupiter.api.*;
 import service.UserService;
@@ -17,6 +18,7 @@ public class myTests {
     @BeforeEach
     //Create my Users
     public void setup() throws DataAccessException{
+        //Create users
         UserData user1 = new UserData("newGuy", "newGuyPassword", "newGuyEmail@yahoo.com");
         UserData user2 = new UserData("HiFriend", "HiFriendPassword", "HiFriend@gmail.com");
         UserData user3 = new UserData("Gamer44", "Gamer44Password", "Gamer44@aol.com");
@@ -76,5 +78,26 @@ public class myTests {
         AuthData fakePC = new AuthData("notARealToken", "newGuy");
         boolean actual2 = myService.logout(fakePC);
         Assert.isTrue(!actual2, "Successfully Logged out fake token");
+    }
+
+    @Test
+    @DisplayName("Create a Game")
+    public void createGame() throws DataAccessException {
+        UserService myService = new UserService();
+        GameService gameService = new GameService();
+        UserData login1 = new UserData("newGuy", "newGuyPassword", "newGuyEmail@yahoo.com");
+        AuthData actual1 = myService.login(login1);
+
+        //Successfully create a game
+        int gameID = gameService.createGame(actual1, "NewGame!");
+        System.out.println(gameID);
+        boolean createdNewGame = (gameID > 0);
+        Assert.isTrue(createdNewGame, "New Game failed to be created");
+
+        //Unsuccessfully create game
+        int badGameID = gameService.createGame(actual1, "NewGame!");
+        System.out.println(badGameID);
+        boolean noNewGame = (badGameID < 0);
+        Assert.isTrue(noNewGame, "Game that should not have been made was created");
     }
 }
