@@ -66,7 +66,7 @@ public class myTests {
     }
 
     @Test
-    @DisplayName("Logout Test")
+    @DisplayName("Logout Success")
     public void logout() throws DataAccessException {
         UserService myService = new UserService();
         //Successful logout
@@ -74,7 +74,12 @@ public class myTests {
         AuthData newPC = myService.login(user1);
         boolean actual = myService.logout(newPC);
         Assert.isTrue(actual, "Was unable to logout existing user");
+    }
 
+    @Test
+    @DisplayName("Logout Fail")
+    public void logoutFail() throws DataAccessException {
+        UserService myService = new UserService();
         //Unsuccessful logout
         AuthData fakePC = new AuthData("notARealToken", "newGuy");
         boolean actual2 = myService.logout(fakePC);
