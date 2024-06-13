@@ -166,8 +166,21 @@ public class myTests {
         int joinID = gameService.createGame(actual1, "Cole's Game");
         boolean joined = gameService.joinGame(actual1, "WHITE", joinID);
         Assert.isTrue(joined, "Failed to successfully join game");
+    }
 
-        //Fail to join game
+    @Test
+    @DisplayName("Join Game Fail")
+    public void joinGameFail() throws DataAccessException{
+        UserService myService = new UserService();
+        GameService gameService = new GameService();
+        UserData login1 = new UserData("newGuy", "newGuyPassword", "newGuyEmail@yahoo.com");
+        AuthData actual1 = myService.login(login1);
+
+        //Successfully Join a Game
+        int joinID = gameService.createGame(actual1, "Cole's Game");
+        boolean joined = gameService.joinGame(actual1, "WHITE", joinID);
+
+        //Join game with color already in use
         boolean noJoin = !gameService.joinGame(actual1, "WHITE", joinID);
         Assert.isTrue(noJoin, "Joined a game that you should not have");
 
