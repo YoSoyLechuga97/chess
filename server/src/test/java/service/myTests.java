@@ -209,7 +209,16 @@ public class myTests {
     @Test
     @DisplayName("Clear Users")
     public void clearUsers() throws DataAccessException {
+        //Login to database
         UserService myService = new UserService();
+        //Good Login
+        UserData login1 = new UserData("newGuy", "newGuyPassword", "newGuyEmail@yahoo.com");
+        AuthData actual1 = myService.login(login1);
+        Assertions.assertNotEquals(null, actual1, "Failed to successfully login");
+        //Clear Database
         myService.clear();
+        //Attempt to login with empty database
+        AuthData actual2 = myService.login(login1);
+        assertNull(actual2, "Still logged in, database not cleared");
     }
 }
