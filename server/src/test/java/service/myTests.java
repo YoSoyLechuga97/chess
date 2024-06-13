@@ -31,20 +31,19 @@ public class myTests {
     }
 
     @Test
-    @DisplayName("Clear Users")
-    public void clearUsers() throws DataAccessException {
-        UserService myService = new UserService();
-        myService.clear();
-    }
-
-    @Test
-    @DisplayName("Login Attempt")
-    public void logginIn() throws DataAccessException {
+    @DisplayName("Login Success")
+    public void logIn() throws DataAccessException {
         UserService myService = new UserService();
         //Good Login
         UserData login1 = new UserData("newGuy", "newGuyPassword", "newGuyEmail@yahoo.com");
         AuthData actual1 = myService.login(login1);
         Assertions.assertNotEquals(null, actual1, "Failed to successfully login");
+    }
+
+    @Test
+    @DisplayName("Login Fail")
+    public void logInFail() throws DataAccessException {
+        UserService myService = new UserService();
         //Bad Login
         UserData login2 = new UserData("newGuy", "newGuyPasswordWrong", "newGuyEmail@yahoo.com");
         AuthData actual2 = myService.login(login2);
@@ -145,5 +144,12 @@ public class myTests {
         int fakeGame = 12;
         boolean fakeJoin = !gameService.joinGame(actual1, "WHITE", fakeGame);
         Assert.isTrue(fakeJoin, "Joined a game that does not exist");
+    }
+
+    @Test
+    @DisplayName("Clear Users")
+    public void clearUsers() throws DataAccessException {
+        UserService myService = new UserService();
+        myService.clear();
     }
 }
