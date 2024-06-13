@@ -1,12 +1,11 @@
 package dataaccess;
 
-import model.AuthData;
 import model.GameData;
 
 import java.util.ArrayList;
 
 public interface GameDAO {
-    static final ArrayList<GameData> games = new ArrayList<>();
+    static final ArrayList<GameData> GAMES = new ArrayList<>();
     public void clear() throws DataAccessException;
     public int createGame(String authToken, String gameName) throws DataAccessException;
     public GameData getGame(int gameID) throws DataAccessException;

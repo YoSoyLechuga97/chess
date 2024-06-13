@@ -4,14 +4,13 @@ import chess.ChessGame;
 import model.GameData;
 
 import java.util.ArrayList;
-import java.util.Objects;
 import java.util.Random;
 
 public class MemoryGameDAO implements GameDAO{
 
     @Override
     public void clear() throws DataAccessException {
-        games.clear();
+        GAMES.clear();
     }
 
     @Override
@@ -27,14 +26,14 @@ public class MemoryGameDAO implements GameDAO{
         Random random = new Random();
         int newGameID = 10000000 + random.nextInt(90000000);
         GameData newGame = new GameData(newGameID, null, null, gameName, new ChessGame());
-        games.add(newGame);
+        GAMES.add(newGame);
         return newGameID;
     }
 
     @Override
     //Returns GameData if game exists, null if cannot find game
     public GameData getGame(int gameID) throws DataAccessException {
-        for (GameData game : games) {
+        for (GameData game : GAMES) {
             if (game.gameID() == gameID) {
                 return game;
             }
@@ -44,14 +43,14 @@ public class MemoryGameDAO implements GameDAO{
 
     @Override
     public ArrayList<GameData> listGames() throws DataAccessException {
-        return games;
+        return GAMES;
     }
 
     @Override
     //Search through list of games for game to update, make updates
     public GameData updateGame(GameData updatedGame) throws DataAccessException {
-        games.removeIf(game -> game.gameID() == updatedGame.gameID());
-        games.add(updatedGame);
+        GAMES.removeIf(game -> game.gameID() == updatedGame.gameID());
+        GAMES.add(updatedGame);
         return updatedGame;
     }
 }

@@ -2,13 +2,12 @@ package dataaccess;
 
 import model.AuthData;
 
-import java.security.SecureRandom;
 import java.util.UUID;
 
 public class MemoryAuthDAO implements AuthDAO{
     @Override
     public void clear() throws DataAccessException {
-        auths.clear();
+        AUTHS.clear();
     }
 
     @Override
@@ -20,13 +19,13 @@ public class MemoryAuthDAO implements AuthDAO{
         AuthData newAuth = new AuthData(newToken, username);
 
         //Add to list
-        auths.add(newAuth);
+        AUTHS.add(newAuth);
         return newAuth;
     }
 
     @Override
     public boolean getAuth(String token) throws DataAccessException {
-        for (AuthData currToken : auths) {
+        for (AuthData currToken : AUTHS) {
             if (currToken.authToken().equals(token)) {
                 return true;
             }
@@ -36,7 +35,7 @@ public class MemoryAuthDAO implements AuthDAO{
 
     @Override
     public String getUser(String token) throws DataAccessException {
-        for (AuthData currToken : auths) {
+        for (AuthData currToken : AUTHS) {
             if (currToken.authToken().equals(token)) {
                 return currToken.username();
             }
@@ -46,6 +45,6 @@ public class MemoryAuthDAO implements AuthDAO{
 
     @Override
     public void deleteAuth(String token) throws DataAccessException {
-        auths.removeIf(currToken -> currToken.authToken().equals(token));
+        AUTHS.removeIf(currToken -> currToken.authToken().equals(token));
     }
 }

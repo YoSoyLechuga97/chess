@@ -2,24 +2,21 @@ package dataaccess;
 
 import model.UserData;
 
-import java.util.ArrayList;
-import java.util.Objects;
-
 public class MemoryUserDAO implements UserDAO{
 
     @Override
     public void clear() throws DataAccessException {
-        users.clear();
+        USERS.clear();
     }
 
     @Override
     public void createUser(UserData userData) throws DataAccessException {
-        users.add(userData);
+        USERS.add(userData);
     }
 
     @Override
     public UserData getUser(String username) throws DataAccessException {
-        for (UserData user : users) {
+        for (UserData user : USERS) {
             if (user.username().equals(username)) {
                 return user;
             }
