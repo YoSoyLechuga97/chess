@@ -5,6 +5,7 @@ import exceptions.AlreadyExistsException;
 import exceptions.UnauthorizedException;
 import model.AuthData;
 import model.GameData;
+import model.ListGamesData;
 import model.UserData;
 import org.junit.jupiter.api.*;
 import service.UserService;
@@ -15,8 +16,7 @@ import javax.xml.crypto.Data;
 
 import java.util.ArrayList;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class myTests {
     @BeforeEach
@@ -40,16 +40,23 @@ public class myTests {
         UserData login1 = new UserData("newGuy", "newGuyPassword", "newGuyEmail@yahoo.com");
         AuthData actual1 = myService.login(login1);
         Assertions.assertNotEquals(null, actual1, "Failed to successfully login");
+        clearUsers();
     }
 
     @Test
     @DisplayName("Login Fail")
     public void logInFail() throws Exception {
         UserService myService = new UserService();
+        boolean thrown = false;
         //Bad Login
         UserData login2 = new UserData("newGuy", "newGuyPasswordWrong", "newGuyEmail@yahoo.com");
-        AuthData actual2 = myService.login(login2);
-        assertNull(actual2, "Failed to stop login with bad password");
+        try {
+            AuthData actual2 = myService.login(login2);
+        } catch (Exception e){
+            thrown = true;
+        }
+        Assertions.assertTrue(thrown, "Failed to stop login with bad password");
+        clearUsers();
     }
 
     @Test
@@ -67,11 +74,15 @@ public class myTests {
     @DisplayName("Register Tests Fail")
     public void registerFail() throws Exception {
         UserService myService = new UserService();
-
+        boolean thrown = false;
         //Existing User
         UserData register2 = new UserData("newGuy", "newGuyPassword", "newGuyEmail@yahoo.com");
-        AuthData actual2 = myService.register(register2);
-        assertNull(actual2, "Registered existing user");
+        try {
+            AuthData actual2 = myService.register(register2);
+        } catch (Exception e){
+            thrown = true;
+        }
+        assertTrue(thrown, "Registered existing user");
         clearUsers();
     }
 
@@ -91,10 +102,15 @@ public class myTests {
     @DisplayName("Logout Fail")
     public void logoutFail() throws Exception {
         UserService myService = new UserService();
+        boolean thrown = false;
         //Unsuccessful logout
         AuthData fakePC = new AuthData("notARealToken", "newGuy");
-        boolean actual2 = myService.logout(fakePC);
-        Assert.isTrue(!actual2, "Successfully Logged out fake token");
+        try {
+            boolean actual2 = myService.logout(fakePC);
+        }catch (Exception e){
+            thrown = true;
+        }
+        Assert.isTrue(thrown, "Successfully Logged out fake token");
         clearUsers();
     }
 
@@ -118,6 +134,7 @@ public class myTests {
     public void createGameFail() throws Exception {
         UserService myService = new UserService();
         GameService gameService = new GameService();
+        boolean thrown = false;
         UserData login1 = new UserData("newGuy", "newGuyPassword", "newGuyEmail@yahoo.com");
         AuthData actual1 = myService.login(login1);
 
@@ -125,9 +142,12 @@ public class myTests {
         int gameID = gameService.createGame(actual1, "NewGame!");
 
         //Unsuccessfully create game
-        int badGameID = gameService.createGame(actual1, "NewGame!");
-        boolean noNewGame = (badGameID < 0);
-        Assert.isTrue(noNewGame, "Game that should not have been made was created");
+        try {
+            int badGameID = gameService.createGame(actual1, "NewGame!");
+        } catch (Exception e){
+            thrown = true;
+        }
+        Assert.isTrue(thrown, "Game that should not have been made was created");
         clearUsers();
     }
 
@@ -145,7 +165,7 @@ public class myTests {
         gameService.createGame(actual1, "Cole's Game");
 
         //Successfully List Games
-        ArrayList<GameData> allGames = gameService.listGames(actual1);
+        ListGamesData allGames = gameService.listGames(actual1);
         Assert.notNull(allGames, "No Games listed, expected three");
         clearUsers();
     }
@@ -155,6 +175,7 @@ public class myTests {
     public void listGamesFail() throws Exception {
         UserService myService = new UserService();
         GameService gameService = new GameService();
+        boolean thrown = false;
         UserData login1 = new UserData("newGuy", "newGuyPassword", "newGuyEmail@yahoo.com");
         AuthData actual1 = myService.login(login1);
 
@@ -165,8 +186,12 @@ public class myTests {
 
         //Fail to List Games
         AuthData falseData = new AuthData("a", "newGuy");
-        ArrayList<GameData> noGames = gameService.listGames(falseData);
-        assertNull(noGames, "Still listed games without authentication");
+        try {
+            ListGamesData noGames = gameService.listGames(falseData);
+        } catch (Exception e){
+            thrown = true;
+        }
+        assertTrue(thrown, "Still listed games without authentication");
         clearUsers();
     }
 
@@ -190,6 +215,7 @@ public class myTests {
     public void joinGameFail() throws Exception {
         UserService myService = new UserService();
         GameService gameService = new GameService();
+        boolean thrown = false;
         UserData login1 = new UserData("newGuy", "newGuyPassword", "newGuyEmail@yahoo.com");
         AuthData actual1 = myService.login(login1);
 
@@ -198,13 +224,22 @@ public class myTests {
         boolean joined = gameService.joinGame(actual1, "WHITE", joinID);
 
         //Join game with color already in use
-        boolean noJoin = !gameService.joinGame(actual1, "WHITE", joinID);
-        Assert.isTrue(noJoin, "Joined a game that you should not have");
+        try {
+            boolean noJoin = !gameService.joinGame(actual1, "WHITE", joinID);
+        } catch (Exception e){
+            thrown = true;
+        }
+        Assert.isTrue(thrown, "Joined a game that you should not have");
 
+        thrown = false;
         //Join game that does not exist
         int fakeGame = 12;
-        boolean fakeJoin = !gameService.joinGame(actual1, "WHITE", fakeGame);
-        Assert.isTrue(fakeJoin, "Joined a game that does not exist");
+        try {
+            boolean fakeJoin = !gameService.joinGame(actual1, "WHITE", fakeGame);
+        } catch (Exception e){
+            thrown = true;
+        }
+        Assert.isTrue(thrown, "Joined a game that does not exist");
         clearUsers();
     }
 
@@ -213,6 +248,7 @@ public class myTests {
     public void clearUsers() throws Exception {
         //Login to database
         UserService myService = new UserService();
+        boolean thrown = false;
         //Good Login
         UserData login1 = new UserData("newGuy", "newGuyPassword", "newGuyEmail@yahoo.com");
         AuthData actual1 = myService.login(login1);
@@ -220,7 +256,11 @@ public class myTests {
         //Clear Database
         myService.clear();
         //Attempt to login with empty database
-        AuthData actual2 = myService.login(login1);
-        assertNull(actual2, "Still logged in, database not cleared");
+        try {
+            AuthData actual2 = myService.login(login1);
+        } catch (Exception e){
+            thrown = true;
+        }
+        assertTrue(thrown, "Still logged in, database not cleared");
     }
 }

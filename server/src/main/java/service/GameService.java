@@ -1,13 +1,14 @@
 package service;
 
 import chess.ChessGame;
+import com.google.gson.JsonSyntaxException;
 import dataaccess.*;
 import exceptions.AlreadyExistsException;
 import exceptions.UnauthorizedException;
 import model.AuthData;
 import model.GameData;
+import model.ListGamesData;
 
-import javax.xml.crypto.Data;
 import java.util.ArrayList;
 
 public class GameService {
@@ -15,14 +16,13 @@ public class GameService {
     AuthDAO authDAO = new MemoryAuthDAO();
     GameDAO gameDAO = new MemoryGameDAO();
 
-    public ArrayList<GameData> listGames(AuthData userToken) throws DataAccessException {
+    public ListGamesData listGames(AuthData userToken) throws Exception {
         //Verify user can access file
         if (!verifyToken(userToken)) { //Does not have authentication
-            System.out.println("You do not have access");
-            return null;
+            throw new UnauthorizedException("unauthorized");
         }
         //List all games
-        return gameDAO.listGames();
+        return new ListGamesData(gameDAO.listGames());
     }
     public int createGame(AuthData userToken, String newGameName) throws Exception {
         //Verify token
@@ -44,29 +44,33 @@ public class GameService {
         if (!verifyToken(userToken)) { //Does not have authentication
             throw new UnauthorizedException("unauthorized");
         }
+        if (playerColor == null) {
+            throw new JsonSyntaxException("playerColor cannot be null");
+        }
         //Determine if game exists
         GameData oldGame = gameDAO.getGame(gameID);
         if (oldGame == null) {
-            throw new Exception("game does not exist");
+            throw new JsonSyntaxException("game does not exist");
         }
         //Extract game Data
         String gameName = oldGame.gameName();
-        String whitePlayer = oldGame.whiteusername();
+        String whitePlayer = oldGame.whiteUsername();
         String blackPlayer = oldGame.blackUsername();
         ChessGame game = oldGame.game();
 
         //Make sure that player color isn't already taken
+        String userName = authDAO.getUser(userToken.authToken());
         if (playerColor.equals("WHITE")) {
-            if (!whitePlayer.equals("NO USER")) {
+            if (whitePlayer != null) {
                 throw new AlreadyExistsException("already taken");
             } else {
-                whitePlayer = userToken.username();
+                whitePlayer = userName;
             }
         } else {
-            if (!blackPlayer.equals("NO USER")) {
+            if (blackPlayer != null) {
                 throw new AlreadyExistsException("already taken");
             } else {
-                blackPlayer = userToken.username();
+                blackPlayer = userName;
             }
         }
 

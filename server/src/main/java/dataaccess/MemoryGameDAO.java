@@ -26,7 +26,7 @@ public class MemoryGameDAO implements GameDAO{
         //Generate random gameID
         Random random = new Random();
         int newGameID = 10000000 + random.nextInt(90000000);
-        GameData newGame = new GameData(newGameID, "NO USER", "NO USER", gameName, new ChessGame());
+        GameData newGame = new GameData(newGameID, null, null, gameName, new ChessGame());
         games.add(newGame);
         return newGameID;
     }
@@ -50,12 +50,8 @@ public class MemoryGameDAO implements GameDAO{
     @Override
     //Search through list of games for game to update, make updates
     public GameData updateGame(GameData updatedGame) throws DataAccessException {
-        for (GameData game : games) {
-            if (game.gameID() == updatedGame.gameID()) {
-                games.remove(game);
-                games.add(updatedGame);
-            }
-        }
+        games.removeIf(game -> game.gameID() == updatedGame.gameID());
+        games.add(updatedGame);
         return updatedGame;
     }
 }
