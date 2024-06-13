@@ -31,14 +31,14 @@ public class ListHandler implements Route {
             AuthData authData = new AuthData(authToken, null);
             ListGamesData allGames = gameService.listGames(authData);
             return gson.toJson(allGames);
-        } catch (Exception e) {
-            if (e instanceof UnauthorizedException) {//Exception messages and their status codes
+        } catch (Exception errorType) {
+            if (errorType instanceof UnauthorizedException) {//Exception messages and their status codes
                 response.status(401);
             } else {
                 response.status(500);
             }
             //Print out the exception message
-            return gson.toJson(Map.of("message", "Error: " + e.getMessage()));
+            return gson.toJson(Map.of("message", "Error: " + errorType.getMessage()));
         }
     }
 }

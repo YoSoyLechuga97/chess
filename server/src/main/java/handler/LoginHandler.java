@@ -26,12 +26,17 @@ public class LoginHandler implements Route {
             AuthData authData = userService.login(userData);
             return gson.toJson(authData);
         } catch (Exception e) {
-            if (e instanceof UnauthorizedException) {
-                response.status(401);
-            } else {
-                response.status(500);
-            }
+            response.status(exceptionHandler(e));
             return gson.toJson(Map.of("message", "Error: " + e.getMessage()));
         }
     }
+
+    public int exceptionHandler(Exception e) {
+        if (e instanceof UnauthorizedException) {
+            return 401;
+        } else {
+            return 500;
+        }
+    }
 }
+

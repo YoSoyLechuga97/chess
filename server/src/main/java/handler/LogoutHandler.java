@@ -27,7 +27,7 @@ public class LogoutHandler implements Route {
             userService.logout(authData);
             return "";
         } catch (Exception e) {
-            if (e instanceof UnauthorizedException) { //If logout fails
+            if (e instanceof UnauthorizedException) {
                 response.status(401);
             } else {
                 response.status(500);
