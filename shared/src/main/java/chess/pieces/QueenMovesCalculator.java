@@ -11,6 +11,7 @@ public class QueenMovesCalculator extends PiecesMovesCalculator {
     private PiecesMovesCalculator piece = null;
 
     public QueenMovesCalculator(PiecesMovesCalculator chessPiece){
+        //The queen piece can move in any direction for any number of spaces
         super(chessPiece.getBoard(), chessPiece.getPosition(), chessPiece.getPieceType());
         piece = chessPiece;
     }
@@ -21,27 +22,25 @@ public class QueenMovesCalculator extends PiecesMovesCalculator {
         ChessMove newMove;
         //Create if statement calculations
         for(int i = 0; i < 8; i++) {
-            //Set Wall Bound and Starting location
             int row = piece.getPosition().getRow();
             int col = piece.getPosition().getColumn();
             int[] canMove = {0};
 
             switch (i) {
-                //Up
-                case 0:
+                //Up and to the Right
+                case 1:
                     while (canMove[0] == 0) {
                         row += 1;
+                        col += 1;
                         newMove = checkMove(piece, row, col, canMove);
                         if (newMove != null) {
                             movePositions.add(newMove);
                         }
                     }
-
-                    //Up and to the Right
-                case 1:
+                //Up
+                case 0:
                     while (canMove[0] == 0) {
                         row += 1;
-                        col += 1;
                         newMove = checkMove(piece, row, col, canMove);
                         if (newMove != null) {
                             movePositions.add(newMove);
