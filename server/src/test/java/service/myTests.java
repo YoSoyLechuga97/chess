@@ -1,6 +1,7 @@
 package service;
 
 import dataaccess.DataAccessException;
+import exceptions.AlreadyExistsException;
 import model.AuthData;
 import model.GameData;
 import model.UserData;
@@ -19,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 public class myTests {
     @BeforeEach
     //Create my Users
-    public void setup() throws DataAccessException{
+    public void setup() throws DataAccessException, AlreadyExistsException {
         //Create users
         UserData user1 = new UserData("newGuy", "newGuyPassword", "newGuyEmail@yahoo.com");
         UserData user2 = new UserData("HiFriend", "HiFriendPassword", "HiFriend@gmail.com");
@@ -52,7 +53,7 @@ public class myTests {
 
     @Test
     @DisplayName("Register Tests")
-    public void register() throws DataAccessException {
+    public void register() throws DataAccessException, AlreadyExistsException {
         UserService myService = new UserService();
         //Successful Register
         UserData register1 = new UserData("Chuga97", "Chuga97Password", "Chuga97@gmail.com");
@@ -63,7 +64,7 @@ public class myTests {
 
     @Test
     @DisplayName("Register Tests Fail")
-    public void registerFail() throws DataAccessException {
+    public void registerFail() throws DataAccessException, AlreadyExistsException {
         UserService myService = new UserService();
 
         //Existing User

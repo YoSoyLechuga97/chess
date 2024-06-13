@@ -1,6 +1,7 @@
 package service;
 
 import dataaccess.*;
+import exceptions.AlreadyExistsException;
 import model.AuthData;
 import model.UserData;
 
@@ -11,14 +12,13 @@ public class UserService {
     UserDAO userDAO = new MemoryUserDAO();
     AuthDAO authDAO = new MemoryAuthDAO();
     GameDAO gameDAO = new MemoryGameDAO();
-    public AuthData register(UserData user) throws DataAccessException {
+    public AuthData register(UserData user) throws DataAccessException, AlreadyExistsException {
         if (userDAO.getUser(user.username()) == null) {
             userDAO.createUser(user);
             return authDAO.createAuth(user.username());
         } else {
-
+            throw new AlreadyExistsException("Error: already taken");
         }
-        return null;
     }
     public AuthData login(UserData user) throws DataAccessException {
         if (userDAO.getUser(user.username()) != null) {
