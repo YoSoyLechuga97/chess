@@ -38,12 +38,16 @@ public class UserService {
         }
         throw new UnauthorizedException("unauthorized");
     }
-    public boolean logout(AuthData user) throws DataAccessException{
+    public boolean logout(AuthData user) throws DataAccessException, UnauthorizedException {
+        //Verify that request is good
+        if (user.authToken() == null) {
+            throw new JsonSyntaxException("bad request");
+        }
         if (authDAO.getAuth(user.authToken())) {
             authDAO.deleteAuth(user.authToken());
             return true;
         } else {
-            return false;
+            throw new UnauthorizedException("unauthorized");
         }
     }
     public void clear() throws DataAccessException {

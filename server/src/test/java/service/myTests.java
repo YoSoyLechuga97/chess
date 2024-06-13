@@ -54,7 +54,7 @@ public class myTests {
 
     @Test
     @DisplayName("Register Tests")
-    public void register() throws DataAccessException, AlreadyExistsException {
+    public void register() throws DataAccessException, AlreadyExistsException, UnauthorizedException {
         UserService myService = new UserService();
         //Successful Register
         UserData register1 = new UserData("Chuga97", "Chuga97Password", "Chuga97@gmail.com");
