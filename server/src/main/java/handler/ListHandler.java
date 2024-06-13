@@ -32,12 +32,12 @@ public class ListHandler implements Route {
             ListGamesData allGames = gameService.listGames(authData);
             return gson.toJson(allGames);
         } catch (Exception e) {
-            if (e instanceof UnauthorizedException) {
+            if (e instanceof UnauthorizedException) {//Exception messages and their status codes
                 response.status(401);
             } else {
                 response.status(500);
             }
-
+            //Print out the exception message
             return gson.toJson(Map.of("message", "Error: " + e.getMessage()));
         }
     }

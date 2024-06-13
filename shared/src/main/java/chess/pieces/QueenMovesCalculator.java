@@ -19,7 +19,6 @@ public class QueenMovesCalculator extends PiecesMovesCalculator {
         //Initialize Array and all the inputs per array slot
         ArrayList<ChessMove> movePositions = new ArrayList<>();
         ChessMove newMove;
-
         //Create if statement calculations
         for(int i = 0; i < 8; i++) {
             //Set Wall Bound and Starting location
@@ -113,7 +112,6 @@ public class QueenMovesCalculator extends PiecesMovesCalculator {
                     }
             }
         }
-
         return movePositions;
     }
 }

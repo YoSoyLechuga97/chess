@@ -27,12 +27,12 @@ public class LogoutHandler implements Route {
             userService.logout(authData);
             return "";
         } catch (Exception e) {
-            if (e instanceof UnauthorizedException) {
+            if (e instanceof UnauthorizedException) { //If logout fails
                 response.status(401);
             } else {
                 response.status(500);
             }
-
+            //Message to return if logout fails
             return gson.toJson(Map.of("message", "Error: " + e.getMessage()));
         }
     }
