@@ -87,7 +87,7 @@ public class myTests {
     }
 
     @Test
-    @DisplayName("Create a Game")
+    @DisplayName("Create a Game Success")
     public void createGame() throws DataAccessException {
         UserService myService = new UserService();
         GameService gameService = new GameService();
@@ -98,6 +98,18 @@ public class myTests {
         int gameID = gameService.createGame(actual1, "NewGame!");
         boolean createdNewGame = (gameID > 0);
         Assert.isTrue(createdNewGame, "New Game failed to be created");
+    }
+
+    @Test
+    @DisplayName("Create a Game Fail")
+    public void createGameFail() throws DataAccessException {
+        UserService myService = new UserService();
+        GameService gameService = new GameService();
+        UserData login1 = new UserData("newGuy", "newGuyPassword", "newGuyEmail@yahoo.com");
+        AuthData actual1 = myService.login(login1);
+
+        //Successfully create a game
+        int gameID = gameService.createGame(actual1, "NewGame!");
 
         //Unsuccessfully create game
         int badGameID = gameService.createGame(actual1, "NewGame!");
@@ -106,7 +118,7 @@ public class myTests {
     }
 
     @Test
-    @DisplayName("ListGames")
+    @DisplayName("ListGames Success")
     public void listGames() throws DataAccessException{
         UserService myService = new UserService();
         GameService gameService = new GameService();
@@ -121,6 +133,20 @@ public class myTests {
         //Successfully List Games
         ArrayList<GameData> allGames = gameService.listGames(actual1);
         Assert.notNull(allGames, "No Games listed, expected three");
+    }
+
+    @Test
+    @DisplayName("ListGames Fail")
+    public void listGamesFail() throws DataAccessException{
+        UserService myService = new UserService();
+        GameService gameService = new GameService();
+        UserData login1 = new UserData("newGuy", "newGuyPassword", "newGuyEmail@yahoo.com");
+        AuthData actual1 = myService.login(login1);
+
+        //Create multiple games
+        gameService.createGame(actual1, "NewGame!");
+        gameService.createGame(actual1, "BattleTime");
+        gameService.createGame(actual1, "Cole's Game");
 
         //Fail to List Games
         AuthData falseData = new AuthData("a", "newGuy");
