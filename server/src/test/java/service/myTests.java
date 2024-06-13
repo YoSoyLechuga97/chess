@@ -58,6 +58,12 @@ public class myTests {
         UserData register1 = new UserData("Chuga97", "Chuga97Password", "Chuga97@gmail.com");
         AuthData actual1 = myService.register(register1);
         assertNotNull(actual1, "Unable to register new user");
+    }
+
+    @Test
+    @DisplayName("Register Tests Fail")
+    public void registerFail() throws DataAccessException {
+        UserService myService = new UserService();
 
         //Existing User
         UserData register2 = new UserData("newGuy", "newGuyPassword", "newGuyEmail@yahoo.com");
