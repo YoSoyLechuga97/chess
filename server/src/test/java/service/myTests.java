@@ -58,6 +58,7 @@ public class myTests {
         UserData register1 = new UserData("Chuga97", "Chuga97Password", "Chuga97@gmail.com");
         AuthData actual1 = myService.register(register1);
         assertNotNull(actual1, "Unable to register new user");
+        clearUsers();
     }
 
     @Test
@@ -69,6 +70,7 @@ public class myTests {
         UserData register2 = new UserData("newGuy", "newGuyPassword", "newGuyEmail@yahoo.com");
         AuthData actual2 = myService.register(register2);
         assertNull(actual2, "Registered existing user");
+        clearUsers();
     }
 
     @Test
@@ -80,6 +82,7 @@ public class myTests {
         AuthData newPC = myService.login(user1);
         boolean actual = myService.logout(newPC);
         Assert.isTrue(actual, "Was unable to logout existing user");
+        clearUsers();
     }
 
     @Test
@@ -90,6 +93,7 @@ public class myTests {
         AuthData fakePC = new AuthData("notARealToken", "newGuy");
         boolean actual2 = myService.logout(fakePC);
         Assert.isTrue(!actual2, "Successfully Logged out fake token");
+        clearUsers();
     }
 
     @Test
@@ -104,6 +108,7 @@ public class myTests {
         int gameID = gameService.createGame(actual1, "NewGame!");
         boolean createdNewGame = (gameID > 0);
         Assert.isTrue(createdNewGame, "New Game failed to be created");
+        clearUsers();
     }
 
     @Test
@@ -121,6 +126,7 @@ public class myTests {
         int badGameID = gameService.createGame(actual1, "NewGame!");
         boolean noNewGame = (badGameID < 0);
         Assert.isTrue(noNewGame, "Game that should not have been made was created");
+        clearUsers();
     }
 
     @Test
@@ -139,6 +145,7 @@ public class myTests {
         //Successfully List Games
         ArrayList<GameData> allGames = gameService.listGames(actual1);
         Assert.notNull(allGames, "No Games listed, expected three");
+        clearUsers();
     }
 
     @Test
@@ -158,6 +165,7 @@ public class myTests {
         AuthData falseData = new AuthData("a", "newGuy");
         ArrayList<GameData> noGames = gameService.listGames(falseData);
         assertNull(noGames, "Still listed games without authentication");
+        clearUsers();
     }
 
     @Test
@@ -172,6 +180,7 @@ public class myTests {
         int joinID = gameService.createGame(actual1, "Cole's Game");
         boolean joined = gameService.joinGame(actual1, "WHITE", joinID);
         Assert.isTrue(joined, "Failed to successfully join game");
+        clearUsers();
     }
 
     @Test
@@ -194,6 +203,7 @@ public class myTests {
         int fakeGame = 12;
         boolean fakeJoin = !gameService.joinGame(actual1, "WHITE", fakeGame);
         Assert.isTrue(fakeJoin, "Joined a game that does not exist");
+        clearUsers();
     }
 
     @Test
