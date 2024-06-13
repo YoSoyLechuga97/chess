@@ -2,6 +2,7 @@ package service;
 
 import chess.ChessGame;
 import dataaccess.*;
+import exceptions.AlreadyExistsException;
 import exceptions.UnauthorizedException;
 import model.AuthData;
 import model.GameData;
@@ -38,17 +39,15 @@ public class GameService {
         //Create game
         return gameDAO.createGame(userToken.authToken(), newGameName);
     }
-    public boolean joinGame(AuthData userToken, String playerColor, int gameID) throws DataAccessException {
+    public boolean joinGame(AuthData userToken, String playerColor, int gameID) throws Exception {
         //Verify
         if (!verifyToken(userToken)) { //Does not have authentication
-            System.out.println("You do not have access");
-            return false;
+            throw new UnauthorizedException("unauthorized");
         }
         //Determine if game exists
         GameData oldGame = gameDAO.getGame(gameID);
         if (oldGame == null) {
-            System.out.println("Game does not exist");
-            return false;
+            throw new Exception("game does not exist");
         }
         //Extract game Data
         String gameName = oldGame.gameName();
@@ -59,15 +58,13 @@ public class GameService {
         //Make sure that player color isn't already taken
         if (playerColor.equals("WHITE")) {
             if (!whitePlayer.equals("NO USER")) {
-                System.out.println("This color is already taken");
-                return false;
+                throw new AlreadyExistsException("already taken");
             } else {
                 whitePlayer = userToken.username();
             }
         } else {
             if (!blackPlayer.equals("NO USER")) {
-                System.out.println("This color is already taken");
-                return false;
+                throw new AlreadyExistsException("already taken");
             } else {
                 blackPlayer = userToken.username();
             }
