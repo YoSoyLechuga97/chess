@@ -1,5 +1,6 @@
 package service;
 
+import com.google.gson.JsonSyntaxException;
 import dataaccess.*;
 import exceptions.AlreadyExistsException;
 import model.AuthData;
@@ -13,6 +14,10 @@ public class UserService {
     AuthDAO authDAO = new MemoryAuthDAO();
     GameDAO gameDAO = new MemoryGameDAO();
     public AuthData register(UserData user) throws DataAccessException, AlreadyExistsException {
+        //Check that all information is included
+        if (user.password() == null || user.username() == null || user.email() == null) {
+            throw new JsonSyntaxException("bad request");
+        }
         if (userDAO.getUser(user.username()) == null) {
             userDAO.createUser(user);
             return authDAO.createAuth(user.username());
