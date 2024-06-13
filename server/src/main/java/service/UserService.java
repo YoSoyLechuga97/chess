@@ -15,6 +15,8 @@ public class UserService {
         if (userDAO.getUser(user.username()) == null) {
             userDAO.createUser(user);
             return authDAO.createAuth(user.username());
+        } else {
+
         }
         return null;
     }
