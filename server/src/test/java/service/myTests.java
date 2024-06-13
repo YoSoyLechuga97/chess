@@ -21,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 public class myTests {
     @BeforeEach
     //Create my Users
-    public void setup() throws DataAccessException, AlreadyExistsException {
+    public void setup() throws Exception {
         //Create users
         UserData user1 = new UserData("newGuy", "newGuyPassword", "newGuyEmail@yahoo.com");
         UserData user2 = new UserData("HiFriend", "HiFriendPassword", "HiFriend@gmail.com");
@@ -34,7 +34,7 @@ public class myTests {
 
     @Test
     @DisplayName("Login Success")
-    public void logIn() throws DataAccessException, UnauthorizedException {
+    public void logIn() throws Exception {
         UserService myService = new UserService();
         //Good Login
         UserData login1 = new UserData("newGuy", "newGuyPassword", "newGuyEmail@yahoo.com");
@@ -44,7 +44,7 @@ public class myTests {
 
     @Test
     @DisplayName("Login Fail")
-    public void logInFail() throws DataAccessException, UnauthorizedException {
+    public void logInFail() throws Exception {
         UserService myService = new UserService();
         //Bad Login
         UserData login2 = new UserData("newGuy", "newGuyPasswordWrong", "newGuyEmail@yahoo.com");
@@ -54,7 +54,7 @@ public class myTests {
 
     @Test
     @DisplayName("Register Tests")
-    public void register() throws DataAccessException, AlreadyExistsException, UnauthorizedException {
+    public void register() throws Exception {
         UserService myService = new UserService();
         //Successful Register
         UserData register1 = new UserData("Chuga97", "Chuga97Password", "Chuga97@gmail.com");
@@ -65,7 +65,7 @@ public class myTests {
 
     @Test
     @DisplayName("Register Tests Fail")
-    public void registerFail() throws DataAccessException, AlreadyExistsException, UnauthorizedException {
+    public void registerFail() throws Exception {
         UserService myService = new UserService();
 
         //Existing User
@@ -77,7 +77,7 @@ public class myTests {
 
     @Test
     @DisplayName("Logout Success")
-    public void logout() throws DataAccessException, UnauthorizedException {
+    public void logout() throws Exception {
         UserService myService = new UserService();
         //Successful logout
         UserData user1 = new UserData("newGuy", "newGuyPassword", "newGuyEmail@yahoo.com");
@@ -89,7 +89,7 @@ public class myTests {
 
     @Test
     @DisplayName("Logout Fail")
-    public void logoutFail() throws DataAccessException, UnauthorizedException {
+    public void logoutFail() throws Exception {
         UserService myService = new UserService();
         //Unsuccessful logout
         AuthData fakePC = new AuthData("notARealToken", "newGuy");
@@ -100,7 +100,7 @@ public class myTests {
 
     @Test
     @DisplayName("Create a Game Success")
-    public void createGame() throws DataAccessException, UnauthorizedException {
+    public void createGame() throws Exception {
         UserService myService = new UserService();
         GameService gameService = new GameService();
         UserData login1 = new UserData("newGuy", "newGuyPassword", "newGuyEmail@yahoo.com");
@@ -115,7 +115,7 @@ public class myTests {
 
     @Test
     @DisplayName("Create a Game Fail")
-    public void createGameFail() throws DataAccessException, UnauthorizedException {
+    public void createGameFail() throws Exception {
         UserService myService = new UserService();
         GameService gameService = new GameService();
         UserData login1 = new UserData("newGuy", "newGuyPassword", "newGuyEmail@yahoo.com");
@@ -133,7 +133,7 @@ public class myTests {
 
     @Test
     @DisplayName("ListGames Success")
-    public void listGames() throws DataAccessException, UnauthorizedException {
+    public void listGames() throws Exception {
         UserService myService = new UserService();
         GameService gameService = new GameService();
         UserData login1 = new UserData("newGuy", "newGuyPassword", "newGuyEmail@yahoo.com");
@@ -152,7 +152,7 @@ public class myTests {
 
     @Test
     @DisplayName("ListGames Fail")
-    public void listGamesFail() throws DataAccessException, UnauthorizedException {
+    public void listGamesFail() throws Exception {
         UserService myService = new UserService();
         GameService gameService = new GameService();
         UserData login1 = new UserData("newGuy", "newGuyPassword", "newGuyEmail@yahoo.com");
@@ -172,7 +172,7 @@ public class myTests {
 
     @Test
     @DisplayName("Join Game")
-    public void joinGame() throws DataAccessException, UnauthorizedException {
+    public void joinGame() throws Exception {
         UserService myService = new UserService();
         GameService gameService = new GameService();
         UserData login1 = new UserData("newGuy", "newGuyPassword", "newGuyEmail@yahoo.com");
@@ -187,7 +187,7 @@ public class myTests {
 
     @Test
     @DisplayName("Join Game Fail")
-    public void joinGameFail() throws DataAccessException, UnauthorizedException {
+    public void joinGameFail() throws Exception {
         UserService myService = new UserService();
         GameService gameService = new GameService();
         UserData login1 = new UserData("newGuy", "newGuyPassword", "newGuyEmail@yahoo.com");
@@ -210,7 +210,7 @@ public class myTests {
 
     @Test
     @DisplayName("Clear Users")
-    public void clearUsers() throws DataAccessException, UnauthorizedException {
+    public void clearUsers() throws Exception {
         //Login to database
         UserService myService = new UserService();
         //Good Login

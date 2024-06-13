@@ -1,9 +1,6 @@
 package server;
 
-import handler.ClearHandler;
-import handler.LoginHandler;
-import handler.LogoutHandler;
-import handler.RegisterHandler;
+import handler.*;
 import spark.*;
 
 public class Server {
@@ -17,6 +14,7 @@ public class Server {
         Spark.post("/user", new RegisterHandler());
         Spark.post("/session", new LoginHandler());
         Spark.delete("/session", new LogoutHandler());
+        Spark.post("/game", new CreateHandler());
         Spark.delete("/db", new ClearHandler());
 
         Spark.awaitInitialization();

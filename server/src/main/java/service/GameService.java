@@ -2,6 +2,7 @@ package service;
 
 import chess.ChessGame;
 import dataaccess.*;
+import exceptions.UnauthorizedException;
 import model.AuthData;
 import model.GameData;
 
@@ -22,18 +23,16 @@ public class GameService {
         //List all games
         return gameDAO.listGames();
     }
-    public int createGame(AuthData userToken, String newGameName) throws DataAccessException {
+    public int createGame(AuthData userToken, String newGameName) throws Exception {
         //Verify token
         if (!verifyToken(userToken)) { //Does not have authentication
-            System.out.println("You do not have access");
-            return -1;
+            throw new UnauthorizedException("unauthorized");
         }
         //Check to see if game name is already in database
         ArrayList<GameData> allGames = gameDAO.listGames();
         for (GameData game : allGames) {
             if (game.gameName().equals(newGameName)) {
-                System.out.println("A game with this name already exists :/");
-                return -2;
+                throw new Exception("game with that name already exists");
             }
         }
         //Create game
