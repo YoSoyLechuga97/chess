@@ -12,6 +12,8 @@ import spark.Request;
 import spark.Response;
 import spark.Route;
 
+import java.util.Map;
+
 public class RegisterHandler implements Route {
 
     private final UserService userService;
@@ -35,7 +37,8 @@ public class RegisterHandler implements Route {
             } else {
                 response.status(500);
             }
-            return gson.toJson(e);
+
+            return gson.toJson(Map.of("message", "Error: " + e.getMessage()));
         }
     }
 }

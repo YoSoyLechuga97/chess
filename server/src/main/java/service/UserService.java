@@ -17,7 +17,7 @@ public class UserService {
             userDAO.createUser(user);
             return authDAO.createAuth(user.username());
         } else {
-            throw new AlreadyExistsException("Error: already taken");
+            throw new AlreadyExistsException("already taken");
         }
     }
     public AuthData login(UserData user) throws DataAccessException {

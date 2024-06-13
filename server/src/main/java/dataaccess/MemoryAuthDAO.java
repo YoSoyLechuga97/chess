@@ -3,6 +3,7 @@ package dataaccess;
 import model.AuthData;
 
 import java.security.SecureRandom;
+import java.util.UUID;
 
 public class MemoryAuthDAO implements AuthDAO{
     @Override
@@ -13,14 +14,7 @@ public class MemoryAuthDAO implements AuthDAO{
     @Override
     public AuthData createAuth(String username) throws DataAccessException {
         //Generate a random authentication token
-        SecureRandom secureRandom = new SecureRandom();
-        byte[] tokenBytes = new byte[8 / 2];
-        secureRandom.nextBytes(tokenBytes);
-        StringBuilder sb = new StringBuilder();
-        for (byte b : tokenBytes) {
-            sb.append(String.format("%02x", b));
-        }
-        String newToken = sb.toString();
+        String newToken = UUID.randomUUID().toString();
 
         //Create new data model
         AuthData newAuth = new AuthData(newToken, username);
