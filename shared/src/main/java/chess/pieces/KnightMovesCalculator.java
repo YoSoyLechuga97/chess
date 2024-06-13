@@ -1,4 +1,4 @@
-package chess.Pieces;
+package chess.pieces;
 
 import chess.ChessMove;
 import chess.PiecesMovesCalculator;
@@ -6,16 +6,17 @@ import chess.PiecesMovesCalculator;
 import java.util.ArrayList;
 import java.util.Collection;
 
-public class KingMovesCalculator extends PiecesMovesCalculator {
-    //Moves 1 in any direction (any touching square)
-    //Don't need to worry about check for this part
-    //CLOCKWISE starting with up
+public class KnightMovesCalculator extends PiecesMovesCalculator {
+    //Can only move in 'L' patterns (change of 2, change of 1)
+    //Check position to make sure not same piece where you want to go
+    //Clockwise starting with up 2 over 1, then up 1 over 2, down 1 over 2, down 2 over 1, etc.
     private PiecesMovesCalculator piece = null;
 
-    public KingMovesCalculator(PiecesMovesCalculator chessPiece){
+    public KnightMovesCalculator(PiecesMovesCalculator chessPiece){
         super(chessPiece.getBoard(), chessPiece.getPosition(), chessPiece.getPieceType());
         piece = chessPiece;
     }
+
 
     public Collection<ChessMove> pieceMoves(){
         //Initialize Array and all the inputs per array slot
@@ -30,77 +31,81 @@ public class KingMovesCalculator extends PiecesMovesCalculator {
             int[] canMove = {0};
 
             switch (i) {
-                //Up
+                //Up 2 Right 1
                 case 0:
-                    row += 1;
-                    newMove = CheckMove(piece, row, col, canMove);
+                    row += 2;
+                    col += 1;
+                    newMove = checkMove(piece, row, col, canMove);
                     if (newMove != null) {
                         movePositions.add(newMove);
                     }
                     break;
 
-                //Up and Right
+                //Up 1 and Right 2
                 case 1:
                     row += 1;
-                    col += 1;
-                    newMove = CheckMove(piece, row, col, canMove);
+                    col += 2;
+                    newMove = checkMove(piece, row, col, canMove);
                     if (newMove != null) {
                         movePositions.add(newMove);
                     }
                     break;
 
-                //Right
+                //Down 1 Right 2
                 case 2:
-                    col += 1;
-                    newMove = CheckMove(piece, row, col, canMove);
+                    row -= 1;
+                    col += 2;
+                    newMove = checkMove(piece, row, col, canMove);
                     if (newMove != null) {
                         movePositions.add(newMove);
                     }
                     break;
 
-                //Down and to the Right
+                //Down 2 Right 1
                 case 3:
-                    row -= 1;
+                    row -= 2;
                     col += 1;
-                    newMove = CheckMove(piece, row, col, canMove);
+                    newMove = checkMove(piece, row, col, canMove);
                     if (newMove != null) {
                         movePositions.add(newMove);
                     }
                     break;
 
-                //Down
+                //Down 2 Left 1
                 case 4:
-                    row -= 1;
-                    newMove = CheckMove(piece, row, col, canMove);
+                    row -= 2;
+                    col -= 1;
+                    newMove = checkMove(piece, row, col, canMove);
                     if (newMove != null) {
                         movePositions.add(newMove);
                     }
                     break;
 
-                //Down and to the Left
+                //Down 1 Left 2
                 case 5:
                     row -= 1;
-                    col -= 1;
-                    newMove = CheckMove(piece, row, col, canMove);
+                    col -= 2;
+                    newMove = checkMove(piece, row, col, canMove);
                     if (newMove != null) {
                         movePositions.add(newMove);
                     }
                     break;
 
-                //Left
+                //Up 1 Left 2
                 case 6:
-                    col -= 1;
-                    newMove = CheckMove(piece, row, col, canMove);
+                    row += 1;
+                    col -= 2;
+                    newMove = checkMove(piece, row, col, canMove);
                     if (newMove != null) {
                         movePositions.add(newMove);
                     }
                     break;
 
-                //Up and to the Left
+                //Up 2 Left 1
                 case 7:
-                    row += 1;
+                    row += 2;
                     col -= 1;
-                    newMove = CheckMove(piece, row, col, canMove);
+                    newMove = checkMove(piece, row, col, canMove);
                     if (newMove != null) {
                         movePositions.add(newMove);
                     }

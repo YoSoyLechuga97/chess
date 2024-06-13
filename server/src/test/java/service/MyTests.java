@@ -1,24 +1,14 @@
 package service;
 
-import dataaccess.DataAccessException;
-import exceptions.AlreadyExistsException;
-import exceptions.UnauthorizedException;
 import model.AuthData;
-import model.GameData;
 import model.ListGamesData;
 import model.UserData;
 import org.junit.jupiter.api.*;
-import service.UserService;
-import org.eclipse.jetty.server.Authentication;
 import spark.utils.Assert;
-
-import javax.xml.crypto.Data;
-
-import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class myTests {
+public class MyTests {
     @BeforeEach
     //Create my Users
     public void setup() throws Exception {

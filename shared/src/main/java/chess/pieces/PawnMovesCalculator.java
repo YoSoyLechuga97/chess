@@ -1,4 +1,4 @@
-package chess.Pieces;
+package chess.pieces;
 
 import chess.*;
 
@@ -32,13 +32,13 @@ public class PawnMovesCalculator extends PiecesMovesCalculator {
             case WHITE:
                 //Check moving up
                 row += 1;
-                newMove = CheckPawnMove(piece, row, col, canMove);
+                newMove = checkPawnMove(piece, row, col, canMove);
                 if (newMove != null) {
                     movePositions.addAll(newMove);
                     //Check to see if it is the first move for that pawn
                     if (piece.getPosition().getRow() == 2){
                         row += 1;
-                        newMove = CheckPawnMove(piece, row, col, canMove);
+                        newMove = checkPawnMove(piece, row, col, canMove);
                         if (newMove != null) {
                             movePositions.addAll(newMove);
                         }
@@ -53,7 +53,7 @@ public class PawnMovesCalculator extends PiecesMovesCalculator {
                     } else{
                         col += 1;
                     }
-                    newMove = CheckPawnMove(piece, row, col, canMove);
+                    newMove = checkPawnMove(piece, row, col, canMove);
                     if (newMove != null){
                         movePositions.addAll(newMove);
                     }
@@ -63,13 +63,13 @@ public class PawnMovesCalculator extends PiecesMovesCalculator {
             case BLACK:
                 //Check moving down
                 row -= 1;
-                newMove = CheckPawnMove(piece, row, col, canMove);
+                newMove = checkPawnMove(piece, row, col, canMove);
                 if (newMove != null) {
                     movePositions.addAll(newMove);
                     //Check to see if it is the first move for that pawn
                     if (piece.getPosition().getRow() == 7){
                         row -= 1;
-                        newMove = CheckPawnMove(piece, row, col, canMove);
+                        newMove = checkPawnMove(piece, row, col, canMove);
                         if (newMove != null) {
                             movePositions.addAll(newMove);
                         }
@@ -84,7 +84,7 @@ public class PawnMovesCalculator extends PiecesMovesCalculator {
                     } else{
                         col += 1;
                     }
-                    newMove = CheckPawnMove(piece, row, col, canMove);
+                    newMove = checkPawnMove(piece, row, col, canMove);
                     if (newMove != null){
                         movePositions.addAll(newMove);
                     }
@@ -94,7 +94,7 @@ public class PawnMovesCalculator extends PiecesMovesCalculator {
         return movePositions;
     }
 
-    public ArrayList<ChessMove> CheckPawnMove(PiecesMovesCalculator piece, int row, int col, int[] canMove) {
+    public ArrayList<ChessMove> checkPawnMove(PiecesMovesCalculator piece, int row, int col, int[] canMove) {
         ChessPosition nextPosition = new ChessPosition(row, col);
         ArrayList<ChessMove> newMove = new ArrayList<>();
         ChessMove addMove;
@@ -114,7 +114,7 @@ public class PawnMovesCalculator extends PiecesMovesCalculator {
         }
 
         //Check to see if space is available to move
-        canMove[0] = ValidatePawnMove(piece, nextPosition, isAttack);
+        canMove[0] = validatePawnMove(piece, nextPosition, isAttack);
         if ((canMove[0] == 1 || canMove[0] == 0) && !isPromotion) {
             addMove = new ChessMove(piece.getPosition(), nextPosition, null);
             newMove.add(addMove);
@@ -146,13 +146,13 @@ public class PawnMovesCalculator extends PiecesMovesCalculator {
         return null;
     }
 
-    public  int ValidatePawnMove(PiecesMovesCalculator piece, ChessPosition nextPosition, boolean isAttack){
+    public  int validatePawnMove(PiecesMovesCalculator piece, ChessPosition nextPosition, boolean isAttack){
         if(nextPosition.getColumn() > 8 || nextPosition.getRow() > 8 || nextPosition.getRow() < 1 || nextPosition.getColumn() < 1) {
             return 2;
         }
         if(piece.getBoard().getPiece(nextPosition) != null) {
             //Check to see if occupied space is capturable
-            if (CheckToCapture(piece, nextPosition) && isAttack) {
+            if (checkToCapture(piece, nextPosition) && isAttack) {
                 return 1;
             } else {
                 return 2;

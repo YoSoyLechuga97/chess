@@ -1,4 +1,4 @@
-package chess.Pieces;
+package chess.pieces;
 
 import chess.ChessMove;
 import chess.PiecesMovesCalculator;
@@ -6,12 +6,13 @@ import chess.PiecesMovesCalculator;
 import java.util.ArrayList;
 import java.util.Collection;
 
-public class RookMovesCalculator extends PiecesMovesCalculator{
-    //Moves straight up, down, left or right for as long as not interrupted
-    //Check in this order: RIGHT, LEFT, DOWN, UP
+public class BishopMovesCalculator extends PiecesMovesCalculator {
+    //Needs to be able to move in any diagonal until they are blocked
+    //Returns a collection of possible moves for the piece
+    //Check for mobility in CLOCKWISE FASHION
     private PiecesMovesCalculator piece = null;
 
-    public RookMovesCalculator(PiecesMovesCalculator chessPiece){
+    public BishopMovesCalculator(PiecesMovesCalculator chessPiece) {
         super(chessPiece.getBoard(), chessPiece.getPosition(), chessPiece.getPieceType());
         piece = chessPiece;
     }
@@ -29,45 +30,53 @@ public class RookMovesCalculator extends PiecesMovesCalculator{
             int[] canMove = {0};
 
             switch (i) {
-                //Right
+                //Up and to the Right
                 case 0:
                     while (canMove[0] == 0) {
+                        row += 1;
                         col += 1;
-                        newMove = CheckMove(piece, row, col, canMove);
+                        newMove = checkMove(piece, row, col, canMove);
                         if (newMove != null) {
                             movePositions.add(newMove);
                         }
                     }
+                    break;
 
-                    //Left
+                //Down and to the Right
                 case 1:
                     while (canMove[0] == 0) {
-                        col -= 1;
-                        newMove = CheckMove(piece, row, col, canMove);
+                        row -= 1;
+                        col += 1;
+                        newMove = checkMove(piece, row, col, canMove);
                         if (newMove != null) {
                             movePositions.add(newMove);
                         }
                     }
+                    break;
 
-                    //Down
+                //Down and to the Left
                 case 2:
                     while (canMove[0] == 0) {
                         row -= 1;
-                        newMove = CheckMove(piece, row, col, canMove);
+                        col -= 1;
+                        newMove = checkMove(piece, row, col, canMove);
                         if (newMove != null) {
                             movePositions.add(newMove);
                         }
                     }
+                    break;
 
-                    //Up
+                //Up and to the Left
                 case 3:
                     while (canMove[0] == 0) {
                         row += 1;
-                        newMove = CheckMove(piece, row, col, canMove);
+                        col -= 1;
+                        newMove = checkMove(piece, row, col, canMove);
                         if (newMove != null) {
                             movePositions.add(newMove);
                         }
                     }
+                    break;
             }
         }
 

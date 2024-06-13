@@ -1,4 +1,4 @@
-package chess.Pieces;
+package chess.pieces;
 
 import chess.ChessMove;
 import chess.PiecesMovesCalculator;
@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 public class QueenMovesCalculator extends PiecesMovesCalculator {
-    //Moves in any direction for as long as not interrupted
     //Clockwise starting with forward
     private PiecesMovesCalculator piece = null;
 
@@ -33,7 +32,7 @@ public class QueenMovesCalculator extends PiecesMovesCalculator {
                 case 0:
                     while (canMove[0] == 0) {
                         row += 1;
-                        newMove = CheckMove(piece, row, col, canMove);
+                        newMove = checkMove(piece, row, col, canMove);
                         if (newMove != null) {
                             movePositions.add(newMove);
                         }
@@ -44,7 +43,7 @@ public class QueenMovesCalculator extends PiecesMovesCalculator {
                     while (canMove[0] == 0) {
                         row += 1;
                         col += 1;
-                        newMove = CheckMove(piece, row, col, canMove);
+                        newMove = checkMove(piece, row, col, canMove);
                         if (newMove != null) {
                             movePositions.add(newMove);
                         }
@@ -54,7 +53,7 @@ public class QueenMovesCalculator extends PiecesMovesCalculator {
                 case 2:
                     while (canMove[0] == 0) {
                         col += 1;
-                        newMove = CheckMove(piece, row, col, canMove);
+                        newMove = checkMove(piece, row, col, canMove);
                         if (newMove != null) {
                             movePositions.add(newMove);
                         }
@@ -65,7 +64,7 @@ public class QueenMovesCalculator extends PiecesMovesCalculator {
                     while (canMove[0] == 0) {
                         row -= 1;
                         col += 1;
-                        newMove = CheckMove(piece, row, col, canMove);
+                        newMove = checkMove(piece, row, col, canMove);
                         if (newMove != null) {
                             movePositions.add(newMove);
                         }
@@ -75,7 +74,7 @@ public class QueenMovesCalculator extends PiecesMovesCalculator {
                 case 4:
                     while (canMove[0] == 0) {
                         row -= 1;
-                        newMove = CheckMove(piece, row, col, canMove);
+                        newMove = checkMove(piece, row, col, canMove);
                         if (newMove != null) {
                             movePositions.add(newMove);
                         }
@@ -86,7 +85,7 @@ public class QueenMovesCalculator extends PiecesMovesCalculator {
                     while (canMove[0] == 0) {
                         row -= 1;
                         col -= 1;
-                        newMove = CheckMove(piece, row, col, canMove);
+                        newMove = checkMove(piece, row, col, canMove);
                         if (newMove != null) {
                             movePositions.add(newMove);
                         }
@@ -96,7 +95,7 @@ public class QueenMovesCalculator extends PiecesMovesCalculator {
                 case 6:
                     while (canMove[0] == 0) {
                         col -= 1;
-                        newMove = CheckMove(piece, row, col, canMove);
+                        newMove = checkMove(piece, row, col, canMove);
                         if (newMove != null) {
                             movePositions.add(newMove);
                         }
@@ -107,7 +106,7 @@ public class QueenMovesCalculator extends PiecesMovesCalculator {
                     while (canMove[0] == 0) {
                         row += 1;
                         col -= 1;
-                        newMove = CheckMove(piece, row, col, canMove);
+                        newMove = checkMove(piece, row, col, canMove);
                         if (newMove != null) {
                             movePositions.add(newMove);
                         }

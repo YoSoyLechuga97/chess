@@ -1,6 +1,6 @@
 package chess;
 
-import chess.Pieces.*;
+import chess.pieces.*;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -23,24 +23,12 @@ public class PiecesMovesCalculator {
         return pieceType;
     }
 
-    public void setPieceType(ChessPiece.PieceType pieceType) {
-        this.pieceType = pieceType;
-    }
-
     public ChessBoard getBoard() {
         return board;
     }
 
-    public void setBoard(ChessBoard board) {
-        this.board = board;
-    }
-
     public ChessPosition getPosition() {
         return position;
-    }
-
-    public void setPosition(ChessPosition position) {
-        this.position = position;
     }
 
     public Collection<ChessMove> pieceMoves() {
@@ -70,10 +58,10 @@ public class PiecesMovesCalculator {
     }
 
     //Do Move
-    public ChessMove CheckMove(PiecesMovesCalculator piece, int row, int col, int[] canMove) {
+    public ChessMove checkMove(PiecesMovesCalculator piece, int row, int col, int[] canMove) {
         ChessPosition nextPosition = new ChessPosition(row, col);
         ChessMove newMove;
-        canMove[0] = ValidateMove(piece, nextPosition);
+        canMove[0] = validateMove(piece, nextPosition);
         if (canMove[0] == 0 || canMove[0] == 1) {
             newMove = new ChessMove(piece.getPosition(), nextPosition, null);
             return newMove;
@@ -82,13 +70,13 @@ public class PiecesMovesCalculator {
     }
 
     //Validate that the place a piece wants to move is allowed
-    public int ValidateMove(PiecesMovesCalculator piece, ChessPosition nextPosition){
+    public int validateMove(PiecesMovesCalculator piece, ChessPosition nextPosition){
         if(nextPosition.getColumn() > 8 || nextPosition.getRow() > 8 || nextPosition.getRow() < 1 || nextPosition.getColumn() < 1) {
             return 2;
         }
         if(piece.getBoard().getPiece(nextPosition) != null) {
             //Check to see if occupied space is capturable
-            if (CheckToCapture(piece, nextPosition) && piece.pieceType != ChessPiece.PieceType.PAWN) {
+            if (checkToCapture(piece, nextPosition) && piece.pieceType != ChessPiece.PieceType.PAWN) {
                 return 1;
             } else {
                 return 2;
@@ -100,7 +88,7 @@ public class PiecesMovesCalculator {
     }
 
     //Check if occupied space can be captured
-    public boolean CheckToCapture(PiecesMovesCalculator piece, ChessPosition nextPosition){
+    public boolean checkToCapture(PiecesMovesCalculator piece, ChessPosition nextPosition){
         //Check team colors
         if (piece.getBoard().getPiece(nextPosition).getTeamColor() != piece.getBoard().getPiece(piece.position).getTeamColor()){
             return true;
