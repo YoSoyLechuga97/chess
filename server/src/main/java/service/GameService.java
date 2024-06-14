@@ -48,7 +48,7 @@ public class GameService {
             throw new JsonSyntaxException("playerColor cannot be null");
         }
         //Determine if game exists
-        GameData oldGame = memoryGameDAO.getGame(gameID);
+        GameData oldGame = gameDAO.getGame(gameID);
         if (oldGame == null) {
             throw new JsonSyntaxException("game does not exist");
         }

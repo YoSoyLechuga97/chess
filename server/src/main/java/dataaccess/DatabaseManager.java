@@ -2,6 +2,7 @@ package dataaccess;
 
 import chess.ChessGame;
 import com.google.gson.Gson;
+import model.GameData;
 
 import javax.xml.crypto.Data;
 import java.sql.*;
@@ -150,10 +151,10 @@ public class DatabaseManager {
         try {
             var conn = DriverManager.getConnection(CONNECTION_URL, USER, PASSWORD);
             conn.setCatalog("chess");
-            try (var preparedStatment = conn.prepareStatement("SELECT " + returnType + " FROM " + table + " WHERE " + key + " = ?")) {
-                preparedStatment.setString(1, inputSearch);
+            try (var preparedStatement = conn.prepareStatement("SELECT " + returnType + " FROM " + table + " WHERE " + key + " = ?")) {
+                preparedStatement.setString(1, inputSearch);
 
-                ResultSet resultSet = preparedStatment.executeQuery();
+                ResultSet resultSet = preparedStatement.executeQuery();
                 if (resultSet.next()) {
                     return resultSet.getString(returnType);
                 }
@@ -162,6 +163,31 @@ public class DatabaseManager {
         } catch (SQLException e) {
             throw new DataAccessException((e.getMessage()));
         }
+    }
+
+    public ArrayList<GameData> listGames() throws DataAccessException{
+        ArrayList<GameData> allGames = new ArrayList<>();
+        try {
+            var conn = DriverManager.getConnection(CONNECTION_URL, USER, PASSWORD);
+            conn.setCatalog("chess");
+            try (var preparedStatement = conn.prepareStatement("SELECT gameID, whiteUsername, blackUsername, gameName, game FROM game")) {
+                ResultSet resultSet = preparedStatement.executeQuery();
+
+                //Combine to GameData object
+                while (resultSet.next()) {
+                    int gameID = resultSet.getInt("gameID");
+                    String white = resultSet.getString("whiteUsername");
+                    String black = resultSet.getString("blackUsername");
+                    String gameName = resultSet.getString("gameName");
+                    String gameString = resultSet.getString("game");
+                    ChessGame game = new Gson().fromJson(gameString, ChessGame.class);
+                    allGames.add(new GameData(gameID, white, black, gameName, game));
+                }
+            }
+        } catch (SQLException e) {
+            throw new DataAccessException((e.getMessage()));
+        }
+        return allGames;
     }
 
     public void deleteData(String table, String keyName, String key) throws DataAccessException {
