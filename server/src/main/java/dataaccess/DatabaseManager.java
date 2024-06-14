@@ -169,7 +169,7 @@ public class DatabaseManager {
         try {
             var conn = DriverManager.getConnection(CONNECTION_URL, USER, PASSWORD);
             conn.setCatalog("chess");
-            try (var preparedStatement = conn.prepareStatement("UPDATE " + table + " SET " + updateRow + "=? WHERE " + keyType "=?")) {
+            try (var preparedStatement = conn.prepareStatement("UPDATE " + table + " SET " + updateRow + "=? WHERE " + keyType + "=?")) {
                 preparedStatement.setString(1, update);
                 preparedStatement.setString(2, key);
 
