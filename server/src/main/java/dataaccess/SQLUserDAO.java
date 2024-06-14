@@ -1,6 +1,7 @@
 package dataaccess;
 
 import model.UserData;
+import org.eclipse.jetty.server.Authentication;
 
 public class SQLUserDAO implements UserDAO{
     @Override
@@ -15,6 +16,8 @@ public class SQLUserDAO implements UserDAO{
 
     @Override
     public UserData getUser(String username) throws DataAccessException {
-        return null;
+        String userPassword = databaseManager.findData("user", "username", "password", username);
+        String userEmail = databaseManager.findData("user", "username", "email", username);
+        return new UserData(username, userPassword, userEmail);
     }
 }
