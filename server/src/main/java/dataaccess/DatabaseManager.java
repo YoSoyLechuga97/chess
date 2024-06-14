@@ -102,7 +102,7 @@ public class DatabaseManager {
         }
     }
 
-    public boolean findAuth(String authToken) throws DataAccessException {
+    public String findAuth(String authToken) throws DataAccessException {
         try {
             var conn = DriverManager.getConnection(CONNECTION_URL, USER, PASSWORD);
             conn.setCatalog("chess");
@@ -110,7 +110,10 @@ public class DatabaseManager {
                 preparedStatment.setString(1, authToken);
 
                 ResultSet resultSet = preparedStatment.executeQuery();
-                return resultSet.next();
+                if (resultSet.next()) {
+                    return resultSet.getString("username");
+                }
+                return null;
             }
         } catch (SQLException e) {
             throw new DataAccessException((e.getMessage()));

@@ -25,12 +25,15 @@ public class SQLAuthDAO implements AuthDAO{
 
     @Override
     public boolean getAuth(String token) throws DataAccessException {
-        return databaseManager.findAuth(token);
+        if (databaseManager.findAuth(token) != null) {
+            return true;
+        }
+        return false;
     }
 
     @Override
     public String getUser(String token) throws DataAccessException {
-        return null;
+        return databaseManager.findAuth(token);
     }
 
     @Override
