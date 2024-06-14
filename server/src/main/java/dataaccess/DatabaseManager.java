@@ -15,9 +15,9 @@ public class DatabaseManager {
 
     private static final String auth = """
             CREATE TABLE IF NOT EXISTS auth (
-            userToken VARCHAR(255) NOT NULL,
+            authToken VARCHAR(255) NOT NULL,
             username VARCHAR(255) NOT NULL,
-            PRIMARY KEY (userToken)
+            PRIMARY KEY (authToken)
             )""";
 
     private static final String user = """
@@ -85,13 +85,13 @@ public class DatabaseManager {
         }
     }
 
-    public void addAuth(String userToken, String username) throws DataAccessException {
+    public void addAuth(String authToken, String username) throws DataAccessException {
         try {
             var conn = DriverManager.getConnection(CONNECTION_URL, USER, PASSWORD);
             conn.setCatalog("chess");
             if (username.matches("[a-zA-Z]+")) {
-                try (var preparedStatement = conn.prepareStatement("INSERT INTO auth (userToken, username) VALUES(?, ?)")) {
-                    preparedStatement.setString(1, userToken);
+                try (var preparedStatement = conn.prepareStatement("INSERT INTO auth (authToken, username) VALUES(?, ?)")) {
+                    preparedStatement.setString(1, authToken);
                     preparedStatement.setString(2, username);
 
                     preparedStatement.executeUpdate();
@@ -106,7 +106,7 @@ public class DatabaseManager {
         try {
             var conn = DriverManager.getConnection(CONNECTION_URL, USER, PASSWORD);
             conn.setCatalog("chess");
-            try (var preparedStatment = conn.prepareStatement("SELECT username FROM auth WHERE userToken = ?")) {
+            try (var preparedStatment = conn.prepareStatement("SELECT username FROM auth WHERE authToken = ?")) {
                 preparedStatment.setString(1, authToken);
 
                 ResultSet resultSet = preparedStatment.executeQuery();
