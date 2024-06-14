@@ -103,12 +103,12 @@ public class DatabaseManager {
         }
     }
 
-    public String findAuth(String authToken) throws DataAccessException {
+    public String findData(String table, String key, String returnType, String inputSearch) throws DataAccessException {
         try {
             var conn = DriverManager.getConnection(CONNECTION_URL, USER, PASSWORD);
             conn.setCatalog("chess");
-            try (var preparedStatment = conn.prepareStatement("SELECT username FROM auth WHERE authToken = ?")) {
-                preparedStatment.setString(1, authToken);
+            try (var preparedStatment = conn.prepareStatement("SELECT " + returnType + " FROM " + table + " WHERE " + key + " = ?")) {
+                preparedStatment.setString(1, inputSearch);
 
                 ResultSet resultSet = preparedStatment.executeQuery();
                 if (resultSet.next()) {
