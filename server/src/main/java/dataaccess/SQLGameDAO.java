@@ -5,6 +5,7 @@ import com.google.gson.Gson;
 import model.GameData;
 
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.Random;
 
 public class SQLGameDAO implements GameDAO{
@@ -47,14 +48,16 @@ public class SQLGameDAO implements GameDAO{
     @Override
     public GameData updateGame(GameData updatedGame) throws DataAccessException {
         //Get the old game and compare
+        boolean whiteDiff = false;
+        boolean blackDiff = false;
         GameData oldGame = getGame(updatedGame.gameID());
         if (oldGame == null) {
             throw new DataAccessException("Game wasn't found");
         }
-        if (!updatedGame.whiteUsername().equals(oldGame.whiteUsername())) {
+        if (!Objects.equals(updatedGame.whiteUsername(), oldGame.whiteUsername())) {
             databaseManager.updateData("game", "whiteUsername", updatedGame.whiteUsername(), "gameID", String.valueOf(updatedGame.gameID()));
         }
-        if (!updatedGame.blackUsername().equals(oldGame.blackUsername())) {
+        if (!Objects.equals(updatedGame.blackUsername(), oldGame.blackUsername())) {
             databaseManager.updateData("game", "blackUsername", updatedGame.blackUsername(), "gameID", String.valueOf(updatedGame.gameID()));
         }
         if (updatedGame.game() != oldGame.game()) {
