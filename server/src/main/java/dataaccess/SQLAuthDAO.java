@@ -8,7 +8,7 @@ import java.util.UUID;
 public class SQLAuthDAO implements AuthDAO{
     @Override
     public void clear() throws DataAccessException {
-
+        databaseManager.clearTable("auth");
     }
 
     @Override

@@ -53,7 +53,7 @@ public class UserService {
     }
     public void clear() throws DataAccessException {
         memoryUserDAO.clear();
-        memoryAuthDAO.clear();
+        authDAO.clear();
         gameDAO.clear();
     }
 }
