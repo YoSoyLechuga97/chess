@@ -17,7 +17,7 @@ public class DatabaseManager {
             CREATE TABLE IF NOT EXISTS auth (
             userToken VARCHAR(255) NOT NULL,
             username VARCHAR(255) NOT NULL,
-            PRIMARY KEY (username)
+            PRIMARY KEY (userToken)
             )""";
 
     private static final String user = """
@@ -106,7 +106,7 @@ public class DatabaseManager {
         try {
             var conn = DriverManager.getConnection(CONNECTION_URL, USER, PASSWORD);
             conn.setCatalog("chess");
-            try (var preparedStatment = conn.prepareStatement("SELECT username FROM auth WHERE authToken = ?")) {
+            try (var preparedStatment = conn.prepareStatement("SELECT username FROM auth WHERE userToken = ?")) {
                 preparedStatment.setString(1, authToken);
 
                 ResultSet resultSet = preparedStatment.executeQuery();

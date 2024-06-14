@@ -12,8 +12,8 @@ import model.ListGamesData;
 import java.util.ArrayList;
 
 public class GameService {
-    UserDAO userDAO = new MemoryUserDAO();
-    AuthDAO authDAO = new MemoryAuthDAO();
+    AuthDAO memoryAuthDAO = new MemoryAuthDAO();
+    AuthDAO authDAO = new SQLAuthDAO();
     GameDAO gameDAO = new MemoryGameDAO();
 
     public ListGamesData listGames(AuthData userToken) throws Exception {
@@ -59,7 +59,7 @@ public class GameService {
         ChessGame game = oldGame.game();
 
         //Make sure that player color isn't already taken
-        String userName = authDAO.getUser(userToken.authToken());
+        String userName = memoryAuthDAO.getUser(userToken.authToken());
         if (playerColor.equals("WHITE")) {
             if (whitePlayer != null) {
                 throw new AlreadyExistsException("already taken");

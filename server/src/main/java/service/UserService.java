@@ -44,7 +44,7 @@ public class UserService {
         if (user.authToken() == null) {
             throw new JsonSyntaxException("bad request");
         }
-        if (memoryAuthDAO.getAuth(user.authToken())) {
+        if (authDAO.getAuth(user.authToken())) {
             memoryAuthDAO.deleteAuth(user.authToken());
             return true;
         } else {
