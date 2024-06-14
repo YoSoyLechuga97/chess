@@ -28,6 +28,7 @@ public class DatabaseManager {
             )""";
 
     private static final String game = """
+            CREATE TABLE IF NOT EXISTS game (
             gameID INT NOT NULL,
             whiteUsername VARCHAR(255) DEFAULT NULL,
             blackUsername VARCHAR(255) DEFAULT NULL,
@@ -71,6 +72,7 @@ public class DatabaseManager {
             try (var preparedStatement = conn.prepareStatement(statement)) {
                 preparedStatement.executeUpdate();
             }
+            conn.setCatalog("chess");
             //Create Tables
             for (String table : SCHEMA) {
                 try (var createTableStatement = conn.prepareStatement(table)){
