@@ -103,6 +103,25 @@ public class DatabaseManager {
         }
     }
 
+    public void addUser(String username, String password, String email) throws DataAccessException {
+        createDatabase();
+        try {
+            var conn = DriverManager.getConnection(CONNECTION_URL, USER, PASSWORD);
+            conn.setCatalog("chess");
+            if (username.matches("[a-zA-Z]+")) {
+                try (var preparedStatement = conn.prepareStatement("INSERT INTO user (username, password, email) VALUES(?, ?, ?)")) {
+                    preparedStatement.setString(1, username);
+                    preparedStatement.setString(2, password);
+                    preparedStatement.setString(3, email);
+
+                    preparedStatement.executeUpdate();
+                }
+            }
+        } catch (SQLException e) {
+            throw new DataAccessException((e.getMessage()));
+        }
+    }
+
     public String findData(String table, String key, String returnType, String inputSearch) throws DataAccessException {
         try {
             var conn = DriverManager.getConnection(CONNECTION_URL, USER, PASSWORD);

@@ -11,7 +11,7 @@ public class SQLUserDAO implements UserDAO{
 
     @Override
     public void createUser(UserData userData) throws DataAccessException {
-
+        databaseManager.addUser(userData.username(), userData.password(), userData.email());
     }
 
     @Override
