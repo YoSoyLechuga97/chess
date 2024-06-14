@@ -14,7 +14,7 @@ import java.util.ArrayList;
 public class GameService {
     AuthDAO authDAO = new SQLAuthDAO();
     GameDAO memoryGameDAO = new MemoryGameDAO();
-
+    GameDAO gameDAO = new SQLGameDAO();
 
     public ListGamesData listGames(AuthData userToken) throws Exception {
         //Verify user can access file
@@ -37,7 +37,7 @@ public class GameService {
             }
         }
         //Create game
-        return memoryGameDAO.createGame(userToken.authToken(), newGameName);
+        return gameDAO.createGame(userToken.authToken(), newGameName);
     }
     public boolean joinGame(AuthData userToken, String playerColor, int gameID) throws Exception {
         //Verify

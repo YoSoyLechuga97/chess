@@ -1,8 +1,10 @@
 package dataaccess;
 
+import chess.ChessGame;
 import model.GameData;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 public class SQLGameDAO implements GameDAO{
     @Override
@@ -12,7 +14,13 @@ public class SQLGameDAO implements GameDAO{
 
     @Override
     public int createGame(String authToken, String gameName) throws DataAccessException {
-        return 0;
+        //Make sure that game doesn't already exist
+
+        //
+        Random random = new Random();
+        int newGameID = 10000000 + random.nextInt(90000000);
+        databaseManager.addGame(newGameID, gameName, new ChessGame());
+        return newGameID;
     }
 
     @Override
