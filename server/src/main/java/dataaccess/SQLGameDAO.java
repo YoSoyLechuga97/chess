@@ -15,7 +15,9 @@ public class SQLGameDAO implements GameDAO{
     @Override
     public int createGame(String authToken, String gameName) throws DataAccessException {
         //Make sure that game doesn't already exist
-
+        if (databaseManager.findData("game", "gameName", "gameName", gameName) != null) {
+            return -1;
+        }
         //
         Random random = new Random();
         int newGameID = 10000000 + random.nextInt(90000000);

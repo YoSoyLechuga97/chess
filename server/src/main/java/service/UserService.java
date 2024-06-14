@@ -12,7 +12,7 @@ import java.util.Objects;
 public class UserService {
     UserDAO userDAO = new SQLUserDAO();
     AuthDAO authDAO = new SQLAuthDAO();
-    GameDAO memoryGameDAO = new MemoryGameDAO();
+    GameDAO gameDAO = new SQLGameDAO();
     public AuthData register(UserData user) throws DataAccessException, AlreadyExistsException {
         //Check that all information is included
         if (user.password() == null || user.username() == null || user.email() == null) {
@@ -52,6 +52,6 @@ public class UserService {
     public void clear() throws DataAccessException {
         userDAO.clear();
         authDAO.clear();
-        memoryGameDAO.clear();
+        gameDAO.clear();
     }
 }
