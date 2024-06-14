@@ -88,10 +88,11 @@ public class DatabaseManager {
     public void addAuth(String userToken, String username) throws DataAccessException {
         try {
             var conn = DriverManager.getConnection(CONNECTION_URL, USER, PASSWORD);
+            conn.setCatalog("chess");
             if (username.matches("[a-zA-Z]+")) {
                 try (var preparedStatement = conn.prepareStatement("INSERT INTO auth (userToken, username) VALUES(?, ?)")) {
-                    preparedStatement.setString(0, userToken);
-                    preparedStatement.setString(1, username);
+                    preparedStatement.setString(1, userToken);
+                    preparedStatement.setString(2, username);
 
                     preparedStatement.executeUpdate();
                 }
