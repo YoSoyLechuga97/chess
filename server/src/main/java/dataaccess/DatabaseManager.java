@@ -131,7 +131,7 @@ public class DatabaseManager {
 
                 ResultSet resultSet = preparedStatment.executeQuery();
                 if (resultSet.next()) {
-                    return resultSet.getString("username");
+                    return resultSet.getString(returnType);
                 }
                 return null;
             }

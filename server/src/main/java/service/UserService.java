@@ -20,7 +20,7 @@ public class UserService {
             throw new JsonSyntaxException("bad request");
         }
         if (userDAO.getUser(user.username()) == null) {
-            memoryUserDAO.createUser(user);
+            userDAO.createUser(user);
             return authDAO.createAuth(user.username());
         } else {
             throw new AlreadyExistsException("already taken");
@@ -51,7 +51,7 @@ public class UserService {
         }
     }
     public void clear() throws DataAccessException {
-        memoryUserDAO.clear();
+        userDAO.clear();
         authDAO.clear();
         gameDAO.clear();
     }
