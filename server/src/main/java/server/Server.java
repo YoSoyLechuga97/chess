@@ -1,14 +1,22 @@
 package server;
 
+import dataaccess.DataAccessException;
+import dataaccess.DatabaseManager;
 import handler.*;
 import spark.*;
 
+import java.sql.SQLException;
+
 public class Server {
 
-    public int run(int desiredPort) {
+    public int run(int desiredPort) throws DataAccessException {
         Spark.port(desiredPort);
 
         Spark.staticFiles.location("web");
+
+        //Connect to Database and create tables
+        DatabaseManager databaseManager = new DatabaseManager();
+        databaseManager.createDatabase();
 
         // Register your endpoints and handle exceptions here.
         Spark.post("/user", new RegisterHandler());
