@@ -59,7 +59,7 @@ public class GameService {
         ChessGame game = oldGame.game();
 
         //Make sure that player color isn't already taken
-        String userName = memoryAuthDAO.getUser(userToken.authToken());
+        String userName = authDAO.getUser(userToken.authToken());
         if (playerColor.equals("WHITE")) {
             if (whitePlayer != null) {
                 throw new AlreadyExistsException("already taken");

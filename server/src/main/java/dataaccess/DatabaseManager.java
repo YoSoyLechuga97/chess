@@ -120,6 +120,19 @@ public class DatabaseManager {
         }
     }
 
+    public void deleteData(String table, String keyName, String key) throws DataAccessException {
+        try {
+            var conn = DriverManager.getConnection(CONNECTION_URL, USER, PASSWORD);
+            conn.setCatalog("chess");
+            try (var preparedStatement = conn.prepareStatement("DELETE FROM " + table + " WHERE " + keyName + "=?")) {
+                preparedStatement.setString(1, key);
+                preparedStatement.executeUpdate();
+            }
+        } catch (SQLException e) {
+            throw new DataAccessException((e.getMessage()));
+        }
+    }
+
     /**
      * Create a connection to the database and sets the catalog based upon the
      * properties specified in db.properties. Connections to the database should
