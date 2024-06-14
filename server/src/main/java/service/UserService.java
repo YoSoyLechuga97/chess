@@ -11,16 +11,15 @@ import java.util.Objects;
 
 public class UserService {
     UserDAO memoryUserDAO = new MemoryUserDAO();
-
+    UserDAO userDAO = new SQLUserDAO();
     AuthDAO authDAO = new SQLAuthDAO();
-    AuthDAO memoryAuthDAO = new MemoryAuthDAO();
     GameDAO gameDAO = new MemoryGameDAO();
     public AuthData register(UserData user) throws DataAccessException, AlreadyExistsException {
         //Check that all information is included
         if (user.password() == null || user.username() == null || user.email() == null) {
             throw new JsonSyntaxException("bad request");
         }
-        if (memoryUserDAO.getUser(user.username()) == null) {
+        if (userDAO.getUser(user.username()) == null) {
             memoryUserDAO.createUser(user);
             return authDAO.createAuth(user.username());
         } else {
@@ -32,8 +31,8 @@ public class UserService {
         if (user.password() == null || user.username() == null) {
             throw new JsonSyntaxException("bad request");
         }
-        if (memoryUserDAO.getUser(user.username()) != null) {
-            if (Objects.equals(memoryUserDAO.getUser(user.username()).password(), user.password())) {
+        if (userDAO.getUser(user.username()) != null) {
+            if (Objects.equals(userDAO.getUser(user.username()).password(), user.password())) {
                 return authDAO.createAuth(user.username());
             }
         }
