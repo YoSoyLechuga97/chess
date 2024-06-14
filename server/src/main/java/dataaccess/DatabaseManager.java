@@ -102,6 +102,21 @@ public class DatabaseManager {
         }
     }
 
+    public boolean findAuth(String authToken) throws DataAccessException {
+        try {
+            var conn = DriverManager.getConnection(CONNECTION_URL, USER, PASSWORD);
+            conn.setCatalog("chess");
+            try (var preparedStatment = conn.prepareStatement("SELECT username FROM auth WHERE authToken = ?")) {
+                preparedStatment.setString(1, authToken);
+
+                ResultSet resultSet = preparedStatment.executeQuery();
+                return resultSet.next();
+            }
+        } catch (SQLException e) {
+            throw new DataAccessException((e.getMessage()));
+        }
+    }
+
     /**
      * Create a connection to the database and sets the catalog based upon the
      * properties specified in db.properties. Connections to the database should
