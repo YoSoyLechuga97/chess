@@ -1,5 +1,6 @@
 package dataaccess;
 
+import javax.xml.crypto.Data;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Properties;
@@ -81,6 +82,22 @@ public class DatabaseManager {
             }
         } catch (SQLException e) {
             throw new DataAccessException(e.getMessage());
+        }
+    }
+
+    public void addAuth(String userToken, String username) throws DataAccessException {
+        try {
+            var conn = DriverManager.getConnection(CONNECTION_URL, USER, PASSWORD);
+            if (username.matches("[a-zA-Z]+")) {
+                try (var preparedStatement = conn.prepareStatement("INSERT INTO auth (userToken, username) VALUES(?, ?)")) {
+                    preparedStatement.setString(0, userToken);
+                    preparedStatement.setString(1, username);
+
+                    preparedStatement.executeUpdate();
+                }
+            }
+        } catch (SQLException e) {
+            throw new DataAccessException((e.getMessage()));
         }
     }
 
