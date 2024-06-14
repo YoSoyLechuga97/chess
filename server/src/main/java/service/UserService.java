@@ -53,5 +53,7 @@ public class UserService {
         userDAO.clear();
         authDAO.clear();
         gameDAO.clear();
+        DatabaseManager databaseManager = new DatabaseManager();
+        databaseManager.createDatabase();
     }
 }

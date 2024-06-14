@@ -41,7 +41,7 @@ public class DatabaseTests {
     @Test
     @DisplayName("Persistence Test")
     @Order(1)
-    public void persistenceTest() {
+    public void persistenceTest() throws Exception {
         int initialRowCount = getDatabaseRows();
 
         TestUser user = new TestUser("ExistingUser", "existingUserPassword", "eu@mail.com");

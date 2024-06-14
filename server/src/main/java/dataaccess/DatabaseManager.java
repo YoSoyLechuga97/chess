@@ -77,7 +77,7 @@ public class DatabaseManager {
             try (var preparedStatement = conn.prepareStatement(statement)) {
                 preparedStatement.executeUpdate();
             }
-            conn.setCatalog("chess");
+            conn.setCatalog(DATABASE_NAME);
             //Create Tables
             for (String table : SCHEMA) {
                 try (var createTableStatement = conn.prepareStatement(table)){
@@ -93,14 +93,12 @@ public class DatabaseManager {
         createDatabase();
         try {
             var conn = DriverManager.getConnection(CONNECTION_URL, USER, PASSWORD);
-            conn.setCatalog("chess");
-            if (username.matches("[a-zA-Z]+")) {
-                try (var preparedStatement = conn.prepareStatement("INSERT INTO auth (authToken, username) VALUES(?, ?)")) {
-                    preparedStatement.setString(1, authToken);
-                    preparedStatement.setString(2, username);
+            conn.setCatalog(DATABASE_NAME);
+            try (var preparedStatement = conn.prepareStatement("INSERT INTO auth (authToken, username) VALUES(?, ?)")) {
+                preparedStatement.setString(1, authToken);
+                preparedStatement.setString(2, username);
 
-                    preparedStatement.executeUpdate();
-                }
+                preparedStatement.executeUpdate();
             }
         } catch (SQLException e) {
             throw new DataAccessException((e.getMessage()));
@@ -111,15 +109,13 @@ public class DatabaseManager {
         createDatabase();
         try {
             var conn = DriverManager.getConnection(CONNECTION_URL, USER, PASSWORD);
-            conn.setCatalog("chess");
-            if (username.matches("[a-zA-Z]+")) {
-                try (var preparedStatement = conn.prepareStatement("INSERT INTO user (username, password, email) VALUES(?, ?, ?)")) {
-                    preparedStatement.setString(1, username);
-                    preparedStatement.setString(2, password);
-                    preparedStatement.setString(3, email);
+            conn.setCatalog(DATABASE_NAME);
+            try (var preparedStatement = conn.prepareStatement("INSERT INTO user (username, password, email) VALUES(?, ?, ?)")) {
+                preparedStatement.setString(1, username);
+                preparedStatement.setString(2, password);
+                preparedStatement.setString(3, email);
 
-                    preparedStatement.executeUpdate();
-                }
+                preparedStatement.executeUpdate();
             }
         } catch (SQLException e) {
             throw new DataAccessException((e.getMessage()));
@@ -130,16 +126,14 @@ public class DatabaseManager {
         createDatabase();
         try {
             var conn = DriverManager.getConnection(CONNECTION_URL, USER, PASSWORD);
-            conn.setCatalog("chess");
-            if (gameName.matches("[a-zA-Z]+")) {
-                try (var preparedStatement = conn.prepareStatement("INSERT INTO game (gameID, gameName, game) VALUES(?, ?, ?)")) {
-                    preparedStatement.setInt(1, gameID);
-                    preparedStatement.setString(2, gameName);
-                    var json = new Gson().toJson(game);
-                    preparedStatement.setString(3, json);
+            conn.setCatalog(DATABASE_NAME);
+            try (var preparedStatement = conn.prepareStatement("INSERT INTO game (gameID, gameName, game) VALUES(?, ?, ?)")) {
+                preparedStatement.setInt(1, gameID);
+                preparedStatement.setString(2, gameName);
+                var json = new Gson().toJson(game);
+                preparedStatement.setString(3, json);
 
-                    preparedStatement.executeUpdate();
-                }
+                preparedStatement.executeUpdate();
             }
         } catch (SQLException e) {
             throw new DataAccessException((e.getMessage()));
@@ -150,7 +144,7 @@ public class DatabaseManager {
     public String findData(String table, String key, String returnType, String inputSearch) throws DataAccessException {
         try {
             var conn = DriverManager.getConnection(CONNECTION_URL, USER, PASSWORD);
-            conn.setCatalog("chess");
+            conn.setCatalog(DATABASE_NAME);
             try (var preparedStatement = conn.prepareStatement("SELECT " + returnType + " FROM " + table + " WHERE " + key + " = ?")) {
                 preparedStatement.setString(1, inputSearch);
 
@@ -168,7 +162,7 @@ public class DatabaseManager {
     public void updateData(String table, String updateRow, String update, String keyType, String key) throws DataAccessException {
         try {
             var conn = DriverManager.getConnection(CONNECTION_URL, USER, PASSWORD);
-            conn.setCatalog("chess");
+            conn.setCatalog(DATABASE_NAME);
             try (var preparedStatement = conn.prepareStatement("UPDATE " + table + " SET " + updateRow + "=? WHERE " + keyType + "=?")) {
                 preparedStatement.setString(1, update);
                 preparedStatement.setString(2, key);
@@ -184,7 +178,7 @@ public class DatabaseManager {
         ArrayList<GameData> allGames = new ArrayList<>();
         try {
             var conn = DriverManager.getConnection(CONNECTION_URL, USER, PASSWORD);
-            conn.setCatalog("chess");
+            conn.setCatalog(DATABASE_NAME);
             try (var preparedStatement = conn.prepareStatement("SELECT gameID, whiteUsername, blackUsername, gameName, game FROM game")) {
                 ResultSet resultSet = preparedStatement.executeQuery();
 
@@ -208,7 +202,7 @@ public class DatabaseManager {
     public void deleteData(String table, String keyName, String key) throws DataAccessException {
         try {
             var conn = DriverManager.getConnection(CONNECTION_URL, USER, PASSWORD);
-            conn.setCatalog("chess");
+            conn.setCatalog(DATABASE_NAME);
             try (var preparedStatement = conn.prepareStatement("DELETE FROM " + table + " WHERE " + keyName + "=?")) {
                 preparedStatement.setString(1, key);
                 preparedStatement.executeUpdate();
@@ -221,7 +215,7 @@ public class DatabaseManager {
     public void clearTable(String table) throws DataAccessException{
         try {
             var conn = DriverManager.getConnection(CONNECTION_URL, USER, PASSWORD);
-            conn.setCatalog("chess");
+            conn.setCatalog(DATABASE_NAME);
             try (var preparedStatment = conn.prepareStatement("DROP TABLE IF EXISTS " + table)) {
                 preparedStatment.executeUpdate();
             }
