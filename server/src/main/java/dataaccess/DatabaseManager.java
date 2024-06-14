@@ -1,6 +1,7 @@
 package dataaccess;
 
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.Properties;
 
 public class DatabaseManager {
@@ -8,6 +9,32 @@ public class DatabaseManager {
     private static final String USER;
     private static final String PASSWORD;
     private static final String CONNECTION_URL;
+
+    private static final ArrayList<String> SCHEMA = new ArrayList<>();
+
+    private static final String auth = """
+            CREATE TABLE IF NOT EXISTS auth (
+            userToken VARCHAR(255) NOT NULL,
+            username VARCHAR(255) NOT NULL,
+            PRIMARY KEY (username)
+            )""";
+
+    private static final String user = """
+            CREATE TABLE IF NOT EXISTS user (
+            username VARCHAR(255) NOT NULL,
+            password VARCHAR(255) NOT NULL,
+            email VARCHAR(255) NOT NULL,
+            PRIMARY KEY (username)
+            )""";
+
+    private static final String game = """
+            gameID INT NOT NULL,
+            whiteUsername VARCHAR(255) DEFAULT NULL,
+            blackUsername VARCHAR(255) DEFAULT NULL,
+            gameName VARCHAR(255) NOT NULL,
+            game longtext NOT NULL,
+            PRIMARY KEY (gameID)
+            )""";
 
     /*
      * Load the database information for the db.properties file.
@@ -25,6 +52,9 @@ public class DatabaseManager {
                 var host = props.getProperty("db.host");
                 var port = Integer.parseInt(props.getProperty("db.port"));
                 CONNECTION_URL = String.format("jdbc:mysql://%s:%d", host, port);
+                SCHEMA.add(auth);
+                SCHEMA.add(user);
+                SCHEMA.add(game);
             }
         } catch (Exception ex) {
             throw new RuntimeException("unable to process db.properties. " + ex.getMessage());
@@ -41,6 +71,8 @@ public class DatabaseManager {
             try (var preparedStatement = conn.prepareStatement(statement)) {
                 preparedStatement.executeUpdate();
             }
+            //Create Tables
+
         } catch (SQLException e) {
             throw new DataAccessException(e.getMessage());
         }
