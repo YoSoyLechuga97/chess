@@ -10,10 +10,9 @@ import model.UserData;
 import java.util.Objects;
 
 public class UserService {
-    UserDAO memoryUserDAO = new MemoryUserDAO();
     UserDAO userDAO = new SQLUserDAO();
     AuthDAO authDAO = new SQLAuthDAO();
-    GameDAO gameDAO = new MemoryGameDAO();
+    GameDAO memoryGameDAO = new MemoryGameDAO();
     public AuthData register(UserData user) throws DataAccessException, AlreadyExistsException {
         //Check that all information is included
         if (user.password() == null || user.username() == null || user.email() == null) {
@@ -53,6 +52,6 @@ public class UserService {
     public void clear() throws DataAccessException {
         userDAO.clear();
         authDAO.clear();
-        gameDAO.clear();
+        memoryGameDAO.clear();
     }
 }

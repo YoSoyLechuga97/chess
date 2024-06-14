@@ -13,7 +13,8 @@ import java.util.ArrayList;
 
 public class GameService {
     AuthDAO authDAO = new SQLAuthDAO();
-    GameDAO gameDAO = new MemoryGameDAO();
+    GameDAO memoryGameDAO = new MemoryGameDAO();
+
 
     public ListGamesData listGames(AuthData userToken) throws Exception {
         //Verify user can access file
@@ -21,7 +22,7 @@ public class GameService {
             throw new UnauthorizedException("unauthorized");
         }
         //List all games
-        return new ListGamesData(gameDAO.listGames());
+        return new ListGamesData(memoryGameDAO.listGames());
     }
     public int createGame(AuthData userToken, String newGameName) throws Exception {
         //Verify token
@@ -29,14 +30,14 @@ public class GameService {
             throw new UnauthorizedException("unauthorized");
         }
         //Check to see if game name is already in database
-        ArrayList<GameData> allGames = gameDAO.listGames();
+        ArrayList<GameData> allGames = memoryGameDAO.listGames();
         for (GameData game : allGames) {
             if (game.gameName().equals(newGameName)) {
                 throw new Exception("game with that name already exists");
             }
         }
         //Create game
-        return gameDAO.createGame(userToken.authToken(), newGameName);
+        return memoryGameDAO.createGame(userToken.authToken(), newGameName);
     }
     public boolean joinGame(AuthData userToken, String playerColor, int gameID) throws Exception {
         //Verify
@@ -47,7 +48,7 @@ public class GameService {
             throw new JsonSyntaxException("playerColor cannot be null");
         }
         //Determine if game exists
-        GameData oldGame = gameDAO.getGame(gameID);
+        GameData oldGame = memoryGameDAO.getGame(gameID);
         if (oldGame == null) {
             throw new JsonSyntaxException("game does not exist");
         }
@@ -75,7 +76,7 @@ public class GameService {
 
         //Create updated game
         GameData updatedGame = new GameData(gameID, whitePlayer, blackPlayer, gameName, game);
-        gameDAO.updateGame(updatedGame);
+        memoryGameDAO.updateGame(updatedGame);
         return true;
     }
     public boolean verifyToken(AuthData userToken) throws DataAccessException {
