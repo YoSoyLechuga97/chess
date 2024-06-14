@@ -22,7 +22,7 @@ public class GameService {
             throw new UnauthorizedException("unauthorized");
         }
         //List all games
-        return new ListGamesData(memoryGameDAO.listGames());
+        return new ListGamesData(gameDAO.listGames());
     }
     public int createGame(AuthData userToken, String newGameName) throws Exception {
         //Verify token
@@ -30,7 +30,7 @@ public class GameService {
             throw new UnauthorizedException("unauthorized");
         }
         //Check to see if game name is already in database
-        ArrayList<GameData> allGames = memoryGameDAO.listGames();
+        ArrayList<GameData> allGames = gameDAO.listGames();
         for (GameData game : allGames) {
             if (game.gameName().equals(newGameName)) {
                 throw new Exception("game with that name already exists");

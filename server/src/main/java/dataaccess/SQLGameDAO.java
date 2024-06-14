@@ -41,7 +41,7 @@ public class SQLGameDAO implements GameDAO{
 
     @Override
     public ArrayList<GameData> listGames() throws DataAccessException {
-        return null;
+        return databaseManager.listGames();
     }
 
     @Override
