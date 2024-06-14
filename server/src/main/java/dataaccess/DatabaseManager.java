@@ -165,6 +165,21 @@ public class DatabaseManager {
         }
     }
 
+    public void updateData(String table, String updateRow, String update, String keyType, String key) throws DataAccessException {
+        try {
+            var conn = DriverManager.getConnection(CONNECTION_URL, USER, PASSWORD);
+            conn.setCatalog("chess");
+            try (var preparedStatement = conn.prepareStatement("UPDATE " + table + " SET " + updateRow + "=? WHERE " + keyType "=?")) {
+                preparedStatement.setString(1, update);
+                preparedStatement.setString(2, key);
+
+                preparedStatement.executeUpdate();
+            }
+        } catch (SQLException e) {
+            throw new DataAccessException((e.getMessage()));
+        }
+    }
+
     public ArrayList<GameData> listGames() throws DataAccessException{
         ArrayList<GameData> allGames = new ArrayList<>();
         try {
