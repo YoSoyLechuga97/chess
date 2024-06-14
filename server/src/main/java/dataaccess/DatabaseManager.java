@@ -72,7 +72,11 @@ public class DatabaseManager {
                 preparedStatement.executeUpdate();
             }
             //Create Tables
-
+            for (String table : SCHEMA) {
+                try (var createTableStatement = conn.prepareStatement(table)){
+                    createTableStatement.executeUpdate();
+                }
+            }
         } catch (SQLException e) {
             throw new DataAccessException(e.getMessage());
         }
