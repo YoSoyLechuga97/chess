@@ -38,6 +38,6 @@ public class SQLAuthDAO implements AuthDAO{
 
     @Override
     public void deleteAuth(String token) throws DataAccessException {
-        databaseManager.deleteData("auth", "userToken", token);
+        databaseManager.deleteData("auth", "authToken", token);
     }
 }

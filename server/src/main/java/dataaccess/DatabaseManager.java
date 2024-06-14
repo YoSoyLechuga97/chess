@@ -86,6 +86,7 @@ public class DatabaseManager {
     }
 
     public void addAuth(String authToken, String username) throws DataAccessException {
+        createDatabase();
         try {
             var conn = DriverManager.getConnection(CONNECTION_URL, USER, PASSWORD);
             conn.setCatalog("chess");
