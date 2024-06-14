@@ -33,7 +33,7 @@ public class SQLAuthDAO implements AuthDAO{
 
     @Override
     public String getUser(String token) throws DataAccessException {
-        return databaseManager.findAuth(token);
+        return databaseManager.findData("auth", "authToken", "username", token);
     }
 
     @Override
