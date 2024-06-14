@@ -1,5 +1,8 @@
 package dataaccess;
 
+import chess.ChessGame;
+import com.google.gson.Gson;
+
 import javax.xml.crypto.Data;
 import java.sql.*;
 import java.util.ArrayList;
@@ -121,6 +124,27 @@ public class DatabaseManager {
             throw new DataAccessException((e.getMessage()));
         }
     }
+
+    public void addGame(int gameID, String gameName, ChessGame game) throws DataAccessException {
+        createDatabase();
+        try {
+            var conn = DriverManager.getConnection(CONNECTION_URL, USER, PASSWORD);
+            conn.setCatalog("chess");
+            if (gameName.matches("[a-zA-Z]+")) {
+                try (var preparedStatement = conn.prepareStatement("INSERT INTO game (gameID, gameName, game) VALUES(?, ?, ?)")) {
+                    preparedStatement.setInt(1, gameID);
+                    preparedStatement.setString(2, gameName);
+                    var json = new Gson().toJson(game);
+                    preparedStatement.setString(3, json);
+
+                    preparedStatement.executeUpdate();
+                }
+            }
+        } catch (SQLException e) {
+            throw new DataAccessException((e.getMessage()));
+        }
+    }
+
 
     public String findData(String table, String key, String returnType, String inputSearch) throws DataAccessException {
         try {
