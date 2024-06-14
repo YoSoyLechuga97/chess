@@ -13,7 +13,6 @@ import java.util.ArrayList;
 
 public class GameService {
     AuthDAO authDAO = new SQLAuthDAO();
-    GameDAO memoryGameDAO = new MemoryGameDAO();
     GameDAO gameDAO = new SQLGameDAO();
 
     public ListGamesData listGames(AuthData userToken) throws Exception {
@@ -76,7 +75,7 @@ public class GameService {
 
         //Create updated game
         GameData updatedGame = new GameData(gameID, whitePlayer, blackPlayer, gameName, game);
-        memoryGameDAO.updateGame(updatedGame);
+        gameDAO.updateGame(updatedGame);
         return true;
     }
     public boolean verifyToken(AuthData userToken) throws DataAccessException {
