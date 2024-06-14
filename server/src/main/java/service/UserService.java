@@ -6,6 +6,7 @@ import exceptions.AlreadyExistsException;
 import exceptions.UnauthorizedException;
 import model.AuthData;
 import model.UserData;
+import org.mindrot.jbcrypt.BCrypt;
 
 import java.util.Objects;
 
@@ -19,7 +20,10 @@ public class UserService {
             throw new JsonSyntaxException("bad request");
         }
         if (userDAO.getUser(user.username()) == null) {
-            userDAO.createUser(user);
+            //Hash user Password
+            String hashedPassword = BCrypt.hashpw(user.password(), BCrypt.gensalt());
+            UserData hashedUser = new UserData(user.username(), hashedPassword, user.email());
+            userDAO.createUser(hashedUser);
             return authDAO.createAuth(user.username());
         } else {
             throw new AlreadyExistsException("already taken");
