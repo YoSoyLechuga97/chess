@@ -46,6 +46,11 @@ public class SQLGameDAO implements GameDAO{
 
     @Override
     public GameData updateGame(GameData updatedGame) throws DataAccessException {
+        //Get the old game and compare
+        GameData oldGame = getGame(updatedGame.gameID());
+        if (oldGame == null) {
+            throw new DataAccessException("Game wasn't found");
+        }
         return null;
     }
 }
