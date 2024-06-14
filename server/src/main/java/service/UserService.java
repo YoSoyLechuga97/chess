@@ -35,7 +35,7 @@ public class UserService {
             throw new JsonSyntaxException("bad request");
         }
         if (userDAO.getUser(user.username()) != null) {
-            if (Objects.equals(userDAO.getUser(user.username()).password(), user.password())) {
+            if (BCrypt.checkpw(user.password(), userDAO.getUser(user.username()).password())) {
                 return authDAO.createAuth(user.username());
             }
         }
