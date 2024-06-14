@@ -51,6 +51,16 @@ public class SQLGameDAO implements GameDAO{
         if (oldGame == null) {
             throw new DataAccessException("Game wasn't found");
         }
-        return null;
+        if (!updatedGame.whiteUsername().equals(oldGame.whiteUsername())) {
+            databaseManager.updateData("game", "whiteUsername", updatedGame.whiteUsername(), "gameID", String.valueOf(updatedGame.gameID()));
+        }
+        if (!updatedGame.blackUsername().equals(oldGame.blackUsername())) {
+            databaseManager.updateData("game", "blackUsername", updatedGame.blackUsername(), "gameID", String.valueOf(updatedGame.gameID()));
+        }
+        if (updatedGame.game() != oldGame.game()) {
+            var json = new Gson().toJson(updatedGame.game());
+            databaseManager.updateData("game", "game", json, "gameID", String.valueOf(updatedGame.gameID()));
+        }
+        return updatedGame;
     }
 }
