@@ -12,7 +12,6 @@ import model.ListGamesData;
 import java.util.ArrayList;
 
 public class GameService {
-    AuthDAO memoryAuthDAO = new MemoryAuthDAO();
     AuthDAO authDAO = new SQLAuthDAO();
     GameDAO gameDAO = new MemoryGameDAO();
 
