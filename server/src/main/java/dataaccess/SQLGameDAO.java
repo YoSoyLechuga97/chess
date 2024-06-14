@@ -1,6 +1,7 @@
 package dataaccess;
 
 import chess.ChessGame;
+import com.google.gson.Gson;
 import model.GameData;
 
 import java.util.ArrayList;
@@ -27,7 +28,15 @@ public class SQLGameDAO implements GameDAO{
 
     @Override
     public GameData getGame(int gameID) throws DataAccessException {
-        return null;
+        String whiteName = databaseManager.findData("game", "gameID", "whiteUsername", String.valueOf(gameID));
+        String blackName = databaseManager.findData("game", "gameID", "blackUsername", String.valueOf(gameID));
+        String gameName = databaseManager.findData("game", "gameID", "gameName", String.valueOf(gameID));
+        String gameString = databaseManager.findData("game", "gameID", "game", String.valueOf(gameID));
+        ChessGame game = new Gson().fromJson(gameString, ChessGame.class);
+        if (gameName == null) {
+            return null;
+        }
+        return new GameData(gameID, whiteName, blackName, gameName, game);
     }
 
     @Override
