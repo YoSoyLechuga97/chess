@@ -17,9 +17,9 @@ public class ServerFacade {
     String method;
     String body;
     String url;
-    private static Server server;
     public ServerFacade() throws DataAccessException {
-        this.port = server.run(0);
+        Server server1 = new Server();
+        this.port = server1.run(0);
     }
 
     public void login(String username, String password) throws URISyntaxException, IOException {
@@ -29,7 +29,7 @@ public class ServerFacade {
         method = "POST";
 
         HttpURLConnection loginConnection = sendRequest(url, method, body);
-        readResponseBody(loginConnection);
+        receiveResponse(loginConnection);
     }
 
     //Connect Helper Functions
@@ -57,8 +57,12 @@ public class ServerFacade {
         var statusCode = http.getResponseCode();
         var statusMessage = http.getResponseMessage();
 
-        Object responseBody = readResponseBody(http);
-        System.out.printf("= Response =========\n[%d] %s\n\n%s\n\n", statusCode, statusMessage, responseBody);
+        if (statusCode == 200) {
+            Object responseBody = readResponseBody(http);
+            System.out.printf("= Response =========\n[%d] %s\n\n%s\n\n", statusCode, statusMessage, responseBody);
+        } else {
+            System.out.println("[" + statusCode + "] : " + statusMessage);
+        }
     }
 
     private static Object readResponseBody(HttpURLConnection http) throws IOException {
