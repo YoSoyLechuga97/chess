@@ -74,6 +74,7 @@ public class Main {
                     case "help":
                         System.out.println("create <NAME> - a game");
                         System.out.println("list - games");
+                        System.out.println("join <ID> [WHITE|BLACK] - a game");
                         System.out.println("observe <ID> - a game");
                         System.out.println("logout - when you are done");
                         System.out.println("quit - playing chess");
@@ -95,6 +96,7 @@ public class Main {
                             gameList.put(i, game.gameID());
                             i++;
                         }
+                        System.out.println("\n");
                         break;
                     //Join
                     case "join":
