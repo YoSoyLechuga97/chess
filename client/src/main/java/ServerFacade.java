@@ -68,7 +68,7 @@ public class ServerFacade {
         method = "POST";
 
         HttpURLConnection loginConnection = sendRequest(url, method, body, header, headerValue);
-        receiveResponse(loginConnection, int.class);
+        receiveResponse(loginConnection, null);
     }
 
     public ArrayList<GameData> listGames(AuthData user) throws URISyntaxException, IOException {
