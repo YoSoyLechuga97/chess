@@ -85,6 +85,27 @@ public class SQLTests {
     }
 
     @Test
+    @DisplayName("createAuth Success")
+    public void createAuth() throws Exception {
+        SQLAuthDAO sqlAuthDAO = new SQLAuthDAO();
+        AuthData newAuth = sqlAuthDAO.createAuth("newGuy");
+        assertTrue(sqlAuthDAO.getAuth(newAuth.authToken()), "Failed to create newAuth");
+    }
+
+    @Test
+    @DisplayName("createAuth Fail")
+    public void createAuthFail() throws Exception {
+        boolean failed = false;
+        SQLAuthDAO sqlAuthDAO = new SQLAuthDAO();
+        try {
+            AuthData newAuth = sqlAuthDAO.createAuth("bobby");
+        } catch (Exception e) {
+            failed = true;
+        }
+        assertTrue(failed, "Created newAuth for fake username");
+    }
+
+    @Test
     @DisplayName("getAuth Success")
     public void getAuth() throws Exception {
         SQLAuthDAO sqlAuthDAO = new SQLAuthDAO();

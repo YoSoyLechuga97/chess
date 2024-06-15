@@ -13,6 +13,10 @@ public class SQLAuthDAO implements AuthDAO{
 
     @Override
     public AuthData createAuth(String username) throws DataAccessException {
+        SQLUserDAO user = new SQLUserDAO();
+        if (user.getUser(username) == null) {
+            throw new DataAccessException("User does not exist");
+        }
         //Generate a random authentication token
         String newToken = UUID.randomUUID().toString();
 
