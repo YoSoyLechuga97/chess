@@ -5,7 +5,7 @@ import model.AuthData;
 import java.util.ArrayList;
 
 public interface AuthDAO {
-    static DatabaseManager databaseManager = new DatabaseManager();
+    static DatabaseManager DATABASE_MANAGER = new DatabaseManager();
     static final ArrayList<AuthData> AUTHS = new ArrayList<>();
     public void clear() throws DataAccessException;
     public AuthData createAuth(String username) throws DataAccessException;

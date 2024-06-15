@@ -5,7 +5,7 @@ import model.GameData;
 import java.util.ArrayList;
 
 public interface GameDAO {
-    static DatabaseManager databaseManager = new DatabaseManager();
+    static DatabaseManager DATABASE_MANAGER = new DatabaseManager();
     static final ArrayList<GameData> GAMES = new ArrayList<>();
     public void clear() throws DataAccessException;
     public int createGame(String authToken, String gameName) throws DataAccessException;

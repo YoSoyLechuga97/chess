@@ -299,20 +299,20 @@ public class SQLTests {
     @DisplayName("Clear Users")
     public void clearUsers() throws Exception {
         //Login to database
-        UserService myService = new UserService();
-        boolean thrown = false;
+        UserService service = new UserService();
+        boolean isTossed = false;
         //Good Login
-        UserData login1 = new UserData("newGuy", "newGuyPassword", "newGuyEmail@yahoo.com");
-        AuthData actual1 = myService.login(login1);
-        Assertions.assertNotEquals(null, actual1, "Failed to successfully login");
+        UserData login1 = new UserData("HiFriend", "HiFriendPassword", "HiFriend@gmail.com");
+        AuthData actual1 = service.login(login1);
+        Assertions.assertNotEquals(null, actual1, "Login was not successful");
         //Clear Database
-        myService.clear();
-        //Attempt to login with empty database
+        service.clear();
+        //Login with empty db
         try {
-            AuthData actual2 = myService.login(login1);
+            AuthData actual2 = service.login(login1);
         } catch (Exception e){
-            thrown = true;
+            isTossed = true;
         }
-        assertTrue(thrown, "Still logged in, database not cleared");
+        assertTrue(isTossed, "Logged in after db was supposedly cleared");
     }
 }

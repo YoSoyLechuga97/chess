@@ -4,7 +4,6 @@ import chess.ChessGame;
 import com.google.gson.Gson;
 import model.GameData;
 
-import javax.xml.crypto.Data;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Properties;
@@ -17,14 +16,14 @@ public class DatabaseManager {
 
     private static final ArrayList<String> SCHEMA = new ArrayList<>();
 
-    private static final String auth = """
+    private static final String AUTH_TABLE = """
             CREATE TABLE IF NOT EXISTS auth (
             authToken VARCHAR(255) NOT NULL,
             username VARCHAR(255) NOT NULL,
             PRIMARY KEY (authToken)
             )""";
 
-    private static final String user = """
+    private static final String USER_TABLE = """
             CREATE TABLE IF NOT EXISTS user (
             username VARCHAR(255) NOT NULL,
             password VARCHAR(255) NOT NULL,
@@ -32,7 +31,7 @@ public class DatabaseManager {
             PRIMARY KEY (username)
             )""";
 
-    private static final String game = """
+    private static final String GAME_TABLE = """
             CREATE TABLE IF NOT EXISTS game (
             gameID INT NOT NULL,
             whiteUsername VARCHAR(255) DEFAULT NULL,
@@ -58,9 +57,9 @@ public class DatabaseManager {
                 var host = props.getProperty("db.host");
                 var port = Integer.parseInt(props.getProperty("db.port"));
                 CONNECTION_URL = String.format("jdbc:mysql://%s:%d", host, port);
-                SCHEMA.add(auth);
-                SCHEMA.add(user);
-                SCHEMA.add(game);
+                SCHEMA.add(AUTH_TABLE);
+                SCHEMA.add(USER_TABLE);
+                SCHEMA.add(GAME_TABLE);
             }
         } catch (Exception ex) {
             throw new RuntimeException("unable to process db.properties. " + ex.getMessage());
