@@ -102,6 +102,7 @@ public class Main {
                         break;
                     //Quit
                     case "quit":
+                        terminalAuthData = serverFacade.logout(terminalAuthData);
                         System.out.println("Thank you for playing!");
                         quit = true;
                         return;
