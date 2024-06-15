@@ -58,6 +58,23 @@ public class ServerFacade {
         return sendAndRecieve();
     }
 
+    public int createGame(AuthData user, String gameName) throws URISyntaxException, IOException {
+        path = "game";
+        url = createURL(path);
+        header = "authorization";
+        headerValue = user.authToken();
+        body = "{ \"gameName\":\"" + gameName + "\" }";
+        method = "POST";
+
+        HttpURLConnection loginConnection = sendRequest(url, method, body, header, headerValue);
+        Object authObj = receiveResponse(loginConnection);
+        if (authObj == null) {
+            return -1;
+        }
+        Map<String, Integer> authMap = (Map<String, Integer>) authObj;
+        return authMap.get("gameID");
+    }
+
     public AuthData sendAndRecieve() throws IOException, URISyntaxException {
         HttpURLConnection loginConnection = sendRequest(url, method, body, header, headerValue);
         Object authObj = receiveResponse(loginConnection);
