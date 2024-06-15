@@ -16,6 +16,10 @@ public class SQLGameDAO implements GameDAO{
 
     @Override
     public int createGame(String authToken, String gameName) throws DataAccessException {
+        SQLAuthDAO token = new SQLAuthDAO();
+        if (!token.getAuth(authToken)) {
+            throw new DataAccessException("Authorization token not accepted");
+        }
         //Make sure that game doesn't already exist
         if (databaseManager.findData("game", "gameName", "gameName", gameName) != null) {
             return -1;
@@ -48,22 +52,20 @@ public class SQLGameDAO implements GameDAO{
     @Override
     public GameData updateGame(GameData updatedGame) throws DataAccessException {
         //Get the old game and compare
-        boolean whiteDiff = false;
-        boolean blackDiff = false;
         GameData oldGame = getGame(updatedGame.gameID());
         if (oldGame == null) {
             throw new DataAccessException("Game wasn't found");
         }
-        if (!Objects.equals(updatedGame.whiteUsername(), oldGame.whiteUsername())) {
+        if (!Objects.equals(updatedGame.whiteUsername(), oldGame.whiteUsername()) && oldGame.whiteUsername() == null) {
             databaseManager.updateData("game", "whiteUsername", updatedGame.whiteUsername(), "gameID", String.valueOf(updatedGame.gameID()));
         }
-        if (!Objects.equals(updatedGame.blackUsername(), oldGame.blackUsername())) {
+        if (!Objects.equals(updatedGame.blackUsername(), oldGame.blackUsername()) && oldGame.blackUsername() == null) {
             databaseManager.updateData("game", "blackUsername", updatedGame.blackUsername(), "gameID", String.valueOf(updatedGame.gameID()));
         }
         if (updatedGame.game() != oldGame.game()) {
             var json = new Gson().toJson(updatedGame.game());
             databaseManager.updateData("game", "game", json, "gameID", String.valueOf(updatedGame.gameID()));
         }
-        return updatedGame;
+        return getGame(updatedGame.gameID());
     }
 }

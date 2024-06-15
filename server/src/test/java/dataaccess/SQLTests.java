@@ -1,7 +1,11 @@
 package dataaccess;
 
+import chess.ChessGame;
+import chess.ChessMove;
+import chess.ChessPosition;
 import exceptions.AlreadyExistsException;
 import model.AuthData;
+import model.GameData;
 import model.ListGamesData;
 import model.UserData;
 import org.junit.jupiter.api.Assertions;
@@ -12,13 +16,18 @@ import service.GameService;
 import service.UserService;
 import spark.utils.Assert;
 
+import java.util.ArrayList;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class SQLTests {
     @BeforeEach
     //Create my Users
     public void setup() throws Exception {
-        clearUsers();
+        SQLGameDAO gameDAO = new SQLGameDAO();
+        if (!gameDAO.listGames().isEmpty()) {
+            clearUsers();
+        }
         //Create users
         UserData user1 = new UserData("newGuy", "newGuyPassword", "newGuyEmail@yahoo.com");
         UserData user2 = new UserData("HiFriend", "HiFriendPassword", "HiFriend@gmail.com");
@@ -169,222 +178,121 @@ public class SQLTests {
         assertTrue(failed, "Deleted fake token");
     }
 
+    @Test
+    @DisplayName("createGame Success")
+    public void createGameSuccess() throws Exception {
+        SQLGameDAO sqlGameDAO = new SQLGameDAO();
+        AuthData harold = createHarold();
+        int gameID = sqlGameDAO.createGame(harold.authToken(), "Harold's Game");
+        assertTrue((gameID > 0),"Failed to create game");
+    }
+
+    @Test
+    @DisplayName("createGame Fail")
+    public void createGameFail() throws Exception {
+        boolean failed = false;
+        SQLGameDAO sqlGameDAO = new SQLGameDAO();
+        AuthData harold = createHarold();
+        //Create existing game
+        int gameID = sqlGameDAO.createGame(harold.authToken(), "fireGame");
+        assertTrue((gameID == -1),"Created game with same name as existing game");
+        //Not authorized to make game
+        try {
+            sqlGameDAO.createGame("fakeToken", "fakeGame");
+        } catch (Exception e) {
+            failed = true;
+        }
+        assertTrue(failed, "Created game without authentication");
+    }
+
+    @Test
+    @DisplayName("getGame Success")
+    public void getGameSuccess() throws Exception {
+        SQLGameDAO sqlGameDAO = new SQLGameDAO();
+        AuthData harold = createHarold();
+        int gameID = sqlGameDAO.createGame(harold.authToken(), "Harold's Game");
+        GameData foundGame = sqlGameDAO.getGame(gameID);
+        assertEquals("Harold's Game", foundGame.gameName(), "Failed to find game");
+    }
+
+    @Test
+    @DisplayName("getGame Fail")
+    public void getGameFail() throws Exception {
+        boolean failed = false;
+        SQLGameDAO sqlGameDAO = new SQLGameDAO();
+        AuthData harold = createHarold();
+        int fakeID = 21;
+        GameData foundGame = sqlGameDAO.getGame(fakeID);
+        if (foundGame == null) {
+            failed = true;
+        }
+        assertTrue(failed, "Found false game");
+    }
+
+    @Test
+    @DisplayName("listGame Success")
+    public void listGameSuccess() throws Exception {
+        SQLGameDAO sqlGameDAO = new SQLGameDAO();
+        assertNotNull(sqlGameDAO.listGames(), "Did not find any games");
+    }
+
+    @Test
+    @DisplayName("listGame Fail")
+    public void listGameFail() throws Exception {
+        boolean failed = false;
+        ArrayList<GameData> allGames = new ArrayList<>();
+        SQLGameDAO sqlGameDAO = new SQLGameDAO();
+        clearUsers();
+        try {
+            allGames = sqlGameDAO.listGames();
+        } catch (Exception e) {
+            failed = true;
+        }
+        if (allGames.isEmpty()) {
+            failed = true;
+        }
+        assertTrue(failed, "Listed nonexistant games");
+    }
+
+    @Test
+    @DisplayName("updateGame Success")
+    public void updateGame() throws Exception {
+        SQLGameDAO sqlGameDAO = new SQLGameDAO();
+        AuthData harold = createHarold();
+        int joinID = sqlGameDAO.createGame(harold.authToken(), "Harold's Game");
+        //Harold join white
+        GameData haroldJoins = new GameData(joinID, harold.username(), null, "Harold's Game", new ChessGame());
+        GameData testJoin = sqlGameDAO.updateGame(haroldJoins);
+        assertEquals(testJoin.whiteUsername(), harold.username(), "Harold didn't join");
+        //Harold makes move
+        testJoin.game().makeMove(new ChessMove(new ChessPosition(2,3), new ChessPosition(3, 3), null));
+        GameData testMove = sqlGameDAO.updateGame(testJoin);
+        ChessGame moveGame = new ChessGame();
+        moveGame.makeMove(new ChessMove(new ChessPosition(2,3), new ChessPosition(3, 3), null));
+        assertEquals(moveGame, testMove.game(), "Move was not registered");
+    }
+
+    @Test
+    @DisplayName("updateGame Fail")
+    public void updateGameFail() throws Exception {
+        SQLGameDAO sqlGameDAO = new SQLGameDAO();
+        AuthData harold = createHarold();
+        int joinID = sqlGameDAO.createGame(harold.authToken(), "Harold's Game");
+        //Harold join white
+        GameData haroldJoins = new GameData(joinID, harold.username(), null, "Harold's Game", new ChessGame());
+        GameData testJoin = sqlGameDAO.updateGame(haroldJoins);
+        assertEquals(testJoin.whiteUsername(), harold.username(), "Harold didn't join");
+        //newGuy tries to join white
+        GameData newGuyJoins = new GameData(joinID, "newGuy", null, "Harold's Game", new ChessGame());
+        GameData testReplace = sqlGameDAO.updateGame(newGuyJoins);
+        assertNotEquals("newGuy", testReplace.whiteUsername(), "newGuy replaced Harold");
+    }
+
     public AuthData createHarold() throws AlreadyExistsException, DataAccessException {
         UserData newUser = new UserData("harold", "haroldPassword", "harold@gmail.com");
         UserService myService = new UserService();
         AuthData harold = myService.register(newUser);
         return harold;
-    }
-
-    @Test
-    @DisplayName("Login Success")
-    public void logIn() throws Exception {
-        UserService myService = new UserService();
-        //Good Login
-        UserData login1 = new UserData("newGuy", "newGuyPassword", "newGuyEmail@yahoo.com");
-        AuthData actual1 = myService.login(login1);
-        Assertions.assertNotEquals(null, actual1, "Failed to successfully login");
-        clearUsers();
-    }
-
-    @Test
-    @DisplayName("Login Fail")
-    public void logInFail() throws Exception {
-        UserService myService = new UserService();
-        boolean thrown = false;
-        //Bad Login
-        UserData login2 = new UserData("newGuy", "newGuyPasswordWrong", "newGuyEmail@yahoo.com");
-        try {
-            AuthData actual2 = myService.login(login2);
-        } catch (Exception e){
-            thrown = true;
-        }
-        Assertions.assertTrue(thrown, "Failed to stop login with bad password");
-        clearUsers();
-    }
-
-    @Test
-    @DisplayName("Register Tests")
-    public void register() throws Exception {
-        UserService myService = new UserService();
-        //Successful Register
-        UserData register1 = new UserData("Chuga97", "Chuga97Password", "Chuga97@gmail.com");
-        AuthData actual1 = myService.register(register1);
-        assertNotNull(actual1, "Unable to register new user");
-        clearUsers();
-    }
-
-    @Test
-    @DisplayName("Register Tests Fail")
-    public void registerFail() throws Exception {
-        UserService myService = new UserService();
-        boolean thrown = false;
-        //Existing User
-        UserData register2 = new UserData("newGuy", "newGuyPassword", "newGuyEmail@yahoo.com");
-        try {
-            AuthData actual2 = myService.register(register2);
-        } catch (Exception e){
-            thrown = true;
-        }
-        assertTrue(thrown, "Registered existing user");
-        clearUsers();
-    }
-
-    @Test
-    @DisplayName("Logout Success")
-    public void logout() throws Exception {
-        UserService myService = new UserService();
-        //Successful logout
-        UserData user1 = new UserData("newGuy", "newGuyPassword", "newGuyEmail@yahoo.com");
-        AuthData newPC = myService.login(user1);
-        boolean actual = myService.logout(newPC);
-        Assert.isTrue(actual, "Was unable to logout existing user");
-        clearUsers();
-    }
-
-    @Test
-    @DisplayName("Logout Fail")
-    public void logoutFail() throws Exception {
-        UserService myService = new UserService();
-        boolean thrown = false;
-        //Unsuccessful logout
-        AuthData fakePC = new AuthData("notARealToken", "newGuy");
-        try {
-            boolean actual2 = myService.logout(fakePC);
-        }catch (Exception e){
-            thrown = true;
-        }
-        Assert.isTrue(thrown, "Successfully Logged out fake token");
-        clearUsers();
-    }
-
-    @Test
-    @DisplayName("Create a Game Success")
-    public void createGame() throws Exception {
-        UserService myService = new UserService();
-        GameService gameService = new GameService();
-        UserData login1 = new UserData("newGuy", "newGuyPassword", "newGuyEmail@yahoo.com");
-        AuthData actual1 = myService.login(login1);
-
-        //Successfully create a game
-        int gameID = gameService.createGame(actual1, "NewGame!");
-        boolean createdNewGame = (gameID > 0);
-        Assert.isTrue(createdNewGame, "New Game failed to be created");
-        clearUsers();
-    }
-
-    @Test
-    @DisplayName("Create a Game Fail")
-    public void createGameFail() throws Exception {
-        UserService myService = new UserService();
-        GameService gameService = new GameService();
-        boolean thrown = false;
-        UserData login1 = new UserData("newGuy", "newGuyPassword", "newGuyEmail@yahoo.com");
-        AuthData actual1 = myService.login(login1);
-
-        //Successfully create a game
-        int gameID = gameService.createGame(actual1, "NewGame!");
-
-        //Unsuccessfully create game
-        try {
-            int badGameID = gameService.createGame(actual1, "NewGame!");
-        } catch (Exception e){
-            thrown = true;
-        }
-        Assert.isTrue(thrown, "Game that should not have been made was created");
-        clearUsers();
-    }
-
-    @Test
-    @DisplayName("ListGames Success")
-    public void listGames() throws Exception {
-        UserService myService = new UserService();
-        GameService gameService = new GameService();
-        UserData login1 = new UserData("newGuy", "newGuyPassword", "newGuyEmail@yahoo.com");
-        AuthData actual1 = myService.login(login1);
-
-        //Create multiple games
-        gameService.createGame(actual1, "NewGame!");
-        gameService.createGame(actual1, "BattleTime");
-        gameService.createGame(actual1, "Cole's Game");
-
-        //Successfully List Games
-        ListGamesData allGames = gameService.listGames(actual1);
-        Assert.notNull(allGames, "No Games listed, expected three");
-        clearUsers();
-    }
-
-    @Test
-    @DisplayName("ListGames Fail")
-    public void listGamesFail() throws Exception {
-        UserService myService = new UserService();
-        GameService gameService = new GameService();
-        boolean thrown = false;
-        UserData login1 = new UserData("newGuy", "newGuyPassword", "newGuyEmail@yahoo.com");
-        AuthData actual1 = myService.login(login1);
-
-        //Create multiple games
-        gameService.createGame(actual1, "NewGame!");
-        gameService.createGame(actual1, "BattleTime");
-        gameService.createGame(actual1, "Cole's Game");
-
-        //Fail to List Games
-        AuthData falseData = new AuthData("a", "newGuy");
-        try {
-            ListGamesData noGames = gameService.listGames(falseData);
-        } catch (Exception e){
-            thrown = true;
-        }
-        assertTrue(thrown, "Still listed games without authentication");
-        clearUsers();
-    }
-
-    @Test
-    @DisplayName("Join Game")
-    public void joinGame() throws Exception {
-        UserService myService = new UserService();
-        GameService gameService = new GameService();
-        UserData login1 = new UserData("newGuy", "newGuyPassword", "newGuyEmail@yahoo.com");
-        AuthData actual1 = myService.login(login1);
-
-        //Successfully Join a Game
-        int joinID = gameService.createGame(actual1, "Cole's Game");
-        boolean joined = gameService.joinGame(actual1, "WHITE", joinID);
-        Assert.isTrue(joined, "Failed to successfully join game");
-        clearUsers();
-    }
-
-    @Test
-    @DisplayName("Join Game Fail")
-    public void joinGameFail() throws Exception {
-        UserService myService = new UserService();
-        GameService gameService = new GameService();
-        boolean thrown = false;
-        UserData login1 = new UserData("newGuy", "newGuyPassword", "newGuyEmail@yahoo.com");
-        AuthData actual1 = myService.login(login1);
-
-        //Successfully Join a Game
-        int joinID = gameService.createGame(actual1, "Cole's Game");
-        boolean joined = gameService.joinGame(actual1, "WHITE", joinID);
-
-        //Join game with color already in use
-        try {
-            boolean noJoin = !gameService.joinGame(actual1, "WHITE", joinID);
-        } catch (Exception e){
-            thrown = true;
-        }
-        Assert.isTrue(thrown, "Joined a game that you should not have");
-
-        thrown = false;
-        //Join game that does not exist
-        int fakeGame = 12;
-        try {
-            boolean fakeJoin = !gameService.joinGame(actual1, "WHITE", fakeGame);
-        } catch (Exception e){
-            thrown = true;
-        }
-        Assert.isTrue(thrown, "Joined a game that does not exist");
-        clearUsers();
     }
 
     @Test
@@ -407,5 +315,4 @@ public class SQLTests {
         }
         assertTrue(thrown, "Still logged in, database not cleared");
     }
-
 }
