@@ -2,17 +2,15 @@ import chess.*;
 import dataaccess.DataAccessException;
 import model.AuthData;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.Scanner;
 
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws DataAccessException, URISyntaxException, IOException {
         AuthData terminalAuthData = null;
         Scanner scanner = new Scanner(System.in);
-        try {
-            ServerFacade serverFacade = new ServerFacade();
-        } catch (DataAccessException e) {
-            throw new RuntimeException(e);
-        }
+        ServerFacade serverFacade = new ServerFacade();
         var piece = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.PAWN);
         System.out.println("♕ 240 Chess Client: " + piece);
 
@@ -35,7 +33,8 @@ public class Main {
                     return;
                 //Login
                 case "login":
-
+                    serverFacade.login(userInput[1], userInput[2]);
+                    break;
                 //Register
 
                 //Unknown Command
