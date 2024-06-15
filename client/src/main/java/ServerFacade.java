@@ -18,6 +18,8 @@ public class ServerFacade {
     String method;
     String body;
     String url;
+    String header = "";
+    String headerValue = "";
     public ServerFacade() throws DataAccessException {
         Server server1 = new Server();
         this.port = server1.run(0);
@@ -41,8 +43,19 @@ public class ServerFacade {
         return sendAndRecieve();
     }
 
+    public AuthData logout(AuthData user) throws URISyntaxException, IOException {
+        path = "session";
+        url = createURL(path);
+        body = "";
+        header = "authorization";
+        headerValue = user.authToken();
+        method = "DELETE";
+
+        return sendAndRecieve();
+    }
+
     public AuthData sendAndRecieve() throws IOException, URISyntaxException {
-        HttpURLConnection loginConnection = sendRequest(url, method, body);
+        HttpURLConnection loginConnection = sendRequest(url, method, body, header, headerValue);
         Object authObj = receiveResponse(loginConnection);
         if (authObj == null) {
             return null;
@@ -57,11 +70,14 @@ public class ServerFacade {
     public String createURL(String path) throws URISyntaxException {
         return "http://localhost:" + port + "/" + path;
     }
-    private static HttpURLConnection sendRequest(String url, String method, String body) throws URISyntaxException, IOException, IOException {
+    private static HttpURLConnection sendRequest(String url, String method, String body, String header, String headerValue) throws URISyntaxException, IOException, IOException {
         URI uri = new URI(url);
         HttpURLConnection http = (HttpURLConnection) uri.toURL().openConnection();
         http.setRequestMethod(method);
         writeRequestBody(body, http);
+        if (!header.isEmpty()) {
+            http.setRequestProperty(header, headerValue);
+        }
         http.connect();
         System.out.printf("= Request =========\n[%s] %s\n\n%s\n\n", method, url, body);
         return http;
