@@ -229,7 +229,8 @@ public class DatabaseManager {
      * </code>
      */
     static Connection getConnection() throws DataAccessException {
-        try (var conn = DriverManager.getConnection(CONNECTION_URL, USER, PASSWORD);){
+        try {
+            var conn = DriverManager.getConnection(CONNECTION_URL, USER, PASSWORD);
             conn.setCatalog(DATABASE_NAME);
             return conn;
         } catch (SQLException e) {
