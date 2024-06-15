@@ -16,6 +16,7 @@ public class Main {
         AuthData terminalAuthData = null;
         Scanner scanner = new Scanner(System.in);
         ServerFacade serverFacade = new ServerFacade();
+        //ChessDisplay chessDisplay = new ChessDisplay();
         Map<Integer, Integer> gameList = new HashMap<>();
         boolean quit = false;
         var piece = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.PAWN);
@@ -110,6 +111,7 @@ public class Main {
                             }
                             int gameToJoin = gameList.get(userNumber);
                             serverFacade.joinGame(terminalAuthData, userInput[2], gameToJoin);
+                            ChessDisplay displayGame = new ChessDisplay();
                             break;
                         }
                     //Observe
@@ -136,7 +138,6 @@ public class Main {
     public static String[] readInput() {
         Scanner scanner = new Scanner(System.in);
         String userInput = scanner.nextLine();
-        String[] args = userInput.split(" ");
-        return args;
+        return userInput.split(" ");
     }
 }
