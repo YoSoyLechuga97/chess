@@ -12,7 +12,7 @@ public class Main {
 
         //Prelogin UI
         while (terminalAuthData == null) {
-            System.out.println("[LOGGED_OUT] >>> ");
+            System.out.print("[LOGGED_OUT] >>> ");
             String[] userInput = readInput();
             switch (userInput[0]) {
                 //Help
@@ -22,8 +22,11 @@ public class Main {
                     System.out.println("quit - playing chess");
                     System.out.println("help - with possible commands");
                     System.out.println("\n");
+                    break;
                 //Quit
-
+                case "quit":
+                    System.out.println("Thank you for playing!");
+                    return;
                 //Login
 
                 //Register
