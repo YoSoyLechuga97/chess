@@ -34,7 +34,7 @@ public class ServerFacade {
         body = "{ \"username\":\"" + username + "\", \"password\":\"" + password + "\" }";
         method = "POST";
 
-        return sendAndRecieve();
+        return sendAndReceive(AuthData.class);
     }
 
     public AuthData register(String username, String password, String email) throws URISyntaxException, IOException {
@@ -45,7 +45,7 @@ public class ServerFacade {
         body = "{ \"username\":\"" + username + "\", \"password\":\"" + password + "\", \"email\":\"" + email + "\" }";
         method = "POST";
 
-        return sendAndRecieve();
+        return sendAndReceive(AuthData.class);
     }
 
     public AuthData logout(AuthData user) throws URISyntaxException, IOException {
@@ -56,7 +56,7 @@ public class ServerFacade {
         body = "";
         method = "DELETE";
 
-        return sendAndRecieve();
+        return sendAndReceive(AuthData.class);
     }
 
     public void createGame(AuthData user, String gameName) throws URISyntaxException, IOException {
@@ -68,7 +68,7 @@ public class ServerFacade {
         method = "POST";
 
         HttpURLConnection loginConnection = sendRequest(url, method, body, header, headerValue);
-        receiveResponse(loginConnection);
+        receiveResponse(loginConnection, int.class);
     }
 
     public ArrayList<GameData> listGames(AuthData user) throws URISyntaxException, IOException {
@@ -80,21 +80,16 @@ public class ServerFacade {
         method = "GET";
 
         HttpURLConnection loginConnection = sendRequest(url, method, body, header, headerValue);
-        Object listObject = receiveResponse(loginConnection);
-        ArrayList<GameData> allGames = (ArrayList<GameData>) listObject;
+        ArrayList allGames = receiveResponse(loginConnection, ArrayList.class);
+//        Gson gson = new Gson();
+//        Map<String, ArrayList<GameData>> gameMap = (Map<String, ArrayList<GameData>>) listObject;
+//        ArrayList<GameData> allGames = gameMap.get("games");
         return allGames;
     }
 
-    public AuthData sendAndRecieve() throws IOException, URISyntaxException {
+    public <T> T sendAndReceive(Class<T> responseClass) throws IOException, URISyntaxException {
         HttpURLConnection loginConnection = sendRequest(url, method, body, header, headerValue);
-        Object authObj = receiveResponse(loginConnection);
-        if (authObj == null) {
-            return null;
-        }
-        Map<String, String> authMap = (Map<String, String>) authObj;
-        String authToken = authMap.get("authToken");
-        String authName = authMap.get("username");
-        return new AuthData(authToken, authName);
+        return receiveResponse(loginConnection, responseClass);
     }
 
     //Connect Helper Functions
@@ -121,24 +116,28 @@ public class ServerFacade {
             }
         }
     }
-    private static Object receiveResponse(HttpURLConnection http) throws IOException {
+    private static <T> T receiveResponse(HttpURLConnection http, Class<T> responseClass) throws IOException {
         var statusCode = http.getResponseCode();
         var statusMessage = http.getResponseMessage();
 
         if (statusCode == 200) {
-            return readResponseBody(http);
+            return readResponseBody(http, responseClass);
         } else {
             System.out.println("[" + statusCode + "] : " + statusMessage);
             return null;
         }
     }
 
-    private static Object readResponseBody(HttpURLConnection http) throws IOException {
-        Object responseBody = "";
-        try (InputStream respBody = http.getInputStream()) {
-            InputStreamReader inputStreamReader = new InputStreamReader(respBody);
-            responseBody = new Gson().fromJson(inputStreamReader, Map.class);
+    private static <T> T readResponseBody(HttpURLConnection http, Class<T> responseClass) throws IOException {
+        T response = null;
+        if (http.getContentLength() < 0) {
+            try (InputStream respBody = http.getInputStream()) {
+                InputStreamReader reader = new InputStreamReader(respBody);
+                if (responseClass != null) {
+                    response = new Gson().fromJson(reader, responseClass);
+                }
+            }
         }
-        return responseBody;
+        return response;
     }
 }
