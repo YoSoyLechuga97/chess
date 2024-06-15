@@ -1,9 +1,12 @@
 import chess.*;
 import dataaccess.DataAccessException;
 import model.AuthData;
+import model.GameData;
 
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Main {
@@ -81,7 +84,14 @@ public class Main {
                             break;
                         }
                     //List
-
+                    case "list":
+                        ArrayList<GameData> allGames = serverFacade.listGames(terminalAuthData);
+                        int i = 1;
+                        for (GameData game : allGames) {
+                            System.out.println(i + ". " + game.gameName() + " W: " + game.whiteUsername() + " B: " + game.blackUsername());
+                            i++;
+                        }
+                        break;
                     //Join
 
                     //Observe
