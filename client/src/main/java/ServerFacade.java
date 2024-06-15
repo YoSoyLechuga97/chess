@@ -5,12 +5,14 @@ import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Map;
 
 import com.google.gson.Gson;
 import dataaccess.DataAccessException;
 import model.AuthData;
 import model.GameData;
+import model.ListGamesData;
 import server.Server;
 
 public class ServerFacade {
@@ -77,13 +79,8 @@ public class ServerFacade {
         headerValue = user.authToken();
         body = "";
         method = "GET";
-
-        HttpURLConnection loginConnection = sendRequest(url, method, body, header, headerValue);
-        ArrayList allGames = receiveResponse(loginConnection, ArrayList.class);
-//        Gson gson = new Gson();
-//        Map<String, ArrayList<GameData>> gameMap = (Map<String, ArrayList<GameData>>) listObject;
-//        ArrayList<GameData> allGames = gameMap.get("games");
-        return allGames;
+        ListGamesData list = sendAndReceive(ListGamesData.class);
+        return list.games();
     }
 
     public <T> T sendAndReceive(Class<T> responseClass) throws IOException, URISyntaxException {
