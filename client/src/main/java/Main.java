@@ -76,7 +76,10 @@ public class Main {
                         break;
                     //Create
                     case "create":
-
+                        if (userInput.length == 2) {
+                            serverFacade.createGame(terminalAuthData, userInput[1]);
+                            break;
+                        }
                     //List
 
                     //Join

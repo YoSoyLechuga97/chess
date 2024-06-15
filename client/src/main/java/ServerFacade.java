@@ -2,7 +2,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Map;
@@ -58,7 +57,7 @@ public class ServerFacade {
         return sendAndRecieve();
     }
 
-    public int createGame(AuthData user, String gameName) throws URISyntaxException, IOException {
+    public void createGame(AuthData user, String gameName) throws URISyntaxException, IOException {
         path = "game";
         url = createURL(path);
         header = "authorization";
@@ -67,13 +66,10 @@ public class ServerFacade {
         method = "POST";
 
         HttpURLConnection loginConnection = sendRequest(url, method, body, header, headerValue);
-        Object authObj = receiveResponse(loginConnection);
-        if (authObj == null) {
-            return -1;
-        }
-        Map<String, Integer> authMap = (Map<String, Integer>) authObj;
-        return authMap.get("gameID");
+        receiveResponse(loginConnection);
     }
+
+    //public
 
     public AuthData sendAndRecieve() throws IOException, URISyntaxException {
         HttpURLConnection loginConnection = sendRequest(url, method, body, header, headerValue);
