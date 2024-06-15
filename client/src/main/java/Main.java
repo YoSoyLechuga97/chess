@@ -33,7 +33,7 @@ public class Main {
                     return;
                 //Login
                 case "login":
-                    serverFacade.login(userInput[1], userInput[2]);
+                    terminalAuthData = serverFacade.login(userInput[1], userInput[2]);
                     break;
                 //Register
 
@@ -43,6 +43,7 @@ public class Main {
         }
 
         //Postlogin UI
+        System.out.println("Made it to postLogin");
     }
 
     public static String[] readInput() {

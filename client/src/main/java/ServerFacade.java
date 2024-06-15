@@ -9,6 +9,7 @@ import java.util.Map;
 
 import com.google.gson.Gson;
 import dataaccess.DataAccessException;
+import model.AuthData;
 import server.Server;
 
 public class ServerFacade {
@@ -22,14 +23,21 @@ public class ServerFacade {
         this.port = server1.run(0);
     }
 
-    public void login(String username, String password) throws URISyntaxException, IOException {
+    public AuthData login(String username, String password) throws URISyntaxException, IOException {
         path = "session";
         url = createURL(path);
         body = "{ \"username\":\"" + username + "\", \"password\":\"" + password + "\" }";
         method = "POST";
 
         HttpURLConnection loginConnection = sendRequest(url, method, body);
-        receiveResponse(loginConnection);
+        Object authObj = receiveResponse(loginConnection);
+        if (authObj == null) {
+            return null;
+        }
+        Map<String, String> authMap = (Map<String, String>) authObj;
+        String authToken = authMap.get("authToken");
+        String authName = authMap.get("username");
+        return new AuthData(authToken, authName);
     }
 
     //Connect Helper Functions
@@ -53,15 +61,15 @@ public class ServerFacade {
             }
         }
     }
-    private static void receiveResponse(HttpURLConnection http) throws IOException {
+    private static Object receiveResponse(HttpURLConnection http) throws IOException {
         var statusCode = http.getResponseCode();
         var statusMessage = http.getResponseMessage();
 
         if (statusCode == 200) {
-            Object responseBody = readResponseBody(http);
-            System.out.printf("= Response =========\n[%d] %s\n\n%s\n\n", statusCode, statusMessage, responseBody);
+            return readResponseBody(http);
         } else {
             System.out.println("[" + statusCode + "] : " + statusMessage);
+            return null;
         }
     }
 
