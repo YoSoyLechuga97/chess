@@ -34,6 +34,7 @@ public class Main {
                 //Login
                 case "login":
                     terminalAuthData = serverFacade.login(userInput[1], userInput[2]);
+                    System.out.println("Logged in as " + terminalAuthData.username());
                     break;
                 //Register
 
