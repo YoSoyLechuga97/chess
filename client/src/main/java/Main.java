@@ -88,7 +88,7 @@ public class Main {
                         ArrayList<GameData> allGames = serverFacade.listGames(terminalAuthData);
                         int i = 1;
                         for (GameData game : allGames) {
-                            System.out.println(i + ". " + game.gameName() + " ID: " + game.gameID() + " W: " + game.whiteUsername() + " B: " + game.blackUsername());
+                            System.out.println(i + ". " + game.gameName() + " W: " + game.whiteUsername() + " B: " + game.blackUsername());
                             i++;
                         }
                         break;
