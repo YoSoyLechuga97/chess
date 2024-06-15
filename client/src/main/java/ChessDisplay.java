@@ -23,6 +23,8 @@ public class ChessDisplay {
 
         drawTicTacToeBoard(out);
 
+        drawHeaders(out);
+
         out.print(SET_BG_COLOR_BLACK);
         out.print(SET_TEXT_COLOR_WHITE);
     }
@@ -53,8 +55,8 @@ public class ChessDisplay {
     }
 
     private static void printHeaderText(PrintStream out, String player) {
-        out.print(SET_BG_COLOR_BLACK);
-        out.print(SET_TEXT_COLOR_GREEN);
+        out.print(SET_BG_COLOR_DARK_GREEN);
+        out.print(SET_TEXT_COLOR_WHITE);
 
         out.print(player);
 
@@ -63,16 +65,8 @@ public class ChessDisplay {
 
     private static void drawTicTacToeBoard(PrintStream out) {
 
-        for (int boardRow = -1; boardRow < BOARD_SIZE_IN_SQUARES + 1; ++boardRow) {//Draw squares from the top down
-
-            if(boardRow >= 0 && boardRow < BOARD_SIZE_IN_SQUARES) {
-                drawRowOfSquares(out);
-            }
-
-            if (boardRow == BOARD_SIZE_IN_SQUARES || boardRow == -1) {
-                drawVerticalLine(out);
-                setBlack(out);
-            }
+        for (int boardRow = 0; boardRow < BOARD_SIZE_IN_SQUARES; ++boardRow) {//Draw squares from the top down
+            drawRowOfSquares(out);
         }
     }
 
