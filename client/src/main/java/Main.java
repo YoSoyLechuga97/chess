@@ -97,7 +97,19 @@ public class Main {
                         }
                         break;
                     //Join
-
+                    case "join":
+                        if (userInput.length == 3) {
+                            int userNumber;
+                            try {
+                                userNumber = Integer.parseInt(userInput[1]);
+                            } catch (NumberFormatException e) {
+                                System.out.println("Not a valid game number");
+                                break;
+                            }
+                            int gameToJoin = gameList.get(userNumber);
+                            serverFacade.joinGame(terminalAuthData, userInput[2], gameToJoin);
+                            break;
+                        }
                     //Observe
 
                     //Logout
