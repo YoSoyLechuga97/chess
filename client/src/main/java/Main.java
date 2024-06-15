@@ -28,6 +28,7 @@ public class Main {
                     System.out.println("Thank you for playing!");
                     return;
                 //Login
+                case "login":
 
                 //Register
 
