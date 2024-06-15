@@ -29,6 +29,19 @@ public class ServerFacade {
         body = "{ \"username\":\"" + username + "\", \"password\":\"" + password + "\" }";
         method = "POST";
 
+        return sendAndRecieve();
+    }
+
+    public AuthData register(String username, String password, String email) throws URISyntaxException, IOException {
+        path = "user";
+        url = createURL(path);
+        body = "{ \"username\":\"" + username + "\", \"password\":\"" + password + "\", \"email\":\"" + email + "\" }";
+        method = "POST";
+
+        return sendAndRecieve();
+    }
+
+    public AuthData sendAndRecieve() throws IOException, URISyntaxException {
         HttpURLConnection loginConnection = sendRequest(url, method, body);
         Object authObj = receiveResponse(loginConnection);
         if (authObj == null) {

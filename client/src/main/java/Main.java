@@ -37,7 +37,8 @@ public class Main {
                     System.out.println("Logged in as " + terminalAuthData.username());
                     break;
                 //Register
-
+                case "register":
+                    terminalAuthData = serverFacade
                 //Unknown Command
 
             }
