@@ -1,5 +1,6 @@
 package dataaccess;
 
+import exceptions.AlreadyExistsException;
 import model.AuthData;
 import model.ListGamesData;
 import model.UserData;
@@ -11,8 +12,7 @@ import service.GameService;
 import service.UserService;
 import spark.utils.Assert;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class SQLTests {
     @BeforeEach
@@ -62,7 +62,97 @@ public class SQLTests {
     @DisplayName("createUser Success")
     public void createUserSuccess() throws Exception {
         SQLUserDAO sqlUserDAO = new SQLUserDAO();
+        UserData newUser = new UserData("harold", "haroldPassword", "harold@gmail.com");
+        sqlUserDAO.createUser(newUser);
 
+        UserData findUser = sqlUserDAO.getUser("harold");
+        boolean success = findUser.username().equals("harold");
+        assertTrue(success, "New User not Created");
+    }
+
+    @Test
+    @DisplayName("createUser Fail")
+    public void createUserFail() throws Exception {
+        boolean failed = false;
+        SQLUserDAO sqlUserDAO = new SQLUserDAO();
+        UserData newUser = new UserData("newGuy", "haroldPassword", "harold@gmail.com");
+        try {
+            sqlUserDAO.createUser(newUser);
+        } catch (Exception e) {
+            failed = true;
+        }
+        assertTrue(failed, "Created duplicate usernames");
+    }
+
+    @Test
+    @DisplayName("getAuth Success")
+    public void getAuth() throws Exception {
+        SQLAuthDAO sqlAuthDAO = new SQLAuthDAO();
+        SQLUserDAO sqlUserDAO = new SQLUserDAO();
+        AuthData harold = createHarold();
+        assertTrue(sqlAuthDAO.getAuth(harold.authToken()), "Failed to get authenticate");
+    }
+
+    @Test
+    @DisplayName("getAuth Fail")
+    public void getAuthFail() throws Exception {
+        SQLAuthDAO sqlAuthDAO = new SQLAuthDAO();
+        SQLUserDAO sqlUserDAO = new SQLUserDAO();
+        String fakeToken = "not a real token";
+        assertFalse(sqlAuthDAO.getAuth(fakeToken), "Authenticated a fake token");
+    }
+
+    @Test
+    @DisplayName("getUser Success")
+    public void getUserAuth() throws Exception {
+        SQLAuthDAO sqlAuthDAO = new SQLAuthDAO();
+        SQLUserDAO sqlUserDAO = new SQLUserDAO();
+        AuthData harold = createHarold();
+        String foundUsername = sqlAuthDAO.getUser(harold.authToken());
+        assertEquals(foundUsername, harold.username(), "Couldn't find harold's username");
+    }
+
+    @Test
+    @DisplayName("getUser Fail")
+    public void getUserAuthFail() throws Exception {
+        boolean failed = false;
+        SQLAuthDAO sqlAuthDAO = new SQLAuthDAO();
+        SQLUserDAO sqlUserDAO = new SQLUserDAO();
+        String fakeToken = "fakeToken";
+        String foundUsername = sqlAuthDAO.getUser(fakeToken);
+        if (foundUsername == null) {
+            failed = true;
+        }
+        assertTrue(failed, "Found a user without valid token");
+    }
+
+    @Test
+    @DisplayName("deleteAuth Success")
+    public void deleteAuthSuccess() throws Exception {
+        SQLAuthDAO sqlAuthDAO = new SQLAuthDAO();
+        AuthData harold = createHarold();
+        sqlAuthDAO.deleteAuth(harold.authToken());
+        assertFalse(sqlAuthDAO.getAuth(harold.authToken()), "Harold token not deleted");
+    }
+
+    @Test
+    @DisplayName("deleteAuth Fail")
+    public void deleteAuthFail() throws Exception {
+        boolean failed = false;
+        SQLAuthDAO sqlAuthDAO = new SQLAuthDAO();
+        try {
+            sqlAuthDAO.deleteAuth("fakeToken");
+        } catch (Exception e) {
+            failed = true;
+        }
+        assertTrue(failed, "Deleted fake token");
+    }
+
+    public AuthData createHarold() throws AlreadyExistsException, DataAccessException {
+        UserData newUser = new UserData("harold", "haroldPassword", "harold@gmail.com");
+        UserService myService = new UserService();
+        AuthData harold = myService.register(newUser);
+        return harold;
     }
 
     @Test

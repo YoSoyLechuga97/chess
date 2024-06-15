@@ -38,6 +38,9 @@ public class SQLAuthDAO implements AuthDAO{
 
     @Override
     public void deleteAuth(String token) throws DataAccessException {
-        databaseManager.deleteData("auth", "authToken", token);
+        if (getAuth(token)) {
+            databaseManager.deleteData("auth", "authToken", token);
+        }
+        throw new DataAccessException("Token does not exist");
     }
 }
