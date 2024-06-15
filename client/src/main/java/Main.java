@@ -33,14 +33,24 @@ public class Main {
                     return;
                 //Login
                 case "login":
-                    terminalAuthData = serverFacade.login(userInput[1], userInput[2]);
-                    System.out.println("Logged in as " + terminalAuthData.username());
-                    break;
+                    if (userInput.length == 3) {
+                        terminalAuthData = serverFacade.login(userInput[1], userInput[2]);
+                        if (terminalAuthData != null) {
+                            System.out.println("Logged in as " + terminalAuthData.username());
+                        }
+                        break;
+                    }
                 //Register
                 case "register":
-                    terminalAuthData = serverFacade
+                    if (userInput.length == 4) {
+                        terminalAuthData = serverFacade.register(userInput[1], userInput[2], userInput[3]);
+                        if (terminalAuthData != null) {
+                            System.out.println("Logged in as " + terminalAuthData.username());
+                        }
+                        break;
+                    }
                 //Unknown Command
-
+                System.out.println("Unrecognized command");
             }
         }
 
