@@ -28,6 +28,8 @@ public class ServerFacade {
     public AuthData login(String username, String password) throws URISyntaxException, IOException {
         path = "session";
         url = createURL(path);
+        header = "";
+        headerValue = "";
         body = "{ \"username\":\"" + username + "\", \"password\":\"" + password + "\" }";
         method = "POST";
 
@@ -37,6 +39,8 @@ public class ServerFacade {
     public AuthData register(String username, String password, String email) throws URISyntaxException, IOException {
         path = "user";
         url = createURL(path);
+        header = "";
+        headerValue = "";
         body = "{ \"username\":\"" + username + "\", \"password\":\"" + password + "\", \"email\":\"" + email + "\" }";
         method = "POST";
 
@@ -46,9 +50,9 @@ public class ServerFacade {
     public AuthData logout(AuthData user) throws URISyntaxException, IOException {
         path = "session";
         url = createURL(path);
-        body = "";
         header = "authorization";
         headerValue = user.authToken();
+        body = "";
         method = "DELETE";
 
         return sendAndRecieve();
@@ -74,10 +78,10 @@ public class ServerFacade {
         URI uri = new URI(url);
         HttpURLConnection http = (HttpURLConnection) uri.toURL().openConnection();
         http.setRequestMethod(method);
-        writeRequestBody(body, http);
         if (!header.isEmpty()) {
             http.setRequestProperty(header, headerValue);
         }
+        writeRequestBody(body, http);
         http.connect();
         System.out.printf("= Request =========\n[%s] %s\n\n%s\n\n", method, url, body);
         return http;

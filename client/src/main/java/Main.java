@@ -83,7 +83,9 @@ public class Main {
                     //Observe
 
                     //Logout
-
+                    case "logout":
+                        terminalAuthData = serverFacade.logout(terminalAuthData);
+                        break;
                     //Quit
                     case "quit":
                         System.out.println("Thank you for playing!");
