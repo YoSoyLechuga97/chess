@@ -7,6 +7,8 @@ import java.io.IOException;
 import java.lang.reflect.Array;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
 
 public class Main {
@@ -14,6 +16,7 @@ public class Main {
         AuthData terminalAuthData = null;
         Scanner scanner = new Scanner(System.in);
         ServerFacade serverFacade = new ServerFacade();
+        Map<Integer, Integer> gameList = new HashMap<>();
         boolean quit = false;
         var piece = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.PAWN);
         System.out.println("♕ 240 Chess Client: " + piece);
@@ -89,6 +92,7 @@ public class Main {
                         int i = 1;
                         for (GameData game : allGames) {
                             System.out.println(i + ". " + game.gameName() + " W: " + game.whiteUsername() + " B: " + game.blackUsername());
+                            gameList.put(i, game.gameID());
                             i++;
                         }
                         break;

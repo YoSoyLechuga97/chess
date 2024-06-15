@@ -5,8 +5,6 @@ import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Map;
 
 import com.google.gson.Gson;
 import dataaccess.DataAccessException;
@@ -81,6 +79,17 @@ public class ServerFacade {
         method = "GET";
         ListGamesData list = sendAndReceive(ListGamesData.class);
         return list.games();
+    }
+
+    public void joinGame (AuthData user, String color, int gameID) throws URISyntaxException, IOException {
+        path = "game";
+        url = createURL(path);
+        header = "authorization";
+        headerValue = user.authToken();
+        body = "{ \"playerColor\":\"" + color + "\", \"gameID\":" + gameID + " }";
+        method = "PUT";
+
+        sendAndReceive(null);
     }
 
     public <T> T sendAndReceive(Class<T> responseClass) throws IOException, URISyntaxException {
