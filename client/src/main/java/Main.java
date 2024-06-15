@@ -1,4 +1,5 @@
 import chess.*;
+import dataaccess.DataAccessException;
 import model.AuthData;
 
 import java.util.Scanner;
@@ -7,6 +8,11 @@ public class Main {
     public static void main(String[] args) {
         AuthData terminalAuthData = null;
         Scanner scanner = new Scanner(System.in);
+        try {
+            ServerFacade serverFacade = new ServerFacade();
+        } catch (DataAccessException e) {
+            throw new RuntimeException(e);
+        }
         var piece = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.PAWN);
         System.out.println("♕ 240 Chess Client: " + piece);
 

@@ -1,10 +1,18 @@
 import java.net.URI;
 import java.net.URISyntaxException;
 
+import dataaccess.DataAccessException;
+import server.Server;
+
 public class ServerFacade {
     int port;
-    public ServerFacade(int port) {
-        this.port = port;
+    private static Server server;
+    public ServerFacade() throws DataAccessException {
+        try {
+            this.port = server.run(0);
+        } catch (DataAccessException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     //Connect Helper Functions
