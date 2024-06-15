@@ -21,6 +21,7 @@ public class Main {
                     System.out.println("login <USERNAME> <PASSWORD> - to play chess");
                     System.out.println("quit - playing chess");
                     System.out.println("help - with possible commands");
+                    System.out.println("\n");
                 //Quit
 
                 //Login
