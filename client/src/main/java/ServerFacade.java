@@ -4,11 +4,13 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.Map;
 
 import com.google.gson.Gson;
 import dataaccess.DataAccessException;
 import model.AuthData;
+import model.GameData;
 import server.Server;
 
 public class ServerFacade {
@@ -69,7 +71,19 @@ public class ServerFacade {
         receiveResponse(loginConnection);
     }
 
-    //public
+    public ArrayList<GameData> listGames(AuthData user) throws URISyntaxException, IOException {
+        path = "game";
+        url = createURL(path);
+        header = "authorization";
+        headerValue = user.authToken();
+        body = "";
+        method = "GET";
+
+        HttpURLConnection loginConnection = sendRequest(url, method, body, header, headerValue);
+        Object listObject = receiveResponse(loginConnection);
+        ArrayList<GameData> allGames = (ArrayList<GameData>) listObject;
+        return allGames;
+    }
 
     public AuthData sendAndRecieve() throws IOException, URISyntaxException {
         HttpURLConnection loginConnection = sendRequest(url, method, body, header, headerValue);
