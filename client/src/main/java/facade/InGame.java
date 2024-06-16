@@ -1,11 +1,10 @@
 package facade;
 
-import chess.ChessGame;
-import chess.ChessPiece;
-import chess.ChessPosition;
-import chess.InvalidMoveException;
+import chess.*;
 import model.AuthData;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -49,13 +48,27 @@ public class InGame {
                         String patternString = "([a-hA-H])([1-8])";
                         Pattern pattern = Pattern.compile(patternString);
                         Matcher matcher = pattern.matcher(userInput[1]);
+                        ArrayList<ChessPosition> squaresToHighlight = new ArrayList<>();
                         if (matcher.matches()) {
                             //Determine there is a piece at that position on the board
                             int col = matcher.group(1).charAt(0) - 'a' + 1;
                             int row = Integer.parseInt(matcher.group(2));
                             ChessPosition highlightPosition = new ChessPosition(row, col);
                             if (game.getBoard().getPiece(highlightPosition) != null) {
-                                System.out.println("Valid piece");
+                                //Obtain a list of all possible moves
+                                Collection<ChessMove> validMoves = game.validMoves(highlightPosition);
+                                if (!validMoves.isEmpty()) {
+                                    //Create an array list of positions as numbers
+                                    for (ChessMove move : validMoves) {
+                                        int currRow = move.getEndPosition().getRow();
+                                        int currCol = move.getEndPosition().getColumn();
+                                        ChessPosition nextPos = new ChessPosition(currRow, currCol);
+                                        squaresToHighlight.add(nextPos);
+                                    }
+                                    System.out.println(squaresToHighlight);
+                                } else {
+                                    System.out.println("This piece has no valid moves");
+                                }
                             } else {
                                 System.out.println("There is no chessPiece at " + userInput[1]);
                             }
