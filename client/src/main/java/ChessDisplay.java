@@ -33,25 +33,16 @@ public class ChessDisplay {
 
         setBlack(out);
 
-        String[] headers = { " a ", " b ", " c ", " d ", " e ", " f ", " g ", " h " };
-        for (int boardCol = 0; boardCol < BOARD_SIZE_IN_SQUARES; ++boardCol) {
+        String[] headers = { "   ", " a ", " b ", " c ", " d ", " e ", " f ", " g ", " h ", "   " };
+        for (int boardCol = 0; boardCol < BOARD_SIZE_IN_SQUARES + 2; ++boardCol) {
             drawHeader(out, headers[boardCol]);
-
-            if (boardCol < BOARD_SIZE_IN_SQUARES - 1) {
-                out.print(EMPTY.repeat(LINE_WIDTH_IN_CHARS));
-            }
         }
 
         out.println();
     }
 
     private static void drawHeader(PrintStream out, String headerText) {
-        int prefixLength = SQUARE_SIZE_IN_CHARS / 2;
-        int suffixLength = SQUARE_SIZE_IN_CHARS - prefixLength - 1;
-
-        out.print(EMPTY.repeat(prefixLength));
         printHeaderText(out, headerText);
-        out.print(EMPTY.repeat(suffixLength));
     }
 
     private static void printHeaderText(PrintStream out, String player) {
@@ -64,39 +55,31 @@ public class ChessDisplay {
     }
 
     private static void drawTicTacToeBoard(PrintStream out) {
-
+        int borderNumber = 0;
         for (int boardRow = 0; boardRow < BOARD_SIZE_IN_SQUARES; ++boardRow) {//Draw squares from the top down
-            drawRowOfSquares(out);
+            drawRowOfSquares(out, borderNumber);
+            borderNumber++;
         }
     }
 
-    private static void drawRowOfSquares(PrintStream out) {
+    private static void drawRowOfSquares(PrintStream out, int borderNumber) {
 
+        String[] sides = {" 8 ", " 7 ", " 6 ", " 5 ", " 4 ", " 3 ", " 2 ", " 1 "};
         for (int squareRow = 0; squareRow < SQUARE_SIZE_IN_CHARS; ++squareRow) {
-            for (int boardCol = 0; boardCol < BOARD_SIZE_IN_SQUARES; ++boardCol) {
+            for (int boardCol = -1; boardCol < BOARD_SIZE_IN_SQUARES + 1; ++boardCol) {
                 setWhite(out);
 
-                if (squareRow == SQUARE_SIZE_IN_CHARS / 2) { //If in the middle of square
-                    int prefixLength = SQUARE_SIZE_IN_CHARS / 2;
-                    int suffixLength = SQUARE_SIZE_IN_CHARS - prefixLength - 1;
-
-                    out.print(EMPTY.repeat(prefixLength));
+                if (boardCol >= 0 && boardCol < BOARD_SIZE_IN_SQUARES) {
                     printPlayer(out, rand.nextBoolean() ? X : O);
-                    out.print(EMPTY.repeat(suffixLength));
-                }
-                else {
-                    out.print(EMPTY.repeat(SQUARE_SIZE_IN_CHARS));
                 }
 
-                if (boardCol < BOARD_SIZE_IN_SQUARES - 1) {
+                if (boardCol == -1 || boardCol == BOARD_SIZE_IN_SQUARES) {
                     // Draw right line
-                    setRed(out);
-                    out.print(EMPTY.repeat(LINE_WIDTH_IN_CHARS));
+                    setBorder(out);
+                    out.print(sides[borderNumber]);
                 }
-
                 setBlack(out);
             }
-
             out.println();
         }
     }
@@ -128,6 +111,11 @@ public class ChessDisplay {
     private static void setBlack(PrintStream out) {
         out.print(SET_BG_COLOR_BLACK);
         out.print(SET_TEXT_COLOR_BLACK);
+    }
+
+    private static void setBorder(PrintStream out) {
+        out.print(SET_BG_COLOR_DARK_GREEN);
+        out.print(SET_TEXT_COLOR_WHITE);
     }
 
     private static void printPlayer(PrintStream out, String player) {
