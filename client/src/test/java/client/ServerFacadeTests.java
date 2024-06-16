@@ -3,6 +3,7 @@ package client;
 import dataaccess.DataAccessException;
 import dataaccess.SQLAuthDAO;
 import dataaccess.SQLGameDAO;
+import exceptions.AlreadyExistsException;
 import model.AuthData;
 import model.GameData;
 import model.UserData;
@@ -53,6 +54,30 @@ public class ServerFacadeTests {
         //Join 1 game
         gameService.joinGame(newGuyAuth, "WHITE", fireGameID);
 
+    }
+
+    @BeforeEach
+    public void startup() throws Exception {
+        SQLGameDAO gameDAO = new SQLGameDAO();
+        if (!gameDAO.listGames().isEmpty()) {
+            clearUsers();
+        }
+        //Create users
+        UserData user1 = new UserData("newGuy", "newGuyPassword", "newGuyEmail@yahoo.com");
+        UserData user2 = new UserData("HiFriend", "HiFriendPassword", "HiFriend@gmail.com");
+        UserData user3 = new UserData("Gamer44", "Gamer44Password", "Gamer44@aol.com");
+        UserService myService = new UserService();
+        GameService gameService = new GameService();
+        AuthData newGuyAuth = myService.register(user1);
+        AuthData hiFriendAuth = myService.register(user2);
+        AuthData gamer44Auth = myService.register(user3);
+
+        //Create some Games
+        int fireGameID = gameService.createGame(newGuyAuth, "fireGame");
+        int iceGameID = gameService.createGame(hiFriendAuth, "iceGame");
+
+        //Join 1 game
+        gameService.joinGame(newGuyAuth, "WHITE", fireGameID);
     }
 
     @AfterAll
@@ -174,6 +199,55 @@ public class ServerFacadeTests {
         assertFalse(gamesListed, "Games were listed with fake token");
     }
 
+    @Test
+    @DisplayName("Join Game Success")
+    public void joinGame() throws URISyntaxException, IOException {
+        boolean joined = false;
+        AuthData harold = createHarold();
+        ArrayList<GameData> allGames = facade.listGames(harold);
+        int gameID = 0;
+        for (GameData game : allGames) {
+            if (game.gameName().equals("fireGame")) {
+                gameID = game.gameID();
+            }
+        }
+        facade.joinGame(harold, "BLACK", gameID);
+        allGames = facade.listGames(harold);
+        for (GameData game : allGames) {
+            if (game.blackUsername() != null) {
+                if (game.blackUsername().equals(harold.username())) {
+                    joined = true;
+                }
+            }
+        }
+        assertTrue(joined, "Harold couldn't join the game :(");
+    }
+
+    @Test
+    @DisplayName("Join Game Fail")
+    public void joinFail() throws URISyntaxException, IOException {
+        boolean joined = false;
+        AuthData harold = createHarold();
+        AuthData fakeUser = new AuthData("FakeToken", "FakeUserName");
+        ArrayList<GameData> allGames = facade.listGames(harold);
+        int gameID = 0;
+        for (GameData game : allGames) {
+            if (game.gameName().equals("fireGame")) {
+                gameID = game.gameID();
+            }
+        }
+        facade.joinGame(fakeUser, "BLACK", gameID);
+        allGames = facade.listGames(harold);
+        for (GameData game : allGames) {
+            if (game.blackUsername() != null) {
+                if (game.blackUsername().equals(fakeUser.username())) {
+                    joined = true;
+                }
+            }
+        }
+        assertFalse(joined, "Fake user stole harold's spot!");
+    }
+
     public AuthData createHarold () throws URISyntaxException, IOException {
         return facade.register("harold", "haroldPassword", "imharold@harold.com");
     }
@@ -185,7 +259,7 @@ public class ServerFacadeTests {
         //Good Login
         UserData login1 = new UserData("HiFriend", "HiFriendPassword", "HiFriend@gmail.com");
         AuthData actual1 = service.login(login1);
-        Assertions.assertNotEquals(null, actual1, "Login was not successful");
+        assertNotEquals(null, actual1, "Login was not successful");
         //Clear Database
         service.clear();
         //Login with empty db
