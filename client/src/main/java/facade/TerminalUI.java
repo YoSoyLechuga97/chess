@@ -13,6 +13,7 @@ import java.util.Scanner;
 public class TerminalUI {
     AuthData terminalAuthData = null;
     ServerFacade serverFacade;
+    InGame inGame;
     ChessDisplay chessDisplay = new ChessDisplay();
     Map<Integer, Integer> gameList = new HashMap<>();
     Map<Integer, ChessGame> gameFromID = new HashMap<>();
@@ -105,7 +106,9 @@ public class TerminalUI {
                         }
                         int gameToJoin = gameList.get(userNumber);
                         serverFacade.joinGame(terminalAuthData, userInput[2], gameToJoin);
-                        chessDisplay.run(gameFromID.get(gameToJoin));
+                        inGame = new InGame();
+                        inGame.observeGame(terminalAuthData, gameFromID.get(gameToJoin));
+                        // chessDisplay.run(gameFromID.get(gameToJoin));
                         break;
                     }
                     //Observe
@@ -118,8 +121,11 @@ public class TerminalUI {
                             System.out.println("Not a valid game number");
                             break;
                         }
+                        //Send to InGame
                         int gameToWatch = gameList.get(userNumber);
-                        chessDisplay.run(gameFromID.get(gameToWatch));
+                        inGame = new InGame();
+                        inGame.observeGame(terminalAuthData, gameFromID.get(gameToWatch));
+                        //chessDisplay.run(gameFromID.get(gameToWatch));
                         break;
                     }
                     //Logout

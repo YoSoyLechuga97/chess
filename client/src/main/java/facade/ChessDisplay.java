@@ -13,22 +13,21 @@ public class ChessDisplay {
     private static final int LINE_WIDTH_IN_CHARS = 1;
 
 
-    public void run(ChessGame game) throws InvalidMoveException {
+    public void run(ChessGame game, boolean whiteBoard) throws InvalidMoveException {
         var out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
-        boolean whiteBoard = false;
 
         out.print(ERASE_SCREEN);
 
         drawHeaders(out, whiteBoard);
         drawChessBoard(out, game, whiteBoard);
         drawHeaders(out, whiteBoard);
-
-        drawDivision(out);
-        whiteBoard = true;
-
-        drawHeaders(out, whiteBoard);
-        drawChessBoard(out, game, whiteBoard);
-        drawHeaders(out, whiteBoard);
+//
+//        drawDivision(out);
+//        whiteBoard = true;
+//
+//        drawHeaders(out, whiteBoard);
+//        drawChessBoard(out, game, whiteBoard);
+//        drawHeaders(out, whiteBoard);
 
         out.print(SET_BG_COLOR_BLACK);
         out.print(SET_TEXT_COLOR_WHITE);
