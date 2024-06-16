@@ -17,34 +17,38 @@ public class ChessDisplay {
     public static void main(String[] args) {
         var out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
         ChessGame game = new ChessGame();
+        boolean whiteBoard = false;
 
         out.print(ERASE_SCREEN);
 
-        drawHeaders(out);
-
-        drawChessBoard(out, game);
-
-        drawHeaders(out);
+        drawHeaders(out, whiteBoard);
+        drawChessBoard(out, game, whiteBoard);
+        drawHeaders(out, whiteBoard);
 
         drawDivision(out);
+        whiteBoard = true;
 
-        drawHeaders(out);
-
-        drawChessBoard(out, game);
-
-        drawHeaders(out);
+        drawHeaders(out, whiteBoard);
+        drawChessBoard(out, game, whiteBoard);
+        drawHeaders(out, whiteBoard);
 
         out.print(SET_BG_COLOR_BLACK);
         out.print(SET_TEXT_COLOR_WHITE);
     }
 
-    private static void drawHeaders(PrintStream out) {
+    private static void drawHeaders(PrintStream out, boolean whiteBoard) {
 
         setBlack(out);
 
-        String[] headers = { "  ", "\u2003 a ", "\u2003b ", "\u2003c ", "\u2003d ", "\u2003e ", "\u2003f ", "\u2003g ", "\u2003h ", "   " };
-        for (int boardCol = 0; boardCol < BOARD_SIZE_IN_SQUARES + 2; ++boardCol) {
-            drawHeader(out, headers[boardCol]);
+        String[] headers = { "   ", "\u2003a ", "\u2003b ", "\u2003c ", "\u2003d ", "\u2003e ", "\u2003f ", "\u2003g ", "\u2003h ", "   " };
+        if (whiteBoard) {
+            for (int boardCol = 0; boardCol < BOARD_SIZE_IN_SQUARES + 2; ++boardCol) {
+                drawHeader(out, headers[boardCol]);
+            }
+        } else {
+            for (int boardCol = 9; boardCol >= 0; --boardCol) {
+                drawHeader(out, headers[boardCol]);
+            }
         }
 
         out.println();
@@ -69,7 +73,7 @@ public class ChessDisplay {
         setBlack(out);
     }
 
-    private static void drawChessBoard(PrintStream out, ChessGame game) {
+    private static void drawChessBoard(PrintStream out, ChessGame game, boolean whiteBoard) {
         int borderNumber = 0;
         for (int boardRow = 0; boardRow < BOARD_SIZE_IN_SQUARES; ++boardRow) {//Draw squares from the top down
             drawRowOfSquares(out, borderNumber, game);
