@@ -4,6 +4,7 @@ import dataaccess.DataAccessException;
 import dataaccess.SQLAuthDAO;
 import dataaccess.SQLGameDAO;
 import model.AuthData;
+import model.GameData;
 import model.UserData;
 import org.junit.jupiter.api.*;
 import server.Server;
@@ -13,6 +14,7 @@ import service.UserService;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -117,6 +119,42 @@ public class ServerFacadeTests {
         SQLAuthDAO sqlAuthDAO = new SQLAuthDAO();
         String name = sqlAuthDAO.getUser(authData.authToken());
         assertEquals(name, authData.username(), "Harold was logged out :(");
+    }
+
+    @Test
+    @DisplayName("Create Game Success")
+    public void createGame() throws URISyntaxException, IOException, DataAccessException {
+        boolean gameMade = false;
+        AuthData harold = createHarold();
+        facade.createGame(harold, "moneyBall");
+        SQLGameDAO gameDAO = new SQLGameDAO();
+        ArrayList<GameData> allGames = gameDAO.listGames();
+        for (GameData game : allGames) {
+            if (game.gameName().equals("moneyBall")) {
+                gameMade = true;
+            }
+        }
+        assertTrue(gameMade, "Harold's game was not made :(");
+    }
+
+    @Test
+    @DisplayName("Create Game Fail")
+    public void createFail() throws URISyntaxException, IOException, DataAccessException {
+        boolean gameMade = false;
+        AuthData fake = new AuthData("FakeToken", "FakeUser");
+        facade.createGame(fake, "moneyBall");
+        SQLGameDAO gameDAO = new SQLGameDAO();
+        ArrayList<GameData> allGames = gameDAO.listGames();
+        for (GameData game : allGames) {
+            if (game.gameName().equals("moneyBall")) {
+                gameMade = true;
+            }
+        }
+        assertFalse(gameMade, "Fake game was made");
+    }
+
+    public AuthData createHarold () throws URISyntaxException, IOException {
+        return facade.register("harold", "haroldPassword", "imharold@harold.com");
     }
 
     public static void clearUsers() throws Exception {
