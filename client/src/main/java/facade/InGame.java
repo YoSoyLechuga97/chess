@@ -14,8 +14,37 @@ public class InGame {
 
     boolean watchFromWhite;
 
-    public void playGame() {
-
+    public void playGame(AuthData terminalAuthData, ChessGame game, boolean watchFromWhite) throws Exception{
+        this.terminalAuthData = terminalAuthData;
+        this.watchFromWhite = watchFromWhite;
+        chessDisplay.run(game, watchFromWhite);
+        while (!leave) {
+            System.out.print("[PLAYING] >>> ");
+            String[] userInput = readInput();
+            switch (userInput[0]) {
+                case "help":
+                    System.out.println("redraw - the chess board\nleave - the game\nmove - a chess piece\nresign - from the game\nhighlight - a piece to see potential moves\nhelp - with possible commands\n");
+                    break;
+                case "leave":
+                    System.out.println("Leaving Game\n");
+                    leave = true;
+                    break;
+                case "redraw":
+                    chessDisplay.run(game, watchFromWhite);
+                    break;
+                case "move":
+                    System.out.println("TODO:MAKEMOVE");
+                    break;
+                case "resign":
+                    System.out.println("TODO:RESIGN");
+                    break;
+                case "highlight":
+                    System.out.println("TODO:HIGHLIGHT");
+                default:
+                    System.out.println("Unrecognized command");
+                    break;
+            }
+        }
     }
 
     public void observeGame(AuthData terminalAuthData, ChessGame game) throws InvalidMoveException {
