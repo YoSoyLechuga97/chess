@@ -44,13 +44,13 @@ public class InGame {
                 case "highlight":
                     System.out.println("TODO:HIGHLIGHT");
                     if (userInput.length == 2) {
-                        String patternString = "([a-zA-z])(\\d)";
+                        String patternString = "([a-hA-H])([1-8])";
                         Pattern pattern = Pattern.compile(patternString);
                         Matcher matcher = pattern.matcher(userInput[1]);
                         if (matcher.matches()) {
                             System.out.println("You input <POSITION> correctly!");
                         } else {
-                            System.out.println("<POSITION> must be typed letter then number with no spaces, like 'a3'");
+                            System.out.println("<POSITION> must be typed letter then number with no spaces and exist on the board, like 'a3'");
                         }
                         break;
                     }
