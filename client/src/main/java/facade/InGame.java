@@ -43,11 +43,19 @@ public class InGame {
                     break;
                 case "highlight":
                     System.out.println("TODO:HIGHLIGHT");
-                    if (userInput.length == 2) {
+                    if (userInput.length == 2) { //Make sure the command is formatted correctly
                         String patternString = "([a-hA-H])([1-8])";
                         Pattern pattern = Pattern.compile(patternString);
                         Matcher matcher = pattern.matcher(userInput[1]);
                         if (matcher.matches()) {
+                            //Determine there is a piece at that position on the board
+                            int col = matcher.group(1).charAt(0) - 'a' + 1;
+                            int row = Integer.parseInt(matcher.group(2));
+                            //if(game.getBoard().getPiece())
+                            System.out.println("Your row is: " + row + " and your col is " + col);
+                            //Create an array of chessPositions for all possible moves
+
+
                             System.out.println("You input <POSITION> correctly!");
                         } else {
                             System.out.println("<POSITION> must be typed letter then number with no spaces and exist on the board, like 'a3'");

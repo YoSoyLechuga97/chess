@@ -21,13 +21,6 @@ public class ChessDisplay {
         drawHeaders(out, whiteBoard);
         drawChessBoard(out, game, whiteBoard);
         drawHeaders(out, whiteBoard);
-//
-//        drawDivision(out);
-//        whiteBoard = true;
-//
-//        drawHeaders(out, whiteBoard);
-//        drawChessBoard(out, game, whiteBoard);
-//        drawHeaders(out, whiteBoard);
 
         out.print(SET_BG_COLOR_BLACK);
         out.print(SET_TEXT_COLOR_WHITE);
