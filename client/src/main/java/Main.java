@@ -16,7 +16,7 @@ public class Main {
         AuthData terminalAuthData = null;
         Scanner scanner = new Scanner(System.in);
         ServerFacade serverFacade = new ServerFacade();
-        //ChessDisplay chessDisplay = new ChessDisplay();
+        ChessDisplay chessDisplay = new ChessDisplay();
         Map<Integer, Integer> gameList = new HashMap<>();
         Map<Integer, ChessGame> gameFromID = new HashMap<>();
         boolean quit = false;
@@ -113,12 +113,25 @@ public class Main {
                             }
                             int gameToJoin = gameList.get(userNumber);
                             serverFacade.joinGame(terminalAuthData, userInput[2], gameToJoin);
-                            ChessDisplay chessDisplay = new ChessDisplay();
+                            chessDisplay = new ChessDisplay();
                             chessDisplay.run(gameFromID.get(gameToJoin));
                             break;
                         }
                     //Observe
-
+                    case "observe":
+                        if (userInput.length == 2) {
+                            int userNumber;
+                            try {
+                                userNumber = Integer.parseInt(userInput[1]);
+                            } catch (NumberFormatException e) {
+                                System.out.println("Not a valid game number");
+                                break;
+                            }
+                            int gameToWatch = gameList.get(userNumber);
+                            chessDisplay = new ChessDisplay();
+                            chessDisplay.run(gameFromID.get(gameToWatch));
+                            break;
+                        }
                     //Logout
                     case "logout":
                         terminalAuthData = serverFacade.logout(terminalAuthData);
