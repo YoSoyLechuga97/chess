@@ -116,28 +116,9 @@ public class ChessDisplay {
         }
     }
 
-    private static void drawVerticalLine(PrintStream out) {
-
-        int boardSizeInSpaces = BOARD_SIZE_IN_SQUARES * SQUARE_SIZE_IN_CHARS +
-                (BOARD_SIZE_IN_SQUARES - 1) * LINE_WIDTH_IN_CHARS;
-
-        for (int lineRow = 0; lineRow < LINE_WIDTH_IN_CHARS; ++lineRow) {
-            setRed(out);
-            out.print(EMPTY.repeat(boardSizeInSpaces));
-
-            setBlack(out);
-            out.println();
-        }
-    }
-
     private static void setWhite(PrintStream out) {
         out.print(SET_BG_COLOR_WHITE);
         //out.print(SET_TEXT_COLOR_WHITE);
-    }
-
-    private static void setRed(PrintStream out) {
-        out.print(SET_BG_COLOR_RED);
-        out.print(SET_TEXT_COLOR_RED);
     }
 
     private static void setBlack(PrintStream out) {
@@ -147,10 +128,6 @@ public class ChessDisplay {
 
     private static void setBlue(PrintStream out) {
         out.print(SET_BG_COLOR_BLUE);
-    }
-
-    private static void setGray(PrintStream out) {
-        out.print(SET_BG_COLOR_DARK_GREY);
     }
 
     private static void setBorder(PrintStream out) {
