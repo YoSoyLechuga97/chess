@@ -235,7 +235,7 @@ public class ServerFacadeTests {
         UserService service = new UserService();
         boolean isTossed = false;
         //Good Login
-        UserData login1 = new UserData("HiFriend", "HiFriendPassword", "HiFriend@gmail.com");
+        UserData login1 = new UserData("HiFriend", "JeepersCreepers", "zoinks@gmail.com");
         AuthData actual1 = service.login(login1);
         assertNotEquals(null, actual1, "Login was not successful");
         //Clear Database
