@@ -12,13 +12,13 @@ public class ChessDisplay {
     private static final int LINE_WIDTH_IN_CHARS = 1;
 
 
-    public static void main(String[] args) throws InvalidMoveException {
+    public void run(ChessGame game) throws InvalidMoveException {
         var out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
-        ChessGame game = new ChessGame();
-        ChessPosition start = new ChessPosition(1, 2);
-        ChessPosition end = new ChessPosition(3, 1);
-        ChessMove move = new ChessMove(start, end, null);
-        game.makeMove(move);
+//        ChessGame game = new ChessGame();
+//        ChessPosition start = new ChessPosition(1, 2);
+//        ChessPosition end = new ChessPosition(3, 1);
+//        ChessMove move = new ChessMove(start, end, null);
+//        game.makeMove(move);
         boolean whiteBoard = false;
 
         out.print(ERASE_SCREEN);

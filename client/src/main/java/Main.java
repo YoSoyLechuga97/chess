@@ -12,12 +12,13 @@ import java.util.Map;
 import java.util.Scanner;
 
 public class Main {
-    public static void main(String[] args) throws DataAccessException, URISyntaxException, IOException {
+    public static void main(String[] args) throws DataAccessException, URISyntaxException, IOException, InvalidMoveException {
         AuthData terminalAuthData = null;
         Scanner scanner = new Scanner(System.in);
         ServerFacade serverFacade = new ServerFacade();
         //ChessDisplay chessDisplay = new ChessDisplay();
         Map<Integer, Integer> gameList = new HashMap<>();
+        Map<Integer, ChessGame> gameFromID = new HashMap<>();
         boolean quit = false;
         var piece = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.PAWN);
         System.out.println("♕ 240 Chess Client: " + piece);
@@ -95,6 +96,7 @@ public class Main {
                         for (GameData game : allGames) {
                             System.out.println(i + ". " + game.gameName() + " W: " + game.whiteUsername() + " B: " + game.blackUsername());
                             gameList.put(i, game.gameID());
+                            gameFromID.put(game.gameID(), game.game());
                             i++;
                         }
                         System.out.println("\n");
@@ -111,7 +113,8 @@ public class Main {
                             }
                             int gameToJoin = gameList.get(userNumber);
                             serverFacade.joinGame(terminalAuthData, userInput[2], gameToJoin);
-                            ChessDisplay displayGame = new ChessDisplay();
+                            ChessDisplay chessDisplay = new ChessDisplay();
+                            chessDisplay.run(gameFromID.get(gameToJoin));
                             break;
                         }
                     //Observe
