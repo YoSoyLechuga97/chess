@@ -13,7 +13,7 @@ import java.util.Map;
 import java.util.Scanner;
 
 public class Main {
-    public static void main(String[] args) throws DataAccessException, URISyntaxException, IOException, InvalidMoveException {
+    public static void main(String[] args) throws Exception, URISyntaxException, IOException, InvalidMoveException {
         AuthData terminalAuthData = null;
         Server server = new Server();
         var port = server.run(0);

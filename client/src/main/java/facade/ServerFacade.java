@@ -9,7 +9,6 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 
 import com.google.gson.Gson;
-import dataaccess.DataAccessException;
 import model.AuthData;
 import model.GameData;
 import model.ListGamesData;
@@ -22,7 +21,7 @@ public class ServerFacade {
     String url;
     String header = "";
     String headerValue = "";
-    public ServerFacade(int port) throws DataAccessException {
+    public ServerFacade(int port) throws Exception {
         this.port = port;
     }
 
