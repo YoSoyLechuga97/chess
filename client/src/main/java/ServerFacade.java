@@ -11,7 +11,6 @@ import dataaccess.DataAccessException;
 import model.AuthData;
 import model.GameData;
 import model.ListGamesData;
-import server.Server;
 
 public class ServerFacade {
     int port;
@@ -21,9 +20,8 @@ public class ServerFacade {
     String url;
     String header = "";
     String headerValue = "";
-    public ServerFacade() throws DataAccessException {
-        Server server1 = new Server();
-        this.port = server1.run(0);
+    public ServerFacade(int port) throws DataAccessException {
+        this.port = port;
     }
 
     public AuthData login(String username, String password) throws URISyntaxException, IOException {
@@ -110,7 +108,7 @@ public class ServerFacade {
         }
         writeRequestBody(body, http);
         http.connect();
-        System.out.printf("= Request =========\n[%s] %s\n\n%s\n\n", method, url, body);
+        //System.out.printf("= Request =========\n[%s] %s\n\n%s\n\n", method, url, body);
         return http;
     }
     private static void writeRequestBody(String body, HttpURLConnection http) throws IOException {

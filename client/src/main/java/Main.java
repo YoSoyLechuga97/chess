@@ -2,6 +2,7 @@ import chess.*;
 import dataaccess.DataAccessException;
 import model.AuthData;
 import model.GameData;
+import server.Server;
 
 import java.io.IOException;
 import java.lang.reflect.Array;
@@ -14,8 +15,9 @@ import java.util.Scanner;
 public class Main {
     public static void main(String[] args) throws DataAccessException, URISyntaxException, IOException, InvalidMoveException {
         AuthData terminalAuthData = null;
-        Scanner scanner = new Scanner(System.in);
-        ServerFacade serverFacade = new ServerFacade();
+        Server server = new Server();
+        var port = server.run(0);
+        ServerFacade serverFacade = new ServerFacade(port);
         ChessDisplay chessDisplay = new ChessDisplay();
         Map<Integer, Integer> gameList = new HashMap<>();
         Map<Integer, ChessGame> gameFromID = new HashMap<>();
@@ -113,7 +115,6 @@ public class Main {
                             }
                             int gameToJoin = gameList.get(userNumber);
                             serverFacade.joinGame(terminalAuthData, userInput[2], gameToJoin);
-                            chessDisplay = new ChessDisplay();
                             chessDisplay.run(gameFromID.get(gameToJoin));
                             break;
                         }
@@ -128,7 +129,6 @@ public class Main {
                                 break;
                             }
                             int gameToWatch = gameList.get(userNumber);
-                            chessDisplay = new ChessDisplay();
                             chessDisplay.run(gameFromID.get(gameToWatch));
                             break;
                         }
