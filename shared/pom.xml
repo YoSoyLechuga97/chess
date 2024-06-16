@@ -44,7 +44,7 @@
                             <archive>
                                 <manifest>
                                     <mainClass>
-                                        TerminalUI
+                                        facade.TerminalUI
                                     </mainClass>
                                 </manifest>
                             </archive>

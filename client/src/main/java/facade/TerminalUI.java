@@ -1,3 +1,5 @@
+package facade;
+
 import chess.*;
 import facade.ServerFacade;
 import model.AuthData;
@@ -131,7 +133,9 @@ public class TerminalUI {
                     quit = true;
                 //Unknown Command
                 default:
-                    System.out.println("Unrecognized command");
+                    if(!quit) {
+                        System.out.println("Unrecognized command");
+                    }
                     break;
             }
         }

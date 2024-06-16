@@ -1,3 +1,4 @@
+package facade;
 
 import chess.*;
 
