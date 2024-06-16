@@ -1,7 +1,5 @@
 
-import chess.ChessGame;
-import chess.ChessPiece;
-import chess.ChessPosition;
+import chess.*;
 
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
@@ -14,9 +12,13 @@ public class ChessDisplay {
     private static final int LINE_WIDTH_IN_CHARS = 1;
 
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InvalidMoveException {
         var out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
         ChessGame game = new ChessGame();
+        ChessPosition start = new ChessPosition(1, 2);
+        ChessPosition end = new ChessPosition(3, 1);
+        ChessMove move = new ChessMove(start, end, null);
+        game.makeMove(move);
         boolean whiteBoard = false;
 
         out.print(ERASE_SCREEN);
@@ -95,7 +97,12 @@ public class ChessDisplay {
                     setBlue(out);
                 }
                 if (boardCol >= 0 && boardCol < BOARD_SIZE_IN_SQUARES) {
-                    String piece = determinePiece(game, boardCol, borderNumber);
+                    String piece = EMPTY;
+                    if (whiteBoard) {
+                        piece = determinePiece(game, boardCol, borderNumber);
+                    } else {
+                        piece = determinePiece(game, 7 - boardCol, 7 - borderNumber);
+                    }
                     printPlayer(out, piece);
                 }
 
