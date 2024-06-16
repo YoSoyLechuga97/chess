@@ -1,11 +1,11 @@
 import chess.*;
 import dataaccess.DataAccessException;
+import facade.ServerFacade;
 import model.AuthData;
 import model.GameData;
 import server.Server;
 
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
