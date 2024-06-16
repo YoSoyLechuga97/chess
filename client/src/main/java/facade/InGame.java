@@ -1,6 +1,8 @@
 package facade;
 
 import chess.ChessGame;
+import chess.ChessPiece;
+import chess.ChessPosition;
 import chess.InvalidMoveException;
 import model.AuthData;
 
@@ -51,12 +53,12 @@ public class InGame {
                             //Determine there is a piece at that position on the board
                             int col = matcher.group(1).charAt(0) - 'a' + 1;
                             int row = Integer.parseInt(matcher.group(2));
-                            //if(game.getBoard().getPiece())
-                            System.out.println("Your row is: " + row + " and your col is " + col);
-                            //Create an array of chessPositions for all possible moves
-
-
-                            System.out.println("You input <POSITION> correctly!");
+                            ChessPosition highlightPosition = new ChessPosition(row, col);
+                            if (game.getBoard().getPiece(highlightPosition) != null) {
+                                System.out.println("Valid piece");
+                            } else {
+                                System.out.println("There is no chessPiece at " + userInput[1]);
+                            }
                         } else {
                             System.out.println("<POSITION> must be typed letter then number with no spaces and exist on the board, like 'a3'");
                         }
