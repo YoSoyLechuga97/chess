@@ -44,7 +44,7 @@
                             <archive>
                                 <manifest>
                                     <mainClass>
-                                        Main
+                                        TerminalUI
                                     </mainClass>
                                 </manifest>
                             </archive>

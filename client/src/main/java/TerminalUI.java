@@ -1,22 +1,16 @@
 import chess.*;
-import dataaccess.DataAccessException;
 import facade.ServerFacade;
 import model.AuthData;
 import model.GameData;
-import server.Server;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 
-public class Main {
-    public static void main(String[] args) throws Exception, URISyntaxException, IOException, InvalidMoveException {
+public class TerminalUI {
+    public static void run(int port) throws Exception {
         AuthData terminalAuthData = null;
-        Server server = new Server();
-        var port = server.run(0);
         ServerFacade serverFacade = new ServerFacade(port);
         ChessDisplay chessDisplay = new ChessDisplay();
         Map<Integer, Integer> gameList = new HashMap<>();
