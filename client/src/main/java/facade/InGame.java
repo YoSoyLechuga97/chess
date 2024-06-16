@@ -4,6 +4,9 @@ import chess.ChessGame;
 import chess.InvalidMoveException;
 import model.AuthData;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import static facade.TerminalUI.readInput;
 
 public class InGame {
@@ -23,7 +26,7 @@ public class InGame {
             String[] userInput = readInput();
             switch (userInput[0]) {
                 case "help":
-                    System.out.println("redraw - the chess board\nleave - the game\nmove - a chess piece\nresign - from the game\nhighlight - a piece to see potential moves\nhelp - with possible commands\n");
+                    System.out.println("redraw - the chess board\nleave - the game\nmove - a chess piece\nresign - from the game\nhighlight <POSITION> - to see potential moves\nhelp - with possible commands\n");
                     break;
                 case "leave":
                     System.out.println("Leaving Game\n");
@@ -40,6 +43,17 @@ public class InGame {
                     break;
                 case "highlight":
                     System.out.println("TODO:HIGHLIGHT");
+                    if (userInput.length == 2) {
+                        String patternString = "([a-zA-z])(\\d)";
+                        Pattern pattern = Pattern.compile(patternString);
+                        Matcher matcher = pattern.matcher(userInput[1]);
+                        if (matcher.matches()) {
+                            System.out.println("You input <POSITION> correctly!");
+                        } else {
+                            System.out.println("<POSITION> must be typed letter then number with no spaces, like 'a3'");
+                        }
+                        break;
+                    }
                 default:
                     System.out.println("Unrecognized command");
                     break;
