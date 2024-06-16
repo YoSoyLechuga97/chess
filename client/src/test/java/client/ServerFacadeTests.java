@@ -1,6 +1,7 @@
 package client;
 
 import dataaccess.DataAccessException;
+import dataaccess.SQLAuthDAO;
 import dataaccess.SQLGameDAO;
 import model.AuthData;
 import model.UserData;
@@ -13,8 +14,7 @@ import service.UserService;
 import java.io.IOException;
 import java.net.URISyntaxException;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 
 public class ServerFacadeTests {
@@ -94,7 +94,30 @@ public class ServerFacadeTests {
         assertTrue(failed, "registered user with existing username");
     }
 
+    @Test
+    @DisplayName("Logout Success")
+    public void logoutSuccess() throws URISyntaxException, IOException, DataAccessException {
+        boolean loggedOut = false;
+        AuthData authData = facade.login("newGuy", "newGuyPassword");
+        AuthData logoutData = facade.logout(authData);
+        SQLAuthDAO sqlAuthDAO = new SQLAuthDAO();
+        String name = sqlAuthDAO.getUser(authData.authToken());
+        if (name == null) {
+            loggedOut = true;
+        }
+        assertTrue(loggedOut, "Failed to logout user");
+    }
 
+    @Test
+    @DisplayName("Logout Failure")
+    public void logoutFail() throws URISyntaxException, IOException, DataAccessException {
+        AuthData authData = facade.register("harold", "haroldPassword", "imharold@harold.com");
+        AuthData fakeID = new AuthData("FakeToken", "harold");
+        AuthData logout = facade.logout(fakeID);
+        SQLAuthDAO sqlAuthDAO = new SQLAuthDAO();
+        String name = sqlAuthDAO.getUser(authData.authToken());
+        assertEquals(name, authData.username(), "Harold was logged out :(");
+    }
 
     public static void clearUsers() throws Exception {
         //Login to database
