@@ -12,7 +12,6 @@ public class ChessDisplay {
     private static final int BOARD_SIZE_IN_SQUARES = 8;
     private static final int SQUARE_SIZE_IN_CHARS = 1;
     private static final int LINE_WIDTH_IN_CHARS = 1;
-    private static final String EMPTY = "   ";
     private static final String X = " X ";
     private static final String O = " O ";
     private static Random rand = new Random();
@@ -38,7 +37,7 @@ public class ChessDisplay {
 
         setBlack(out);
 
-        String[] headers = { "   ", " a ", " b ", " c ", " d ", " e ", " f ", " g ", " h ", "   " };
+        String[] headers = { "  ", "\u2003 a ", "\u2003b ", "\u2003c ", "\u2003d ", "\u2003e ", "\u2003f ", "\u2003g ", "\u2003h ", "   " };
         for (int boardCol = 0; boardCol < BOARD_SIZE_IN_SQUARES + 2; ++boardCol) {
             drawHeader(out, headers[boardCol]);
         }
