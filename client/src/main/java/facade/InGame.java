@@ -33,6 +33,12 @@ public class InGame {
                     System.out.println("Leaving Game\n");
                     leave = true;
                     break;
+                case "redraw":
+                    chessDisplay.run(game, watchFromWhite);
+                    break;
+                default:
+                    System.out.println("Unrecognized command");
+                    break;
             }
         }
     }
