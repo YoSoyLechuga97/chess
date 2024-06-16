@@ -13,6 +13,7 @@ import service.GameService;
 import service.UserService;
 
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 
@@ -151,6 +152,26 @@ public class ServerFacadeTests {
             }
         }
         assertFalse(gameMade, "Fake game was made");
+    }
+
+    @Test
+    @DisplayName("List Games Success")
+    public void listGamesSuccess() throws URISyntaxException, IOException {
+        AuthData harold = createHarold();
+        ArrayList<GameData> allGames = facade.listGames(harold);
+        assertFalse(allGames.isEmpty(), "No Games Listed");
+    }
+
+    @Test
+    @DisplayName("List Games Fail")
+    public void listFail() throws URISyntaxException, IOException {
+        boolean gamesListed = true;
+        AuthData fake = new AuthData("FakeToken", "Fakeuser");
+        ArrayList<GameData> allGames = facade.listGames(fake);
+        if (allGames == null) {
+            gamesListed = false;
+        }
+        assertFalse(gamesListed, "Games were listed with fake token");
     }
 
     public AuthData createHarold () throws URISyntaxException, IOException {

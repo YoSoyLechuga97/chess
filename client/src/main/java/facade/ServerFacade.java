@@ -78,6 +78,9 @@ public class ServerFacade {
         body = "";
         method = "GET";
         ListGamesData list = sendAndReceive(ListGamesData.class);
+        if (list == null) {
+            return null;
+        }
         return list.games();
     }
 
