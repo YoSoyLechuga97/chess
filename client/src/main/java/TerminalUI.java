@@ -27,11 +27,7 @@ public class TerminalUI {
                 switch (userInput[0]) {
                     //Help
                     case "help":
-                        System.out.println("register <USERNAME> <PASSWORD> <EMAIL> - to create an account");
-                        System.out.println("login <USERNAME> <PASSWORD> - to play chess");
-                        System.out.println("quit - playing chess");
-                        System.out.println("help - with possible commands");
-                        System.out.println("\n");
+                        System.out.println("register <USERNAME> <PASSWORD> <EMAIL> - to create an account\nlogin <USERNAME> <PASSWORD> - to play chess\nquit - playing chess\nhelp - with possible commands\n");
                         break;
                     //Quit
                     case "quit":
@@ -42,18 +38,14 @@ public class TerminalUI {
                     case "login":
                         if (userInput.length == 3) {
                             terminalAuthData = serverFacade.login(userInput[1], userInput[2]);
-                            if (terminalAuthData != null) {
-                                System.out.println("Logged in as " + terminalAuthData.username());
-                            }
+                            if (terminalAuthData != null) { System.out.println("Logged in as " + terminalAuthData.username()); }
                             break;
                         }
                         //Register
                     case "register":
                         if (userInput.length == 4) {
                             terminalAuthData = serverFacade.register(userInput[1], userInput[2], userInput[3]);
-                            if (terminalAuthData != null) {
-                                System.out.println("Logged in as " + terminalAuthData.username());
-                            }
+                            if (terminalAuthData != null) { System.out.println("Logged in as " + terminalAuthData.username()); }
                             break;
                         }
                         //Unknown Command
@@ -70,14 +62,7 @@ public class TerminalUI {
                 switch (userInput[0]) {
                     //Help
                     case "help":
-                        System.out.println("create <NAME> - a game");
-                        System.out.println("list - games");
-                        System.out.println("join <ID> [WHITE|BLACK] - a game");
-                        System.out.println("observe <ID> - a game");
-                        System.out.println("logout - when you are done");
-                        System.out.println("quit - playing chess");
-                        System.out.println("help - with possible commands");
-                        System.out.println("\n");
+                        System.out.println("create <NAME> - a game\nlist - games\njoin <ID> [WHITE|BLACK] - a game\nobserve <ID> - a game\nlogout - when you are done\nquit - playing chess\nhelp - with possible commands\n");
                         break;
                     //Create
                     case "create":
