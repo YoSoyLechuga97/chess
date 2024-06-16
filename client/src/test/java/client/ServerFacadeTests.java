@@ -32,28 +32,6 @@ public class ServerFacadeTests {
         var port = server.run(0);
         System.out.println("Started test HTTP server on " + port);
         facade = new ServerFacade(port);
-
-        SQLGameDAO gameDAO = new SQLGameDAO();
-        if (!gameDAO.listGames().isEmpty()) {
-            clearUsers();
-        }
-        //Create users
-        UserData user1 = new UserData("newGuy", "newGuyPassword", "newGuyEmail@yahoo.com");
-        UserData user2 = new UserData("HiFriend", "HiFriendPassword", "HiFriend@gmail.com");
-        UserData user3 = new UserData("Gamer44", "Gamer44Password", "Gamer44@aol.com");
-        UserService myService = new UserService();
-        GameService gameService = new GameService();
-        AuthData newGuyAuth = myService.register(user1);
-        AuthData hiFriendAuth = myService.register(user2);
-        AuthData gamer44Auth = myService.register(user3);
-
-        //Create some Games
-        int fireGameID = gameService.createGame(newGuyAuth, "fireGame");
-        int iceGameID = gameService.createGame(hiFriendAuth, "iceGame");
-
-        //Join 1 game
-        gameService.joinGame(newGuyAuth, "WHITE", fireGameID);
-
     }
 
     @BeforeEach
