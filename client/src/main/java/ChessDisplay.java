@@ -76,12 +76,12 @@ public class ChessDisplay {
     private static void drawChessBoard(PrintStream out, ChessGame game, boolean whiteBoard) {
         int borderNumber = 0;
         for (int boardRow = 0; boardRow < BOARD_SIZE_IN_SQUARES; ++boardRow) {//Draw squares from the top down
-            drawRowOfSquares(out, borderNumber, game);
+            drawRowOfSquares(out, borderNumber, game, whiteBoard);
             borderNumber++;
         }
     }
 
-    private static void drawRowOfSquares(PrintStream out, int borderNumber, ChessGame game) {
+    private static void drawRowOfSquares(PrintStream out, int borderNumber, ChessGame game, boolean whiteBoard) {
 
         String[] sides = {" 8 ", " 7 ", " 6 ", " 5 ", " 4 ", " 3 ", " 2 ", " 1 "};
         for (int squareRow = 0; squareRow < SQUARE_SIZE_IN_CHARS; ++squareRow) {
@@ -102,7 +102,11 @@ public class ChessDisplay {
                 if (boardCol == -1 || boardCol == BOARD_SIZE_IN_SQUARES) {
                     // Draw vertical border
                     setBorder(out);
-                    out.print(sides[borderNumber]);
+                    if (whiteBoard) {
+                        out.print(sides[borderNumber]);
+                    } else {
+                        out.print(sides[7 - borderNumber]);
+                    }
                 }
                 setBlack(out);
             }
