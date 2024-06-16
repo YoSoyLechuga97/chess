@@ -70,7 +70,7 @@ public class ChessDisplay {
                 setWhite(out);
 
                 //Alternate colors
-                if ((boardCol + borderNumber) % 2 != 0) {
+                if ((boardCol + borderNumber) % 2 == 0) {
                     setWhite(out);
                 } else {
                     setBlue(out);
