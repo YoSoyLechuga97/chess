@@ -12,9 +12,6 @@ public class ChessDisplay {
     private static final int BOARD_SIZE_IN_SQUARES = 8;
     private static final int SQUARE_SIZE_IN_CHARS = 1;
     private static final int LINE_WIDTH_IN_CHARS = 1;
-    private static final String X = " X ";
-    private static final String O = " O ";
-    private static Random rand = new Random();
 
 
     public static void main(String[] args) {
@@ -22,6 +19,14 @@ public class ChessDisplay {
         ChessGame game = new ChessGame();
 
         out.print(ERASE_SCREEN);
+
+        drawHeaders(out);
+
+        drawChessBoard(out, game);
+
+        drawHeaders(out);
+
+        drawDivision(out);
 
         drawHeaders(out);
 
@@ -42,6 +47,12 @@ public class ChessDisplay {
             drawHeader(out, headers[boardCol]);
         }
 
+        out.println();
+    }
+
+    private static void drawDivision(PrintStream out) {
+        setBlack(out);
+        out.print(EMPTY.repeat(BOARD_SIZE_IN_SQUARES + 2));
         out.println();
     }
 
