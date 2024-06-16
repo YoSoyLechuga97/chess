@@ -1,4 +1,8 @@
 
+import chess.ChessGame;
+import chess.ChessPiece;
+import chess.ChessPosition;
+
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Random;
@@ -16,12 +20,13 @@ public class ChessDisplay {
 
     public static void main(String[] args) {
         var out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
+        ChessGame game = new ChessGame();
 
         out.print(ERASE_SCREEN);
 
         drawHeaders(out);
 
-        drawTicTacToeBoard(out);
+        drawChessBoard(out, game);
 
         drawHeaders(out);
 
@@ -54,15 +59,15 @@ public class ChessDisplay {
         setBlack(out);
     }
 
-    private static void drawTicTacToeBoard(PrintStream out) {
+    private static void drawChessBoard(PrintStream out, ChessGame game) {
         int borderNumber = 0;
         for (int boardRow = 0; boardRow < BOARD_SIZE_IN_SQUARES; ++boardRow) {//Draw squares from the top down
-            drawRowOfSquares(out, borderNumber);
+            drawRowOfSquares(out, borderNumber, game);
             borderNumber++;
         }
     }
 
-    private static void drawRowOfSquares(PrintStream out, int borderNumber) {
+    private static void drawRowOfSquares(PrintStream out, int borderNumber, ChessGame game) {
 
         String[] sides = {" 8 ", " 7 ", " 6 ", " 5 ", " 4 ", " 3 ", " 2 ", " 1 "};
         for (int squareRow = 0; squareRow < SQUARE_SIZE_IN_CHARS; ++squareRow) {
@@ -76,7 +81,8 @@ public class ChessDisplay {
                     setBlue(out);
                 }
                 if (boardCol >= 0 && boardCol < BOARD_SIZE_IN_SQUARES) {
-                    printPlayer(out, rand.nextBoolean() ? X : O);
+                    String piece = determinePiece(game, boardCol, borderNumber);
+                    printPlayer(out, piece);
                 }
 
                 if (boardCol == -1 || boardCol == BOARD_SIZE_IN_SQUARES) {
@@ -130,6 +136,64 @@ public class ChessDisplay {
     private static void setBorder(PrintStream out) {
         out.print(SET_BG_COLOR_LIGHT_GREY);
         out.print(SET_TEXT_COLOR_WHITE);
+    }
+
+    private static String determinePiece(ChessGame game, int col, int row) {
+        ChessPosition position = new ChessPosition(8 - row, col + 1);
+        ChessPiece piece = game.getBoard().getPiece(position);
+        String pieceString = EMPTY;
+        if (piece != null) {
+            switch (piece.getPieceType()) {
+                case PAWN:
+                    if (piece.getTeamColor() == ChessGame.TeamColor.WHITE) {
+                        pieceString = WHITE_PAWN;
+                    } else {
+                        pieceString = BLACK_PAWN;
+                    }
+                    break;
+
+                case ROOK:
+                    if (piece.getTeamColor() == ChessGame.TeamColor.WHITE) {
+                        pieceString = WHITE_ROOK;
+                    } else {
+                        pieceString = BLACK_ROOK;
+                    }
+                    break;
+
+                case KNIGHT:
+                    if (piece.getTeamColor() == ChessGame.TeamColor.WHITE) {
+                        pieceString = WHITE_KNIGHT;
+                    } else {
+                        pieceString = BLACK_KNIGHT;
+                    }
+                    break;
+
+                case BISHOP:
+                    if (piece.getTeamColor() == ChessGame.TeamColor.WHITE) {
+                        pieceString = WHITE_BISHOP;
+                    } else {
+                        pieceString = BLACK_BISHOP;
+                    }
+                    break;
+
+                case QUEEN:
+                    if (piece.getTeamColor() == ChessGame.TeamColor.WHITE) {
+                        pieceString = WHITE_QUEEN;
+                    } else {
+                        pieceString = BLACK_QUEEN;
+                    }
+                    break;
+
+                case KING:
+                    if (piece.getTeamColor() == ChessGame.TeamColor.WHITE) {
+                        pieceString = WHITE_KING;
+                    } else {
+                        pieceString = BLACK_KING;
+                    }
+                    break;
+            }
+        }
+        return pieceString;
     }
 
     private static void printPlayer(PrintStream out, String player) {
