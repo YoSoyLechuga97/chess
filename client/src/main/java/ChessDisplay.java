@@ -46,7 +46,7 @@ public class ChessDisplay {
     }
 
     private static void printHeaderText(PrintStream out, String player) {
-        out.print(SET_BG_COLOR_DARK_GREEN);
+        out.print(SET_BG_COLOR_LIGHT_GREY);
         out.print(SET_TEXT_COLOR_WHITE);
 
         out.print(player);
@@ -69,12 +69,18 @@ public class ChessDisplay {
             for (int boardCol = -1; boardCol < BOARD_SIZE_IN_SQUARES + 1; ++boardCol) {
                 setWhite(out);
 
+                //Alternate colors
+                if ((boardCol + borderNumber) % 2 != 0) {
+                    setWhite(out);
+                } else {
+                    setBlue(out);
+                }
                 if (boardCol >= 0 && boardCol < BOARD_SIZE_IN_SQUARES) {
                     printPlayer(out, rand.nextBoolean() ? X : O);
                 }
 
                 if (boardCol == -1 || boardCol == BOARD_SIZE_IN_SQUARES) {
-                    // Draw right line
+                    // Draw vertical border
                     setBorder(out);
                     out.print(sides[borderNumber]);
                 }
@@ -100,7 +106,7 @@ public class ChessDisplay {
 
     private static void setWhite(PrintStream out) {
         out.print(SET_BG_COLOR_WHITE);
-        out.print(SET_TEXT_COLOR_WHITE);
+        //out.print(SET_TEXT_COLOR_WHITE);
     }
 
     private static void setRed(PrintStream out) {
@@ -113,15 +119,20 @@ public class ChessDisplay {
         out.print(SET_TEXT_COLOR_BLACK);
     }
 
+    private static void setBlue(PrintStream out) {
+        out.print(SET_BG_COLOR_BLUE);
+    }
+
+    private static void setGray(PrintStream out) {
+        out.print(SET_BG_COLOR_DARK_GREY);
+    }
+
     private static void setBorder(PrintStream out) {
-        out.print(SET_BG_COLOR_DARK_GREEN);
+        out.print(SET_BG_COLOR_LIGHT_GREY);
         out.print(SET_TEXT_COLOR_WHITE);
     }
 
     private static void printPlayer(PrintStream out, String player) {
-        out.print(SET_BG_COLOR_WHITE);
-        out.print(SET_TEXT_COLOR_BLACK);
-
         out.print(player);
 
         setWhite(out);
