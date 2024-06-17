@@ -22,6 +22,7 @@ public class InGame {
         this.terminalAuthData = terminalAuthData;
         this.watchFromWhite = watchFromWhite;
         chessDisplay.run(game, watchFromWhite, null);
+        //NOTIFY that the player has joined, need username and color
         while (!leave) {
             System.out.print("[PLAYING] >>> ");
             String[] userInput = readInput();
@@ -31,6 +32,8 @@ public class InGame {
                     break;
                 case "leave":
                     System.out.println("Leaving Game\n");
+                    //NOTIFY THAT YOU LEFT GAME, need username
+                    //Disconnect from WS
                     leave = true;
                     break;
                 case "redraw":
@@ -38,9 +41,11 @@ public class InGame {
                     break;
                 case "move":
                     System.out.println("TODO:MAKEMOVE");
+                    //NOTIFY THAT YOU MADE A MOVE, need username, description of move
                     break;
                 case "resign":
                     System.out.println("TODO:RESIGN");
+                    //NOTIFY THAT YOU RESIGNED THE GAME, need username
                     break;
                 case "highlight":
                     if (userInput.length == 2) { //Make sure the command is formatted correctly
@@ -61,6 +66,7 @@ public class InGame {
         this.terminalAuthData = terminalAuthData;
         watchFromWhite = true;
         chessDisplay.run(game, watchFromWhite, null);
+        //NOTIFY that you have joined as an observer, need username
         while (!leave) {
             System.out.print("[OBSERVING] >>> ");
             String[] userInput = readInput();
@@ -71,6 +77,8 @@ public class InGame {
                 case "leave":
                     System.out.println("Leaving Game\n");
                     leave = true;
+                    //NOTIFY PLAYERS THAT YOU'VE LEFT, need authToken
+                    //DISCONNECT FROM WS
                     break;
                 case "redraw":
                     chessDisplay.run(game, watchFromWhite, null);

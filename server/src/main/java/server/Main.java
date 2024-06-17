@@ -1,3 +1,5 @@
+package server;
+
 import chess.*;
 import server.Server;
 
