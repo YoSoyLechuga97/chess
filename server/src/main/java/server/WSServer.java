@@ -13,6 +13,7 @@ import spark.Spark;
 import websocket.commands.ConnectCommand;
 import websocket.commands.LeaveCommand;
 import websocket.commands.UserGameCommand;
+import websocket.messages.ErrorMessage;
 import websocket.messages.LoadMessage;
 import websocket.messages.NotificationMessage;
 import websocket.messages.ServerMessage;
@@ -67,7 +68,7 @@ public class WSServer {
                     break;
             }
         } catch (Exception e) {
-            sendErrorMessage(session);
+            sendErrorMessage(session, e);
         }
         //session.getRemote().sendString("WebSocket response: " + message);
     }
@@ -124,8 +125,10 @@ public class WSServer {
         return authDAO.getUser(authToken);
     }
 
-    public void sendErrorMessage(Session session) {
-
+    public void sendErrorMessage(Session session, Exception e) throws IOException {
+        ErrorMessage errorMessage = new ErrorMessage(ServerMessage.ServerMessageType.ERROR, e.getMessage());
+        String jsonError = gson.toJson(errorMessage);
+        session.getRemote().sendString(jsonError);
     }
 
     public void sendLoadGame(Session session, int gameID) throws IOException, DataAccessException {
