@@ -27,7 +27,6 @@ public class InGame {
     public void playGame(AuthData terminalAuthData, ChessGame game, boolean watchFromWhite, int port, int gameID, String color) throws Exception{
         this.terminalAuthData = terminalAuthData;
         this.watchFromWhite = watchFromWhite;
-        //chessDisplay.run(game, watchFromWhite, null);
         //Connect Websocket
         websocket = new WSClient(port, watchFromWhite, game);
         //NOTIFY that the player has joined, need username and color
@@ -44,6 +43,7 @@ public class InGame {
                 case "leave":
                     System.out.println("Leaving Game\n");
                     //NOTIFY THAT YOU LEFT GAME, need username
+
                     //Disconnect from WS
                     leave = true;
                     break;
