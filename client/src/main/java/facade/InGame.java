@@ -3,7 +3,7 @@ package facade;
 import chess.*;
 import com.google.gson.Gson;
 import model.AuthData;
-import userCommands.ConnectCommand;
+import websocket.commands.ConnectCommand;
 import websocket.WSClient;
 
 import java.util.ArrayList;
@@ -24,14 +24,14 @@ public class InGame {
 
     boolean watchFromWhite;
 
-    public void playGame(AuthData terminalAuthData, ChessGame game, boolean watchFromWhite, int port) throws Exception{
+    public void playGame(AuthData terminalAuthData, ChessGame game, boolean watchFromWhite, int port, int gameID) throws Exception{
         this.terminalAuthData = terminalAuthData;
         this.watchFromWhite = watchFromWhite;
         chessDisplay.run(game, watchFromWhite, null);
         //Connect Websocket
         websocket = new WSClient(port);
         //NOTIFY that the player has joined, need username and color
-        ConnectCommand connectCommand = new ConnectCommand(terminalAuthData.authToken());
+        ConnectCommand connectCommand = new ConnectCommand(terminalAuthData.authToken(), gameID);
         String json = gson.toJson(connectCommand);
         websocket.send(json);
         while (!leave) {
