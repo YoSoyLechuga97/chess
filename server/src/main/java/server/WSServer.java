@@ -72,7 +72,7 @@ public class WSServer {
                     if (!verifyToken(makeMoveCommand.getAuthString())) {
                         throw new Exception("Not authorized token");
                     }
-                    if (!verifyTurn(makeMoveCommand)) {
+                    if (!verifyTurn(makeMoveCommand) || !verifyControl(makeMoveCommand)) {
                         throw new Exception("It's not your turn");
                     }
                     makeMove(makeMoveCommand);
@@ -192,14 +192,28 @@ public class WSServer {
         GameData gameData = gameDAO.getGame(makeMove.getGameID());
         ChessGame game = gameData.game();
         ChessGame.TeamColor turnColor = game.getTeamTurn();
-        ChessGame.TeamColor colorTryingMove = game.getBoard().getPiece(makeMove.getMove().getEndPosition()).getTeamColor();
+        ChessGame.TeamColor colorTryingMove = game.getBoard().getPiece(makeMove.getMove().getStartPosition()).getTeamColor();
         return turnColor == colorTryingMove;
+    }
+
+    public boolean verifyControl(MakeMoveCommand moveMade) throws DataAccessException {
+        GameDAO gameDAO = new SQLGameDAO();
+        AuthDAO authDAO = new SQLAuthDAO();
+        GameData gameData = gameDAO.getGame(moveMade.getGameID());
+        String username = authDAO.getUser(moveMade.getAuthString());
+        ChessGame game = gameData.game();
+        ChessGame.TeamColor turnColor = game.getTeamTurn();
+        if (turnColor == ChessGame.TeamColor.WHITE) {
+            return username.equals(gameData.whiteUsername());
+        } else {
+            return username.equals(gameData.blackUsername());
+        }
     }
 
     public void resignFromGame(int gameID) throws DataAccessException {
         GameDAO gameDAO = new SQLGameDAO();
         GameData game = gameDAO.getGame(gameID);
-        game.game().setTeamTurn(null);
+        game.game().setTeamTurn(ChessGame.TeamColor.NONE);
         GameData finishedGame = new GameData(game.gameID(), game.whiteUsername(), game.blackUsername(), game.gameName(), game.game());
         gameDAO.updateGame(finishedGame);
     }
