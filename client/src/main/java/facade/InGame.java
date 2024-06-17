@@ -5,6 +5,7 @@ import com.google.gson.Gson;
 import model.AuthData;
 import websocket.commands.ConnectCommand;
 import websocket.WSClient;
+import websocket.commands.LeaveCommand;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -43,7 +44,9 @@ public class InGame {
                 case "leave":
                     System.out.println("Leaving Game\n");
                     //NOTIFY THAT YOU LEFT GAME, need username
-
+                    LeaveCommand leaveCommand = new LeaveCommand(terminalAuthData.authToken());
+                    String leaveJson = gson.toJson(leaveCommand);
+                    websocket.send(leaveJson);
                     //Disconnect from WS
                     leave = true;
                     break;
