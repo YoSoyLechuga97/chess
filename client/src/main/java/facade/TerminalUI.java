@@ -108,7 +108,7 @@ public class TerminalUI {
                         serverFacade.joinGame(terminalAuthData, userInput[2], gameToJoin);
                         boolean isWhite = userInput[2].equals("WHITE");
                         inGame = new InGame();
-                        inGame.playGame(terminalAuthData, gameFromID.get(gameToJoin), isWhite);
+                        inGame.playGame(terminalAuthData, gameFromID.get(gameToJoin), isWhite, serverFacade.port);
                         // chessDisplay.run(gameFromID.get(gameToJoin));
                         break;
                     }

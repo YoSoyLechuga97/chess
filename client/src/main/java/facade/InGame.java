@@ -24,12 +24,12 @@ public class InGame {
 
     boolean watchFromWhite;
 
-    public void playGame(AuthData terminalAuthData, ChessGame game, boolean watchFromWhite) throws Exception{
+    public void playGame(AuthData terminalAuthData, ChessGame game, boolean watchFromWhite, int port) throws Exception{
         this.terminalAuthData = terminalAuthData;
         this.watchFromWhite = watchFromWhite;
         chessDisplay.run(game, watchFromWhite, null);
         //Connect Websocket
-        websocket = new WSClient(serverFacade.port);
+        websocket = new WSClient(port);
         //NOTIFY that the player has joined, need username and color
         ConnectCommand connectCommand = new ConnectCommand(terminalAuthData.authToken());
         String json = gson.toJson(connectCommand);
