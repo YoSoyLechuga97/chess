@@ -21,7 +21,7 @@ public class InGame {
     public void playGame(AuthData terminalAuthData, ChessGame game, boolean watchFromWhite) throws Exception{
         this.terminalAuthData = terminalAuthData;
         this.watchFromWhite = watchFromWhite;
-        chessDisplay.run(game, watchFromWhite);
+        chessDisplay.run(game, watchFromWhite, null);
         while (!leave) {
             System.out.print("[PLAYING] >>> ");
             String[] userInput = readInput();
@@ -34,7 +34,7 @@ public class InGame {
                     leave = true;
                     break;
                 case "redraw":
-                    chessDisplay.run(game, watchFromWhite);
+                    chessDisplay.run(game, watchFromWhite, null);
                     break;
                 case "move":
                     System.out.println("TODO:MAKEMOVE");
@@ -64,6 +64,9 @@ public class InGame {
                                         int currCol = move.getEndPosition().getColumn();
                                         ChessPosition nextPos = new ChessPosition(currRow, currCol);
                                         squaresToHighlight.add(nextPos);
+
+                                        //Display the highlighted board
+                                        chessDisplay.run(game, watchFromWhite, squaresToHighlight);
                                     }
                                     System.out.println(squaresToHighlight);
                                 } else {
@@ -87,7 +90,7 @@ public class InGame {
     public void observeGame(AuthData terminalAuthData, ChessGame game) throws InvalidMoveException {
         this.terminalAuthData = terminalAuthData;
         watchFromWhite = true;
-        chessDisplay.run(game, watchFromWhite);
+        chessDisplay.run(game, watchFromWhite, null);
         while (!leave) {
             System.out.print("[OBSERVING] >>> ");
             String[] userInput = readInput();
@@ -100,7 +103,7 @@ public class InGame {
                     leave = true;
                     break;
                 case "redraw":
-                    chessDisplay.run(game, watchFromWhite);
+                    chessDisplay.run(game, watchFromWhite, null);
                     break;
                 default:
                     System.out.println("Unrecognized command");

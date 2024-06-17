@@ -4,6 +4,7 @@ import chess.*;
 
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Random;
 
 import static ui.EscapeSequences.*;
@@ -13,7 +14,7 @@ public class ChessDisplay {
     private static final int LINE_WIDTH_IN_CHARS = 1;
 
 
-    public void run(ChessGame game, boolean whiteBoard) throws InvalidMoveException {
+    public void run(ChessGame game, boolean whiteBoard, ArrayList<ChessPosition> highlight) throws InvalidMoveException {
         var out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
 
         out.print(ERASE_SCREEN);
@@ -41,12 +42,6 @@ public class ChessDisplay {
             }
         }
 
-        out.println();
-    }
-
-    private static void drawDivision(PrintStream out) {
-        setBlack(out);
-        out.print(EMPTY.repeat(BOARD_SIZE_IN_SQUARES + 2));
         out.println();
     }
 
