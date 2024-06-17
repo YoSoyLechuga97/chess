@@ -71,7 +71,6 @@ public class WSServer {
     }
 
     public UserGameCommand.CommandType parseCommand(String message) {
-        Gson gson = new Gson();
         JsonObject jsonObject = JsonParser.parseString(message).getAsJsonObject();
         String commandType = jsonObject.get("commandType").getAsString();
         return switch (commandType) {
