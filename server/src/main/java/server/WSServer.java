@@ -1,10 +1,10 @@
 package server;
 
+import chess.ChessGame;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import dataaccess.*;
-import model.AuthData;
 import model.GameData;
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
@@ -13,6 +13,7 @@ import spark.Spark;
 import websocket.commands.ConnectCommand;
 import websocket.commands.LeaveCommand;
 import websocket.commands.UserGameCommand;
+import websocket.messages.LoadMessage;
 import websocket.messages.NotificationMessage;
 import websocket.messages.ServerMessage;
 
@@ -35,7 +36,7 @@ public class WSServer {
     public void onMessage(Session session, String message) throws Exception {
         //Deserialize message
         //Gson gson = new Gson();
-        session.getRemote().sendString("WebSocket response: " + message);
+        //session.getRemote().sendString("WebSocket response: " + message);
         UserGameCommand.CommandType type = parseCommand(message);
         //Save session with authToken
         //Save Session with gameID
@@ -46,7 +47,7 @@ public class WSServer {
                 ConnectCommand connectCommand = gson.fromJson(message, ConnectCommand.class);
                 addToken(session, connectCommand.getAuthString());
                 addSession(connectCommand.getGameID(), session);
-                sendLoadGame(session);
+                sendLoadGame(session, connectCommand.getGame());
                 if (connectCommand.getJoined()) {
                     sendNotification(session, connectCommand.getGameID(), getUsername(connectCommand.getAuthString()) + " has joined the game as " + connectCommand.getColor() + "!");
                 } else {
@@ -65,7 +66,9 @@ public class WSServer {
                     removePlayerFromGame(leaveCommand.getGameID(), leaveCommand.getIsWhite());
                 }
                 break;
+            case RESIGN:
 
+                break;
         }
         //session.getRemote().sendString("WebSocket response: " + message);
     }
@@ -122,8 +125,8 @@ public class WSServer {
         return authDAO.getUser(authToken);
     }
 
-    public void sendLoadGame(Session session) throws IOException {
-        ServerMessage message = new ServerMessage(ServerMessage.ServerMessageType.LOAD_GAME);
+    public void sendLoadGame(Session session, ChessGame game) throws IOException {
+        LoadMessage message = new LoadMessage(ServerMessage.ServerMessageType.LOAD_GAME, game);
         String json = gson.toJson(message);
         session.getRemote().sendString(json);
     }

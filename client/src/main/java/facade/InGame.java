@@ -32,7 +32,7 @@ public class InGame {
         //Connect Websocket
         websocket = new WSClient(port, watchFromWhite, game);
         //NOTIFY that the player has joined, need username and color
-        ConnectCommand connectCommand = new ConnectCommand(terminalAuthData.authToken(), gameID, true, color);
+        ConnectCommand connectCommand = new ConnectCommand(terminalAuthData.authToken(), gameID, true, color, game);
         String json = gson.toJson(connectCommand);
         websocket.send(json);
         while (!leave) {

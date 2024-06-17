@@ -7,6 +7,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import facade.ChessDisplay;
 import websocket.commands.UserGameCommand;
+import websocket.messages.LoadMessage;
 import websocket.messages.NotificationMessage;
 import websocket.messages.ServerMessage;
 
@@ -43,7 +44,7 @@ public class WSClient extends Endpoint {
                         break;
                     case LOAD_GAME:
                         try {
-                            loadGame();
+                            loadGame(message);
                         } catch (InvalidMoveException e) {
                             throw new RuntimeException(e);
                         }
@@ -76,8 +77,9 @@ public class WSClient extends Endpoint {
         System.out.println(message.getNotification());
     }
 
-    public void loadGame() throws InvalidMoveException {
+    public void loadGame(String serverMessage) throws InvalidMoveException {
+        LoadMessage message = gson.fromJson(serverMessage, LoadMessage.class);
         ChessDisplay chessDisplay = new ChessDisplay();
-        chessDisplay.run(game, watchFromWhite, null);
+        chessDisplay.run(message.getGame(), watchFromWhite, null);
     }
 }
