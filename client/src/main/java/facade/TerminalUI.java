@@ -160,7 +160,7 @@ public class TerminalUI {
                         //Send to InGame
                         int gameToWatch = gameList.get(userNumber);
                         inGame = new InGame();
-                        inGame.observeGame(terminalAuthData, gameFromID.get(gameToWatch), gameToWatch);
+                        inGame.observeGame(terminalAuthData, gameFromID.get(gameToWatch), gameToWatch, serverFacade.port);
                         break;
                     }
                     //Logout

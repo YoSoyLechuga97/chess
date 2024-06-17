@@ -97,10 +97,15 @@ public class InGame {
         }
     }
 
-    public void observeGame(AuthData terminalAuthData, ChessGame game, int gameID) throws InvalidMoveException, URISyntaxException, IOException {
+    public void observeGame(AuthData terminalAuthData, ChessGame game, int gameID, int port) throws Exception {
         this.terminalAuthData = terminalAuthData;
         watchFromWhite = true;
-        chessDisplay.run(game, watchFromWhite, null);
+        //Connect Websocket
+        websocket = new WSClient(port, watchFromWhite, game);
+        //NOTIFY that the player has joined, need username and color
+        ConnectCommand connectCommand = new ConnectCommand(terminalAuthData.authToken(), gameID, false, null, game);
+        String json = gson.toJson(connectCommand);
+        websocket.send(json);
         //NOTIFY that you have joined as an observer, need username
         while (!leave) {
             System.out.print("[OBSERVING] >>> ");
@@ -111,9 +116,11 @@ public class InGame {
                     break;
                 case "leave":
                     System.out.println("Leaving Game\n");
+                    //NOTIFY THAT YOU LEFT GAME, need username
+                    LeaveCommand leaveCommand = new LeaveCommand(terminalAuthData.authToken(), false, watchFromWhite, gameID);
+                    String leaveJson = gson.toJson(leaveCommand);
+                    websocket.send(leaveJson);
                     leave = true;
-                    //NOTIFY PLAYERS THAT YOU'VE LEFT, need authToken
-                    //DISCONNECT FROM WS
                     break;
                 case "redraw":
                     redraw(gameID);
