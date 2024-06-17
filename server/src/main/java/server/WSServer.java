@@ -7,7 +7,7 @@ import spark.Spark;
 
 @WebSocket
 public class WSServer {
-    public static void run(int port) {
+    public WSServer(int port) {
         Spark.port(port);
         Spark.webSocket("/ws", WSServer.class);
     }
