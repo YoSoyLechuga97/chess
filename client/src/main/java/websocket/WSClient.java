@@ -18,11 +18,17 @@ public class WSClient extends Endpoint {
         WebSocketContainer container = ContainerProvider.getWebSocketContainer();
         this.session = container.connectToServer(this, uri);
 
-        //Add Message handlers
+        //Add Message handler and translate accordingly
+        this.session.addMessageHandler(new MessageHandler.Whole<String>() {
+            public void onMessage(String message) {
+                System.out.println(message);
+                //Later we will deserialize it and use methods to translate it
+            }
+        });
     }
 
-    public void send(UserGameCommand command) throws Exception{
-        //Send Commands
+    public void send(String msg) throws Exception {
+        this.session.getBasicRemote().sendText(msg);
     }
     @Override
     public void onOpen(Session session, EndpointConfig endpointConfig) {
