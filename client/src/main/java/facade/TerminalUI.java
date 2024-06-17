@@ -17,6 +17,8 @@ public class TerminalUI {
     ChessDisplay chessDisplay = new ChessDisplay();
     Map<Integer, Integer> gameList = new HashMap<>();
     Map<Integer, ChessGame> gameFromID = new HashMap<>();
+    Map<Integer, String> whitePlayersFromID = new HashMap<>();
+    Map<Integer, String> blackPlayersFromID = new HashMap<>();
     boolean quit = false;
     public void run(int port) throws Exception {
         this.serverFacade = new ServerFacade(port);
@@ -90,6 +92,8 @@ public class TerminalUI {
                         System.out.println(i + ". " + game.gameName() + " W: " + game.whiteUsername() + " B: " + game.blackUsername());
                         gameList.put(i, game.gameID());
                         gameFromID.put(game.gameID(), game.game());
+                        whitePlayersFromID.put(game.gameID(), game.whiteUsername());
+                        blackPlayersFromID.put(game.gameID(), game.blackUsername());
                         i++;
                     }
                     System.out.println("\n");
@@ -105,10 +109,42 @@ public class TerminalUI {
                             break;
                         }
                         int gameToJoin = gameList.get(userNumber);
-                        serverFacade.joinGame(terminalAuthData, userInput[2], gameToJoin);
                         boolean isWhite = userInput[2].equals("WHITE");
+                        boolean newToGame = true;
+                        //Check to see if use is already in the game
+                        if (isWhite) {
+                            if (terminalAuthData.username().equals(whitePlayersFromID.get(gameToJoin))) {
+                                newToGame = false;
+                            }
+                        } else {
+                            if (terminalAuthData.username().equals(blackPlayersFromID.get(gameToJoin))) {
+                                newToGame = false;
+                            }
+                        }
+
+                        if (newToGame) {
+                            serverFacade.joinGame(terminalAuthData, userInput[2], gameToJoin);
+                        }
+
+                        //Update information
+                        ArrayList<GameData> playableGames = serverFacade.listGames(terminalAuthData);
+                        for (GameData game : playableGames) {
+                            whitePlayersFromID.put(game.gameID(), game.whiteUsername());
+                            blackPlayersFromID.put(game.gameID(), game.blackUsername());
+                        }
+
                         inGame = new InGame();
-                        inGame.playGame(terminalAuthData, gameFromID.get(gameToJoin), isWhite, serverFacade.port);
+
+                        if (isWhite) {
+                            if (terminalAuthData.username().equals(whitePlayersFromID.get(gameToJoin))) {
+                                inGame.playGame(terminalAuthData, gameFromID.get(gameToJoin), isWhite, serverFacade.port);
+                            }
+                        } else {
+                            if (terminalAuthData.username().equals(blackPlayersFromID.get(gameToJoin))) {
+                                inGame.playGame(terminalAuthData, gameFromID.get(gameToJoin), isWhite, serverFacade.port);
+                            }
+                        }
+
                         break;
                     }
                     //Observe
