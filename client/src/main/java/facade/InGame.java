@@ -6,6 +6,7 @@ import model.AuthData;
 import websocket.commands.ConnectCommand;
 import websocket.WSClient;
 import websocket.commands.LeaveCommand;
+import websocket.commands.MakeMoveCommand;
 import websocket.commands.ResignCommand;
 
 import java.util.ArrayList;
@@ -54,11 +55,24 @@ public class InGame {
                     chessDisplay.run(game, watchFromWhite, null);
                     break;
                 case "move":
-                    System.out.println("TODO:MAKEMOVE");
-                    //NOTIFY THAT YOU MADE A MOVE, need username, description of move
-                    break;
+                    //Parse user move
+                    if (userInput.length == 2) {
+                        String patternString = "^([a-hA-H])([1-8])([a-hA-H])([1-8])(ROOK|BISHOP|KNIGHT|QUEEN)?$";
+                        Pattern pattern = Pattern.compile(patternString);
+                        Matcher matcher = pattern.matcher(userInput[1]);
+                        if (matcher.matches()) {
+                            //Create move
+                            ChessMove move = createMove(matcher);
+                            //NOTIFY THAT YOU MADE A MOVE, need username, description of move
+                            MakeMoveCommand makeMoveCommand = new MakeMoveCommand(terminalAuthData.authToken(), gameID, move);
+                            String jsonMove = gson.toJson(makeMoveCommand);
+                            websocket.send(jsonMove);
+                        } else {
+                            System.out.println("Please type in your move correctly (no spaces), for example 'a3a4', if you are promoting a piece please also include the promotion piece in ALL CAPS in the end");
+                        }
+                        break;
+                    }
                 case "resign":
-                    System.out.println("TODO:RESIGN");
                     //NOTIFY THAT YOU RESIGNED THE GAME, need username
                     ResignCommand resignCommand = new ResignCommand(terminalAuthData.authToken(), gameID);
                     String resignJson = gson.toJson(resignCommand);
@@ -105,6 +119,32 @@ public class InGame {
                     break;
             }
         }
+    }
+
+    public ChessMove createMove(Matcher matcher) {
+        int startCol = matcher.group(1).charAt(0) - 'a' + 1;
+        int startRow = Integer.parseInt(matcher.group(2));
+        int endCol = matcher.group(3).charAt(0) - 'a' + 1;
+        int endRow = Integer.parseInt(matcher.group(4));
+        String piece = matcher.group(5);
+        ChessPosition startPos = new ChessPosition(startRow, startCol);
+        ChessPosition endPos = new ChessPosition(endRow, endCol);
+        if (piece == null) {
+            return new ChessMove(startPos, endPos, null);
+        }
+        else {
+            return new ChessMove(startPos, endPos, pieceType(piece));
+        }
+    }
+
+    public ChessPiece.PieceType pieceType(String piece) {
+        return switch (piece) {
+            case "BISHOP" -> ChessPiece.PieceType.BISHOP;
+            case "ROOK" -> ChessPiece.PieceType.ROOK;
+            case "KNIGHT" -> ChessPiece.PieceType.KNIGHT;
+            case "QUEEN" -> ChessPiece.PieceType.QUEEN;
+            default -> null;
+        };
     }
 
     public ArrayList<ChessPosition> highlight(String[] userInput, ChessGame game) {
