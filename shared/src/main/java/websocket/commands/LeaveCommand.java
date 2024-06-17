@@ -1,9 +1,9 @@
 package websocket.commands;
 
 public class LeaveCommand extends UserGameCommand{
-    private boolean isPlayer;
-    private int gameID;
-    private boolean isWhite;
+    private final boolean isPlayer;
+    private final int gameID;
+    private final boolean isWhite;
 
     public int getGameID() {
         return gameID;

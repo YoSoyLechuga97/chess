@@ -58,10 +58,8 @@ public class WSServer {
                 sendNotification(session, leaveCommand.getGameID(), getUsername(leaveCommand.getAuthString()) + " has left the game");
                 //Remove root session
                 removeToken(session, leaveCommand.getAuthString());
-                session.getRemote().sendString("Removed token");
                 //Remove root from list of sessions
                 removeSessionFromGame(leaveCommand.getGameID(), session);
-                session.getRemote().sendString("Removed from session");
                 //Remove player from game
                 if (leaveCommand.getIsPlayer()) {
                     removePlayerFromGame(leaveCommand.getGameID(), leaveCommand.getIsWhite());
