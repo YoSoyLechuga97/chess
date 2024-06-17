@@ -20,7 +20,7 @@ public class ChessDisplay {
         out.print(ERASE_SCREEN);
 
         drawHeaders(out, whiteBoard);
-        drawChessBoard(out, game, whiteBoard);
+        drawChessBoard(out, game, whiteBoard, highlight);
         drawHeaders(out, whiteBoard);
 
         out.print(SET_BG_COLOR_BLACK);
@@ -58,26 +58,52 @@ public class ChessDisplay {
         setBlack(out);
     }
 
-    private static void drawChessBoard(PrintStream out, ChessGame game, boolean whiteBoard) {
+    private static void drawChessBoard(PrintStream out, ChessGame game, boolean whiteBoard, ArrayList<ChessPosition> highlight) {
         int borderNumber = 0;
         for (int boardRow = 0; boardRow < BOARD_SIZE_IN_SQUARES; ++boardRow) {//Draw squares from the top down
-            drawRowOfSquares(out, borderNumber, game, whiteBoard);
+            drawRowOfSquares(out, borderNumber, game, whiteBoard, highlight);
             borderNumber++;
         }
     }
 
-    private static void drawRowOfSquares(PrintStream out, int borderNumber, ChessGame game, boolean whiteBoard) {
+    private static void drawRowOfSquares(PrintStream out, int borderNumber, ChessGame game, boolean whiteBoard, ArrayList<ChessPosition> highlight) {
 
         String[] sides = {" 8 ", " 7 ", " 6 ", " 5 ", " 4 ", " 3 ", " 2 ", " 1 "};
         for (int squareRow = 0; squareRow < SQUARE_SIZE_IN_CHARS; ++squareRow) {
             for (int boardCol = -1; boardCol < BOARD_SIZE_IN_SQUARES + 1; ++boardCol) {
                 setWhite(out);
+                boolean isHighlighted = false;
+
+                //Check to see if you need to highlight
+                if (highlight != null) {
+                    for (ChessPosition position : highlight) {
+                        if (whiteBoard) {
+                            if (8 - borderNumber == position.getRow() && boardCol + 1 == position.getColumn()) {
+                                isHighlighted = true;
+                                break;
+                            }
+                        } else {
+                            if ((9 - (8 - borderNumber)) == position.getRow() && (9 - (boardCol + 1)) == position.getColumn()) {
+                                isHighlighted = true;
+                                break;
+                            }
+                        }
+                    }
+                }
 
                 //Alternate colors
                 if ((boardCol + borderNumber) % 2 == 0) {
-                    setWhite(out);
+                    if (!isHighlighted) {
+                        setWhite(out);
+                    } else {
+                        setGreen(out);
+                    }
                 } else {
-                    setBlue(out);
+                    if (!isHighlighted) {
+                        setBlue(out);
+                    } else {
+                        setDarkGreen(out);
+                    }
                 }
                 if (boardCol >= 0 && boardCol < BOARD_SIZE_IN_SQUARES) {
                     String piece = EMPTY;
@@ -116,6 +142,14 @@ public class ChessDisplay {
 
     private static void setBlue(PrintStream out) {
         out.print(SET_BG_COLOR_BLUE);
+    }
+
+    private static void setGreen(PrintStream out) {
+        out.print(SET_BG_COLOR_GREEN);
+    }
+
+    private static void setDarkGreen(PrintStream out) {
+        out.print(SET_BG_COLOR_DARK_GREEN);
     }
 
     private static void setBorder(PrintStream out) {

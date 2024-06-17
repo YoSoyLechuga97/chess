@@ -64,9 +64,12 @@ public class InGame {
                                         int currCol = move.getEndPosition().getColumn();
                                         ChessPosition nextPos = new ChessPosition(currRow, currCol);
                                         squaresToHighlight.add(nextPos);
-
-                                        //Display the highlighted board
-                                        chessDisplay.run(game, watchFromWhite, squaresToHighlight);
+                                    }
+                                    //Display the highlighted board
+                                    chessDisplay.run(game, watchFromWhite, squaresToHighlight);
+                                    //print out move positions
+                                    for (ChessPosition position : squaresToHighlight) {
+                                        System.out.println("{" + position.getRow() + ", " + position.getColumn() + "}");
                                     }
                                     System.out.println(squaresToHighlight);
                                 } else {
