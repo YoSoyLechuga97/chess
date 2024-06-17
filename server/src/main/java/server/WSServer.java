@@ -49,8 +49,8 @@ public class WSServer {
                     addToken(session, connectCommand.getAuthString());
                     addSession(connectCommand.getGameID(), session);
                     sendLoadGame(session, connectCommand.getGameID());
-                    if (connectCommand.getJoined()) {
-                        sendNotification(session, connectCommand.getGameID(), getUsername(connectCommand.getAuthString()) + " has joined the game as " + connectCommand.getColor() + "!");
+                    if (verifyPlayer(connectCommand.getAuthString(), connectCommand.getGameID())) {
+                        sendNotification(session, connectCommand.getGameID(), getUsername(connectCommand.getAuthString()) + " has joined the game as " + determineColor(connectCommand.getAuthString(), connectCommand.getGameID()) + "!");
                     } else {
                         sendNotification(session, connectCommand.getGameID(), getUsername(connectCommand.getAuthString()) + " has joined the game as an observer!");
                     }
@@ -84,7 +84,7 @@ public class WSServer {
                     if (!verifyInPlay(resignCommand)) {
                         throw new Exception("Game has already ended");
                     }
-                    if (!verifyPlayer(resignCommand)) {
+                    if (!verifyPlayer(resignCommand.getAuthString(), resignCommand.getGameID())) {
                         throw new Exception("Only players can resign");
                     }
                     resignFromGame(resignCommand.getGameID());
@@ -223,11 +223,11 @@ public class WSServer {
         }
     }
 
-    public boolean verifyPlayer(ResignCommand resignCommand) throws DataAccessException {
+    public boolean verifyPlayer(String authToken, int gameID) throws DataAccessException {
         GameDAO gameDAO = new SQLGameDAO();
         AuthDAO authDAO = new SQLAuthDAO();
-        GameData gameData = gameDAO.getGame(resignCommand.getGameID());
-        String username = authDAO.getUser(resignCommand.getAuthString());
+        GameData gameData = gameDAO.getGame(gameID);
+        String username = authDAO.getUser(authToken);
         return (gameData.whiteUsername().equals(username) || gameData.blackUsername().equals(username));
     }
 
@@ -247,6 +247,18 @@ public class WSServer {
         }
     }
 
+    public ChessGame.TeamColor determineColor (String authToken, int gameID) throws DataAccessException {
+        String username = getUsername(authToken);
+        GameDAO gameDAO = new SQLGameDAO();
+        GameData gameData = gameDAO.getGame(gameID);
+        if(gameData.whiteUsername().equals(username)) {
+            return ChessGame.TeamColor.WHITE;
+        } else if (gameData.blackUsername().equals(username)) {
+            return ChessGame.TeamColor.BLACK;
+        } else {
+            return null;
+        }
+    }
     public void sendLoadGameToAll(int gameID) throws DataAccessException, IOException {
         GameDAO gameDAO = new SQLGameDAO();
         ChessGame game = gameDAO.getGame(gameID).game();
