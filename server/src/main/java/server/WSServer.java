@@ -34,41 +34,40 @@ public class WSServer {
 
     @OnWebSocketMessage
     public void onMessage(Session session, String message) throws Exception {
-        //Deserialize message
-        //Gson gson = new Gson();
-        //session.getRemote().sendString("WebSocket response: " + message);
-        UserGameCommand.CommandType type = parseCommand(message);
-        //Save session with authToken
-        //Save Session with gameID
+        try {
+            //Deserialize message
+            UserGameCommand.CommandType type = parseCommand(message);
+            //Send to specified message handler
+            switch (type) {
+                case CONNECT:
+                    ConnectCommand connectCommand = gson.fromJson(message, ConnectCommand.class);
+                    addToken(session, connectCommand.getAuthString());
+                    addSession(connectCommand.getGameID(), session);
+                    sendLoadGame(session, connectCommand.getGameID());
+                    if (connectCommand.getJoined()) {
+                        sendNotification(session, connectCommand.getGameID(), getUsername(connectCommand.getAuthString()) + " has joined the game as " + connectCommand.getColor() + "!");
+                    } else {
+                        sendNotification(session, connectCommand.getGameID(), getUsername(connectCommand.getAuthString()) + " has joined the game as an observer!");
+                    }
+                    break;
+                case LEAVE:
+                    LeaveCommand leaveCommand = gson.fromJson(message, LeaveCommand.class);
+                    sendNotification(session, leaveCommand.getGameID(), getUsername(leaveCommand.getAuthString()) + " has left the game");
+                    //Remove root session
+                    removeToken(session, leaveCommand.getAuthString());
+                    //Remove root from list of sessions
+                    removeSessionFromGame(leaveCommand.getGameID(), session);
+                    //Remove player from game
+                    if (leaveCommand.getIsPlayer()) {
+                        removePlayerFromGame(leaveCommand.getGameID(), leaveCommand.getIsWhite());
+                    }
+                    break;
+                case RESIGN:
 
-        //Send to specified message handler
-        switch (type) {
-            case CONNECT:
-                ConnectCommand connectCommand = gson.fromJson(message, ConnectCommand.class);
-                addToken(session, connectCommand.getAuthString());
-                addSession(connectCommand.getGameID(), session);
-                sendLoadGame(session, connectCommand.getGame());
-                if (connectCommand.getJoined()) {
-                    sendNotification(session, connectCommand.getGameID(), getUsername(connectCommand.getAuthString()) + " has joined the game as " + connectCommand.getColor() + "!");
-                } else {
-                    sendNotification(session, connectCommand.getGameID(), getUsername(connectCommand.getAuthString()) + " has joined the game as an observer!");
-                }
-                break;
-            case LEAVE:
-                LeaveCommand leaveCommand = gson.fromJson(message, LeaveCommand.class);
-                sendNotification(session, leaveCommand.getGameID(), getUsername(leaveCommand.getAuthString()) + " has left the game");
-                //Remove root session
-                removeToken(session, leaveCommand.getAuthString());
-                //Remove root from list of sessions
-                removeSessionFromGame(leaveCommand.getGameID(), session);
-                //Remove player from game
-                if (leaveCommand.getIsPlayer()) {
-                    removePlayerFromGame(leaveCommand.getGameID(), leaveCommand.getIsWhite());
-                }
-                break;
-            case RESIGN:
-
-                break;
+                    break;
+            }
+        } catch (Exception e) {
+            sendErrorMessage(session);
         }
         //session.getRemote().sendString("WebSocket response: " + message);
     }
@@ -125,7 +124,13 @@ public class WSServer {
         return authDAO.getUser(authToken);
     }
 
-    public void sendLoadGame(Session session, ChessGame game) throws IOException {
+    public void sendErrorMessage(Session session) {
+
+    }
+
+    public void sendLoadGame(Session session, int gameID) throws IOException, DataAccessException {
+        GameDAO gameDAO = new SQLGameDAO();
+        ChessGame game = gameDAO.getGame(gameID).game();
         LoadMessage message = new LoadMessage(ServerMessage.ServerMessageType.LOAD_GAME, game);
         String json = gson.toJson(message);
         session.getRemote().sendString(json);
