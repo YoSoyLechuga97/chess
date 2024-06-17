@@ -12,6 +12,7 @@ import org.eclipse.jetty.websocket.api.annotations.WebSocket;
 import spark.Spark;
 import websocket.commands.ConnectCommand;
 import websocket.commands.LeaveCommand;
+import websocket.commands.ResignCommand;
 import websocket.commands.UserGameCommand;
 import websocket.messages.ErrorMessage;
 import websocket.messages.LoadMessage;
@@ -42,6 +43,9 @@ public class WSServer {
             switch (type) {
                 case CONNECT:
                     ConnectCommand connectCommand = gson.fromJson(message, ConnectCommand.class);
+                    if (!verifyToken(connectCommand.getAuthString())) {
+                        throw new Exception("Not authorized token");
+                    }
                     addToken(session, connectCommand.getAuthString());
                     addSession(connectCommand.getGameID(), session);
                     sendLoadGame(session, connectCommand.getGameID());
@@ -64,7 +68,10 @@ public class WSServer {
                     }
                     break;
                 case RESIGN:
-
+                    //Set game to finished
+                    ResignCommand resignCommand = gson.fromJson(message, ResignCommand.class);
+                    resignFromGame(resignCommand.getGameID());
+                    notifyAllClients(resignCommand.getGameID(), getUsername(resignCommand.getAuthString()) + " has resigned from the game-GAME OVER");
                     break;
             }
         } catch (Exception e) {
@@ -137,6 +144,27 @@ public class WSServer {
         LoadMessage message = new LoadMessage(ServerMessage.ServerMessageType.LOAD_GAME, game);
         String json = gson.toJson(message);
         session.getRemote().sendString(json);
+    }
+
+    public boolean verifyToken(String token) throws DataAccessException {
+        AuthDAO authDAO = new SQLAuthDAO();
+        return authDAO.getAuth(token);
+    }
+
+    public void resignFromGame(int gameID) throws DataAccessException {
+        GameDAO gameDAO = new SQLGameDAO();
+        GameData game = gameDAO.getGame(gameID);
+        game.game().setTeamTurn(null);
+        GameData finishedGame = new GameData(game.gameID(), game.whiteUsername(), game.blackUsername(), game.gameName(), game.game());
+        gameDAO.updateGame(finishedGame);
+    }
+
+    public void notifyAllClients(int gameID, String message) throws IOException {
+        for (Session userSession : sessionsFromID.getOrDefault(gameID, new ArrayList<>())) {
+            NotificationMessage notificationMessage = new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION, message);
+            String json = gson.toJson(notificationMessage);
+            userSession.getRemote().sendString(json);
+        }
     }
 
     public void sendNotification(Session session, int gameID, String message) throws IOException {
