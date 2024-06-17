@@ -13,6 +13,8 @@ import org.eclipse.jetty.websocket.api.annotations.WebSocket;
 import spark.Spark;
 import websocket.commands.ConnectCommand;
 import websocket.commands.UserGameCommand;
+import websocket.messages.NotificationMessage;
+import websocket.messages.ServerMessage;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -24,6 +26,7 @@ public class WSServer {
 
     private final Map<Integer, ArrayList<Session>> sessionsFromID = new HashMap<>();
     private final Map<Session, String> authFromSession = new HashMap<>();
+    private final Gson gson = new Gson();
     public void run(int port) {
         Spark.webSocket("/ws", WSServer.class);
     }
@@ -31,7 +34,7 @@ public class WSServer {
     @OnWebSocketMessage
     public void onMessage(Session session, String message) throws Exception {
         //Deserialize message
-        Gson gson = new Gson();
+        //Gson gson = new Gson();
         UserGameCommand.CommandType type = parseCommand(message);
         //Save session with authToken
         //Save Session with gameID
@@ -94,7 +97,9 @@ public class WSServer {
         //Find all users that need to be sent the information
         for (Session userSession : sessionsFromID.getOrDefault(gameID, new ArrayList<>())) {
             if (!authFromSession.get(userSession).equals(authFromSession.get(session))) {
-                userSession.getRemote().sendString("[NOTIFICATION] " + message);
+                NotificationMessage notificationMessage = new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION, message);
+                String json = gson.toJson(notificationMessage);
+                userSession.getRemote().sendString(json);
             }
         }
     }
