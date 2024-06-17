@@ -57,15 +57,13 @@ public class WSServer {
                     break;
                 case LEAVE:
                     LeaveCommand leaveCommand = gson.fromJson(message, LeaveCommand.class);
+                    //Remove player from game
+                    removePlayerFromGame(leaveCommand);
                     sendNotification(session, leaveCommand.getGameID(), getUsername(leaveCommand.getAuthString()) + " has left the game");
                     //Remove root session
                     removeToken(session, leaveCommand.getAuthString());
                     //Remove root from list of sessions
                     removeSessionFromGame(leaveCommand.getGameID(), session);
-                    //Remove player from game
-                    if (leaveCommand.getIsPlayer()) {
-                        removePlayerFromGame(leaveCommand.getGameID(), leaveCommand.getIsWhite());
-                    }
                     break;
                 case MAKE_MOVE:
                     MakeMoveCommand makeMoveCommand = gson.fromJson(message, MakeMoveCommand.class);
@@ -83,6 +81,9 @@ public class WSServer {
                 case RESIGN:
                     //Set game to finished
                     ResignCommand resignCommand = gson.fromJson(message, ResignCommand.class);
+                    if (!verifyInPlay(resignCommand)) {
+                        throw new Exception("Game has already ended");
+                    }
                     if (!verifyPlayer(resignCommand)) {
                         throw new Exception("Only players can resign");
                     }
@@ -116,14 +117,16 @@ public class WSServer {
         authFromSession.remove(session);
     }
 
-    public void removePlayerFromGame(int gameID, boolean isWhite) throws DataAccessException {
+    public void removePlayerFromGame(LeaveCommand leaveCommand) throws DataAccessException {
         GameDAO gameDAO = new SQLGameDAO();
-        GameData oldGame = gameDAO.getGame(gameID);
+        GameData oldGame = gameDAO.getGame(leaveCommand.getGameID());
         GameData newGame;
-        if (isWhite) {
+        if (getUsername(leaveCommand.getAuthString()).equals(oldGame.whiteUsername())) {
             newGame = new GameData(oldGame.gameID(), null, oldGame.blackUsername(), oldGame.gameName(), oldGame.game());
-        } else {
+        } else if (getUsername(leaveCommand.getAuthString()).equals(oldGame.blackUsername())){
             newGame = new GameData(oldGame.gameID(), oldGame.whiteUsername(), null, oldGame.gameName(), oldGame.game());
+        } else {
+            newGame = oldGame;
         }
 
         gameDAO.updateGame(newGame);
@@ -188,6 +191,13 @@ public class WSServer {
     public boolean verifyToken(String token) throws DataAccessException {
         AuthDAO authDAO = new SQLAuthDAO();
         return authDAO.getAuth(token);
+    }
+
+    public boolean verifyInPlay(ResignCommand resignCommand) throws DataAccessException {
+        GameDAO gameDAO = new SQLGameDAO();
+        GameData gameData = gameDAO.getGame(resignCommand.getGameID());
+        ChessGame game = gameData.game();
+        return game.getTeamTurn() != ChessGame.TeamColor.NONE;
     }
 
     public boolean verifyTurn(MakeMoveCommand makeMove) throws DataAccessException {
