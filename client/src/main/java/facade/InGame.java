@@ -44,7 +44,7 @@ public class InGame {
                 case "leave":
                     System.out.println("Leaving Game\n");
                     //NOTIFY THAT YOU LEFT GAME, need username
-                    LeaveCommand leaveCommand = new LeaveCommand(terminalAuthData.authToken());
+                    LeaveCommand leaveCommand = new LeaveCommand(terminalAuthData.authToken(), true);
                     String leaveJson = gson.toJson(leaveCommand);
                     websocket.send(leaveJson);
                     //Disconnect from WS
