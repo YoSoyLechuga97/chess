@@ -43,7 +43,11 @@ public class WSServer {
                 addToken(session, connectCommand.getAuthString());
                 addSession(connectCommand.getGameID(), session);
                 connectMessage(session, connectCommand);
-                sendNotification(session, connectCommand.getGameID(), getUsername(connectCommand.getAuthString()) + " has joined the game!");
+                if (connectCommand.getJoined()) {
+                    sendNotification(session, connectCommand.getGameID(), getUsername(connectCommand.getAuthString()) + " has joined the game as " + connectCommand.getColor() + "!");
+                } else {
+                    sendNotification(session, connectCommand.getGameID(), getUsername(connectCommand.getAuthString()) + "has joined the game as an observer!");
+                }
                 break;
             case LEAVE:
                 break;

@@ -137,11 +137,11 @@ public class TerminalUI {
 
                         if (isWhite) {
                             if (terminalAuthData.username().equals(whitePlayersFromID.get(gameToJoin))) {
-                                inGame.playGame(terminalAuthData, gameFromID.get(gameToJoin), isWhite, serverFacade.port, gameToJoin);
+                                inGame.playGame(terminalAuthData, gameFromID.get(gameToJoin), isWhite, serverFacade.port, gameToJoin, "WHITE");
                             }
                         } else {
                             if (terminalAuthData.username().equals(blackPlayersFromID.get(gameToJoin))) {
-                                inGame.playGame(terminalAuthData, gameFromID.get(gameToJoin), isWhite, serverFacade.port, gameToJoin);
+                                inGame.playGame(terminalAuthData, gameFromID.get(gameToJoin), isWhite, serverFacade.port, gameToJoin, "WHITE");
                             }
                         }
 
