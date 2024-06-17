@@ -69,6 +69,12 @@ public class WSServer {
                     break;
                 case MAKE_MOVE:
                     MakeMoveCommand makeMoveCommand = gson.fromJson(message, MakeMoveCommand.class);
+                    if (!verifyToken(makeMoveCommand.getAuthString())) {
+                        throw new Exception("Not authorized token");
+                    }
+                    if (!verifyTurn(makeMoveCommand)) {
+                        throw new Exception("It's not your turn");
+                    }
                     makeMove(makeMoveCommand);
                     sendLoadGameToAll(makeMoveCommand.getGameID());
                     sendNotification(session, makeMoveCommand.getGameID(), getUsername(makeMoveCommand.getAuthString()) + " moved from {" + makeMoveCommand.getMove().getStartPosition().getRow() + "," + makeMoveCommand.getMove().getStartPosition().getColumn() + "} to {" + makeMoveCommand.getMove().getEndPosition().getRow() + "," + makeMoveCommand.getMove().getEndPosition().getColumn() + "}");
@@ -179,6 +185,15 @@ public class WSServer {
     public boolean verifyToken(String token) throws DataAccessException {
         AuthDAO authDAO = new SQLAuthDAO();
         return authDAO.getAuth(token);
+    }
+
+    public boolean verifyTurn(MakeMoveCommand makeMove) throws DataAccessException {
+        GameDAO gameDAO = new SQLGameDAO();
+        GameData gameData = gameDAO.getGame(makeMove.getGameID());
+        ChessGame game = gameData.game();
+        ChessGame.TeamColor turnColor = game.getTeamTurn();
+        ChessGame.TeamColor colorTryingMove = game.getBoard().getPiece(makeMove.getMove().getEndPosition()).getTeamColor();
+        return turnColor == colorTryingMove;
     }
 
     public void resignFromGame(int gameID) throws DataAccessException {
