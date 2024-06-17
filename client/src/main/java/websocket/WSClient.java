@@ -35,9 +35,9 @@ public class WSClient extends Endpoint {
         //Add Message handler and translate accordingly
         this.session.addMessageHandler(new MessageHandler.Whole<String>() {
             public void onMessage(String message) {
-                System.out.println(message);
                 //Later we will deserialize it and use methods to translate it
                 ServerMessage.ServerMessageType type = parseMessage(message);
+                System.out.println();
                 switch (type) {
                     case NOTIFICATION:
                         readNotification(message);

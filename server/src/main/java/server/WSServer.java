@@ -84,7 +84,6 @@ public class WSServer {
         } catch (Exception e) {
             sendErrorMessage(session, e);
         }
-        //session.getRemote().sendString("WebSocket response: " + message);
     }
 
     public void addSession(int gameID, Session session) {
