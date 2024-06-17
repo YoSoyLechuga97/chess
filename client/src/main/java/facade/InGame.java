@@ -48,6 +48,7 @@ public class InGame {
                         if (!squaresToHighlight.isEmpty()) {
                             chessDisplay.run(game, watchFromWhite, squaresToHighlight);
                         }
+                        break;
                     }
                 default:
                     System.out.println("Unrecognized command");
