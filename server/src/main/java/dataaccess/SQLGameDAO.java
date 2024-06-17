@@ -56,10 +56,10 @@ public class SQLGameDAO implements GameDAO{
         if (oldGame == null) {
             throw new DataAccessException("Game wasn't found");
         }
-        if (!Objects.equals(updatedGame.whiteUsername(), oldGame.whiteUsername()) && oldGame.whiteUsername() == null) {
+        if (!Objects.equals(updatedGame.whiteUsername(), oldGame.whiteUsername())) {
             DATABASE_MANAGER.updateData("game", "whiteUsername", updatedGame.whiteUsername(), "gameID", String.valueOf(updatedGame.gameID()));
         }
-        if (!Objects.equals(updatedGame.blackUsername(), oldGame.blackUsername()) && oldGame.blackUsername() == null) {
+        if (!Objects.equals(updatedGame.blackUsername(), oldGame.blackUsername())) {
             DATABASE_MANAGER.updateData("game", "blackUsername", updatedGame.blackUsername(), "gameID", String.valueOf(updatedGame.gameID()));
         }
         if (updatedGame.game() != oldGame.game()) {

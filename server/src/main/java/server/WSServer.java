@@ -3,15 +3,15 @@ package server;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import dataaccess.AuthDAO;
-import dataaccess.DataAccessException;
-import dataaccess.SQLAuthDAO;
+import dataaccess.*;
 import model.AuthData;
+import model.GameData;
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
 import spark.Spark;
 import websocket.commands.ConnectCommand;
+import websocket.commands.LeaveCommand;
 import websocket.commands.UserGameCommand;
 import websocket.messages.NotificationMessage;
 import websocket.messages.ServerMessage;
@@ -35,6 +35,7 @@ public class WSServer {
     public void onMessage(Session session, String message) throws Exception {
         //Deserialize message
         //Gson gson = new Gson();
+        session.getRemote().sendString("WebSocket response: " + message);
         UserGameCommand.CommandType type = parseCommand(message);
         //Save session with authToken
         //Save Session with gameID
@@ -49,17 +50,34 @@ public class WSServer {
                 if (connectCommand.getJoined()) {
                     sendNotification(session, connectCommand.getGameID(), getUsername(connectCommand.getAuthString()) + " has joined the game as " + connectCommand.getColor() + "!");
                 } else {
-                    sendNotification(session, connectCommand.getGameID(), getUsername(connectCommand.getAuthString()) + "has joined the game as an observer!");
+                    sendNotification(session, connectCommand.getGameID(), getUsername(connectCommand.getAuthString()) + " has joined the game as an observer!");
                 }
                 break;
             case LEAVE:
+                LeaveCommand leaveCommand = gson.fromJson(message, LeaveCommand.class);
+                sendNotification(session, leaveCommand.getGameID(), getUsername(leaveCommand.getAuthString()) + " has left the game");
+                //Remove root session
+                removeToken(session, leaveCommand.getAuthString());
+                session.getRemote().sendString("Removed token");
+                //Remove root from list of sessions
+                removeSessionFromGame(leaveCommand.getGameID(), session);
+                session.getRemote().sendString("Removed from session");
+                //Remove player from game
+                if (leaveCommand.getIsPlayer()) {
+                    removePlayerFromGame(leaveCommand.getGameID(), leaveCommand.getIsWhite());
+                }
                 break;
         }
-        session.getRemote().sendString("WebSocket response: " + message);
+        //session.getRemote().sendString("WebSocket response: " + message);
     }
 
     public void addSession(int gameID, Session session) {
         sessionsFromID.computeIfAbsent(gameID, k -> new ArrayList<>()).add(session);
+    }
+
+    public void removeSessionFromGame(int gameID, Session session) {
+        ArrayList<Session> gameSessions = sessionsFromID.get(gameID);
+        gameSessions.removeIf(session::equals);
     }
 
     public void addToken(Session session, String authToken) throws IOException {
@@ -68,6 +86,24 @@ public class WSServer {
         } catch (Exception e) {
             session.getRemote().sendString("Failed to add to Map" + e.getMessage());
         }
+    }
+
+    public void removeToken(Session session, String authToken) {
+        authFromSession.remove(session);
+    }
+
+    public void removePlayerFromGame(int gameID, boolean isWhite) throws DataAccessException {
+        GameDAO gameDAO = new SQLGameDAO();
+        GameData oldGame = gameDAO.getGame(gameID);
+        GameData newGame;
+        if (isWhite) {
+            newGame = new GameData(oldGame.gameID(), null, oldGame.blackUsername(), oldGame.gameName(), oldGame.game());
+        } else {
+            newGame = new GameData(oldGame.gameID(), oldGame.whiteUsername(), null, oldGame.gameName(), oldGame.game());
+        }
+
+        gameDAO.updateGame(newGame);
+
     }
 
     public UserGameCommand.CommandType parseCommand(String message) {
