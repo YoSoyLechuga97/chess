@@ -65,6 +65,7 @@ public class WSServer {
                     removePlayerFromGame(leaveCommand.getGameID(), leaveCommand.getIsWhite());
                 }
                 break;
+
         }
         //session.getRemote().sendString("WebSocket response: " + message);
     }

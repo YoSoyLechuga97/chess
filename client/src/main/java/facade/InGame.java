@@ -6,6 +6,7 @@ import model.AuthData;
 import websocket.commands.ConnectCommand;
 import websocket.WSClient;
 import websocket.commands.LeaveCommand;
+import websocket.commands.ResignCommand;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -47,7 +48,6 @@ public class InGame {
                     LeaveCommand leaveCommand = new LeaveCommand(terminalAuthData.authToken(), true, watchFromWhite, gameID);
                     String leaveJson = gson.toJson(leaveCommand);
                     websocket.send(leaveJson);
-                    //Disconnect from WS
                     leave = true;
                     break;
                 case "redraw":
@@ -60,6 +60,9 @@ public class InGame {
                 case "resign":
                     System.out.println("TODO:RESIGN");
                     //NOTIFY THAT YOU RESIGNED THE GAME, need username
+                    ResignCommand resignCommand = new ResignCommand(terminalAuthData.authToken(), gameID);
+                    String resignJson = gson.toJson(resignCommand);
+                    websocket.send(resignJson);
                     break;
                 case "highlight":
                     if (userInput.length == 2) { //Make sure the command is formatted correctly
