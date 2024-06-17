@@ -1,6 +1,9 @@
 package server;
 
+import chess.ChessBoard;
 import chess.ChessGame;
+import chess.ChessPiece;
+import chess.InvalidMoveException;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -10,10 +13,7 @@ import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
 import spark.Spark;
-import websocket.commands.ConnectCommand;
-import websocket.commands.LeaveCommand;
-import websocket.commands.ResignCommand;
-import websocket.commands.UserGameCommand;
+import websocket.commands.*;
 import websocket.messages.ErrorMessage;
 import websocket.messages.LoadMessage;
 import websocket.messages.NotificationMessage;
@@ -66,6 +66,13 @@ public class WSServer {
                     if (leaveCommand.getIsPlayer()) {
                         removePlayerFromGame(leaveCommand.getGameID(), leaveCommand.getIsWhite());
                     }
+                    break;
+                case MAKE_MOVE:
+                    MakeMoveCommand makeMoveCommand = gson.fromJson(message, MakeMoveCommand.class);
+                    makeMove(makeMoveCommand);
+                    sendLoadGameToAll(makeMoveCommand.getGameID());
+                    sendNotification(session, makeMoveCommand.getGameID(), getUsername(makeMoveCommand.getAuthString()) + " moved from {" + makeMoveCommand.getMove().getStartPosition().getRow() + "," + makeMoveCommand.getMove().getStartPosition().getColumn() + "} to {" + makeMoveCommand.getMove().getEndPosition().getRow() + "," + makeMoveCommand.getMove().getEndPosition().getColumn() + "}");
+                    checkGameStatus(makeMoveCommand);
                     break;
                 case RESIGN:
                     //Set game to finished
@@ -132,6 +139,30 @@ public class WSServer {
         return authDAO.getUser(authToken);
     }
 
+    public void makeMove(MakeMoveCommand makeMoveCommand) throws DataAccessException, InvalidMoveException {
+        GameDAO gameDAO = new SQLGameDAO();
+        GameData gameData = gameDAO.getGame(makeMoveCommand.getGameID());
+        ChessGame game = gameData.game();
+        game.makeMove(makeMoveCommand.getMove());
+        gameDAO.updateGame(new GameData(gameData.gameID(), gameData.whiteUsername(), gameData.blackUsername(), gameData.gameName(), game));
+    }
+    public void checkGameStatus(MakeMoveCommand makeMoveCommand) throws DataAccessException, IOException {
+        GameDAO gameDAO = new SQLGameDAO();
+        GameData gameData = gameDAO.getGame(makeMoveCommand.getGameID());
+        ChessGame game = gameData.game();
+        ChessGame.TeamColor teamColor;
+        if (game.getBoard().getPiece(makeMoveCommand.getMove().getEndPosition()).getTeamColor() == ChessGame.TeamColor.WHITE) {
+            teamColor = ChessGame.TeamColor.BLACK;
+        } else {
+            teamColor = ChessGame.TeamColor.WHITE;
+        }
+        if (game.isInCheck(teamColor)) {
+            notifyAllClients(makeMoveCommand.getGameID(), teamColor + " is in check!");
+        } else if (game.isInCheckmate(teamColor)) {
+            notifyAllClients(makeMoveCommand.getGameID(), teamColor + " is in checkmate! GAME OVER");
+        }
+    }
+
     public void sendErrorMessage(Session session, Exception e) throws IOException {
         ErrorMessage errorMessage = new ErrorMessage(ServerMessage.ServerMessageType.ERROR, e.getMessage());
         String jsonError = gson.toJson(errorMessage);
@@ -163,6 +194,16 @@ public class WSServer {
         for (Session userSession : sessionsFromID.getOrDefault(gameID, new ArrayList<>())) {
             NotificationMessage notificationMessage = new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION, message);
             String json = gson.toJson(notificationMessage);
+            userSession.getRemote().sendString(json);
+        }
+    }
+
+    public void sendLoadGameToAll(int gameID) throws DataAccessException, IOException {
+        GameDAO gameDAO = new SQLGameDAO();
+        ChessGame game = gameDAO.getGame(gameID).game();
+        for (Session userSession : sessionsFromID.getOrDefault(gameID, new ArrayList<>())) {
+            LoadMessage loadMessage = new LoadMessage(ServerMessage.ServerMessageType.LOAD_GAME, game);
+            String json = gson.toJson(loadMessage);
             userSession.getRemote().sendString(json);
         }
     }

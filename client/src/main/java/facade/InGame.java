@@ -3,12 +3,15 @@ package facade;
 import chess.*;
 import com.google.gson.Gson;
 import model.AuthData;
+import model.GameData;
 import websocket.commands.ConnectCommand;
 import websocket.WSClient;
 import websocket.commands.LeaveCommand;
 import websocket.commands.MakeMoveCommand;
 import websocket.commands.ResignCommand;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.regex.Matcher;
@@ -30,6 +33,7 @@ public class InGame {
     public void playGame(AuthData terminalAuthData, ChessGame game, boolean watchFromWhite, int port, int gameID, String color) throws Exception{
         this.terminalAuthData = terminalAuthData;
         this.watchFromWhite = watchFromWhite;
+        this.serverFacade = new ServerFacade(port);
         //Connect Websocket
         websocket = new WSClient(port, watchFromWhite, game);
         //NOTIFY that the player has joined, need username and color
@@ -52,7 +56,7 @@ public class InGame {
                     leave = true;
                     break;
                 case "redraw":
-                    chessDisplay.run(game, watchFromWhite, null);
+                    redraw(gameID);
                     break;
                 case "move":
                     //Parse user move
@@ -93,7 +97,7 @@ public class InGame {
         }
     }
 
-    public void observeGame(AuthData terminalAuthData, ChessGame game) throws InvalidMoveException {
+    public void observeGame(AuthData terminalAuthData, ChessGame game, int gameID) throws InvalidMoveException, URISyntaxException, IOException {
         this.terminalAuthData = terminalAuthData;
         watchFromWhite = true;
         chessDisplay.run(game, watchFromWhite, null);
@@ -112,7 +116,7 @@ public class InGame {
                     //DISCONNECT FROM WS
                     break;
                 case "redraw":
-                    chessDisplay.run(game, watchFromWhite, null);
+                    redraw(gameID);
                     break;
                 default:
                     System.out.println("Unrecognized command");
@@ -145,6 +149,15 @@ public class InGame {
             case "QUEEN" -> ChessPiece.PieceType.QUEEN;
             default -> null;
         };
+    }
+
+    public void redraw(int gameID) throws URISyntaxException, IOException, InvalidMoveException {
+        ArrayList<GameData> allGames = serverFacade.listGames(terminalAuthData);
+        for (GameData gameData : allGames) {
+            if (gameData.gameID() == gameID) {
+                chessDisplay.run(gameData.game(), watchFromWhite, null);
+            }
+        }
     }
 
     public ArrayList<ChessPosition> highlight(String[] userInput, ChessGame game) {
