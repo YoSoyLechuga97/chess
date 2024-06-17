@@ -43,45 +43,11 @@ public class InGame {
                     System.out.println("TODO:RESIGN");
                     break;
                 case "highlight":
-                    System.out.println("TODO:HIGHLIGHT");
                     if (userInput.length == 2) { //Make sure the command is formatted correctly
-                        String patternString = "([a-hA-H])([1-8])";
-                        Pattern pattern = Pattern.compile(patternString);
-                        Matcher matcher = pattern.matcher(userInput[1]);
-                        ArrayList<ChessPosition> squaresToHighlight = new ArrayList<>();
-                        if (matcher.matches()) {
-                            //Determine there is a piece at that position on the board
-                            int col = matcher.group(1).charAt(0) - 'a' + 1;
-                            int row = Integer.parseInt(matcher.group(2));
-                            ChessPosition highlightPosition = new ChessPosition(row, col);
-                            if (game.getBoard().getPiece(highlightPosition) != null) {
-                                //Obtain a list of all possible moves
-                                Collection<ChessMove> validMoves = game.validMoves(highlightPosition);
-                                if (!validMoves.isEmpty()) {
-                                    //Create an array list of positions as numbers
-                                    for (ChessMove move : validMoves) {
-                                        int currRow = move.getEndPosition().getRow();
-                                        int currCol = move.getEndPosition().getColumn();
-                                        ChessPosition nextPos = new ChessPosition(currRow, currCol);
-                                        squaresToHighlight.add(nextPos);
-                                    }
-                                    //Display the highlighted board
-                                    chessDisplay.run(game, watchFromWhite, squaresToHighlight);
-                                    //print out move positions
-                                    for (ChessPosition position : squaresToHighlight) {
-                                        System.out.println("{" + position.getRow() + ", " + position.getColumn() + "}");
-                                    }
-                                    System.out.println(squaresToHighlight);
-                                } else {
-                                    System.out.println("This piece has no valid moves");
-                                }
-                            } else {
-                                System.out.println("There is no chessPiece at " + userInput[1]);
-                            }
-                        } else {
-                            System.out.println("<POSITION> must be typed letter then number with no spaces and exist on the board, like 'a3'");
+                        ArrayList<ChessPosition> squaresToHighlight = highlight(userInput, game);
+                        if (!squaresToHighlight.isEmpty()) {
+                            chessDisplay.run(game, watchFromWhite, squaresToHighlight);
                         }
-                        break;
                     }
                 default:
                     System.out.println("Unrecognized command");
@@ -112,6 +78,44 @@ public class InGame {
                     System.out.println("Unrecognized command");
                     break;
             }
+        }
+    }
+
+    public ArrayList<ChessPosition> highlight(String[] userInput, ChessGame game) {
+        String patternString = "([a-hA-H])([1-8])";
+        Pattern pattern = Pattern.compile(patternString);
+        Matcher matcher = pattern.matcher(userInput[1]);
+        ArrayList<ChessPosition> squaresToHighlight = new ArrayList<>();
+        if (matcher.matches()) {
+            //Determine there is a piece at that position on the board
+            int col = matcher.group(1).charAt(0) - 'a' + 1;
+            int row = Integer.parseInt(matcher.group(2));
+            ChessPosition highlightPosition = new ChessPosition(row, col);
+            if (game.getBoard().getPiece(highlightPosition) != null) {
+                //Obtain a list of all possible moves
+                Collection<ChessMove> validMoves = game.validMoves(highlightPosition);
+                if (!validMoves.isEmpty()) {
+                    //Create an array list of positions as numbers
+                    for (ChessMove move : validMoves) {
+                        int currRow = move.getEndPosition().getRow();
+                        int currCol = move.getEndPosition().getColumn();
+                        ChessPosition nextPos = new ChessPosition(currRow, currCol);
+                        squaresToHighlight.add(nextPos);
+                    }
+                    //Display the highlighted board
+//                    chessDisplay.run(game, watchFromWhite, squaresToHighlight);
+                    return squaresToHighlight;
+                } else {
+                    System.out.println("This piece has no valid moves");
+                    return new ArrayList<>();
+                }
+            } else {
+                System.out.println("There is no chessPiece at " + userInput[1]);
+                return new ArrayList<>();
+            }
+        } else {
+            System.out.println("<POSITION> must be typed letter then number with no spaces and exist on the board, like 'a3'");
+            return new ArrayList<>();
         }
     }
 }
