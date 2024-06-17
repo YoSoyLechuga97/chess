@@ -3,21 +3,27 @@ package server;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import org.eclipse.jetty.server.Authentication;
-import org.eclipse.jetty.servlet.ServletContextHandler;
+import dataaccess.AuthDAO;
+import dataaccess.DataAccessException;
+import dataaccess.SQLAuthDAO;
+import model.AuthData;
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
-import org.eclipse.jetty.websocket.server.NativeWebSocketServletContainerInitializer;
 import spark.Spark;
 import websocket.commands.ConnectCommand;
 import websocket.commands.UserGameCommand;
 
-import javax.websocket.server.ServerContainer;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 @WebSocket
 public class WSServer {
+
+    private final Map<Integer, ArrayList<Session>> sessionsFromID = new HashMap<>();
+    private final Map<Session, String> authFromSession = new HashMap<>();
     public void run(int port) {
         Spark.webSocket("/ws", WSServer.class);
     }
@@ -34,12 +40,27 @@ public class WSServer {
         switch (type) {
             case CONNECT:
                 ConnectCommand connectCommand = gson.fromJson(message, ConnectCommand.class);
+                addToken(session, connectCommand.getAuthString());
+                addSession(connectCommand.getGameID(), session);
                 connectMessage(session, connectCommand);
+                sendNotification(session, connectCommand.getGameID(), getUsername(connectCommand.getAuthString()) + " has joined the game!");
                 break;
             case LEAVE:
                 break;
         }
         session.getRemote().sendString("WebSocket response: " + message);
+    }
+
+    public void addSession(int gameID, Session session) {
+        sessionsFromID.computeIfAbsent(gameID, k -> new ArrayList<>()).add(session);
+    }
+
+    public void addToken(Session session, String authToken) throws IOException {
+        try {
+            authFromSession.put(session, authToken);
+        } catch (Exception e) {
+            session.getRemote().sendString("Failed to add to Map" + e.getMessage());
+        }
     }
 
     public UserGameCommand.CommandType parseCommand(String message) {
@@ -55,8 +76,22 @@ public class WSServer {
         };
     }
 
+    public String getUsername(String authToken) throws DataAccessException {
+        AuthDAO authDAO = new SQLAuthDAO();
+        return authDAO.getUser(authToken);
+    }
+
     public void connectMessage(Session session, ConnectCommand connectCommand) throws IOException {
         int gameID = connectCommand.getGameID();
         session.getRemote().sendString("This was a user connecting to game: " + gameID);
+    }
+
+    public void sendNotification(Session session, int gameID, String message) throws IOException {
+        //Find all users that need to be sent the information
+        for (Session userSession : sessionsFromID.getOrDefault(gameID, new ArrayList<>())) {
+            if (!authFromSession.get(userSession).equals(authFromSession.get(session))) {
+                userSession.getRemote().sendString("[NOTIFICATION] " + message);
+            }
+        }
     }
 }
