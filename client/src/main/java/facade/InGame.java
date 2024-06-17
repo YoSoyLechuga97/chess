@@ -1,7 +1,10 @@
 package facade;
 
 import chess.*;
+import com.google.gson.Gson;
 import model.AuthData;
+import userCommands.ConnectCommand;
+import websocket.WSClient;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -11,6 +14,7 @@ import java.util.regex.Pattern;
 import static facade.TerminalUI.readInput;
 
 public class InGame {
+    Gson gson = new Gson();
     AuthData terminalAuthData = null;
     ServerFacade serverFacade;
     ChessDisplay chessDisplay = new ChessDisplay();
@@ -22,7 +26,13 @@ public class InGame {
         this.terminalAuthData = terminalAuthData;
         this.watchFromWhite = watchFromWhite;
         chessDisplay.run(game, watchFromWhite, null);
+
+        //Start the Websocket
+        WSClient websocket = new WSClient(serverFacade.port);
         //NOTIFY that the player has joined, need username and color
+        ConnectCommand connectCommand = new ConnectCommand(terminalAuthData.authToken());
+        String json = gson.toJson(connectCommand);
+        websocket.send(json);
         while (!leave) {
             System.out.print("[PLAYING] >>> ");
             String[] userInput = readInput();

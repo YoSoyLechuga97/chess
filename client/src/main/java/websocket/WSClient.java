@@ -4,7 +4,6 @@ import websocket.commands.UserGameCommand;
 
 import javax.websocket.*;
 import java.net.URI;
-import java.util.Scanner;
 
 public class WSClient extends Endpoint {
     public static void run(int port) throws Exception {
