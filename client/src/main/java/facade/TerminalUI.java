@@ -5,6 +5,8 @@ import facade.ServerFacade;
 import model.AuthData;
 import model.GameData;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -86,16 +88,7 @@ public class TerminalUI {
                     }
                     //List
                 case "list":
-                    ArrayList<GameData> allGames = serverFacade.listGames(terminalAuthData);
-                    int i = 1;
-                    for (GameData game : allGames) {
-                        System.out.println(i + ". " + game.gameName() + " W: " + game.whiteUsername() + " B: " + game.blackUsername());
-                        gameList.put(i, game.gameID());
-                        gameFromID.put(game.gameID(), game.game());
-                        whitePlayersFromID.put(game.gameID(), game.whiteUsername());
-                        blackPlayersFromID.put(game.gameID(), game.blackUsername());
-                        i++;
-                    }
+                    listGames();
                     System.out.println("\n");
                     break;
                 //Join
@@ -121,20 +114,16 @@ public class TerminalUI {
                                 newToGame = false;
                             }
                         }
-
                         if (newToGame) {
                             serverFacade.joinGame(terminalAuthData, userInput[2], gameToJoin);
                         }
-
                         //Update information
                         ArrayList<GameData> playableGames = serverFacade.listGames(terminalAuthData);
                         for (GameData game : playableGames) {
                             whitePlayersFromID.put(game.gameID(), game.whiteUsername());
                             blackPlayersFromID.put(game.gameID(), game.blackUsername());
                         }
-
                         inGame = new InGame();
-
                         if (isWhite) {
                             if (terminalAuthData.username().equals(whitePlayersFromID.get(gameToJoin))) {
                                 inGame.playGame(terminalAuthData, gameFromID.get(gameToJoin), isWhite, serverFacade.port, gameToJoin, "WHITE");
@@ -144,7 +133,6 @@ public class TerminalUI {
                                 inGame.playGame(terminalAuthData, gameFromID.get(gameToJoin), isWhite, serverFacade.port, gameToJoin, "WHITE");
                             }
                         }
-
                         break;
                     }
                     //Observe
@@ -179,6 +167,19 @@ public class TerminalUI {
                     }
                     break;
             }
+        }
+    }
+
+    public void listGames() throws URISyntaxException, IOException {
+        ArrayList<GameData> allGames = serverFacade.listGames(terminalAuthData);
+        int i = 1;
+        for (GameData game : allGames) {
+            System.out.println(i + ". " + game.gameName() + " W: " + game.whiteUsername() + " B: " + game.blackUsername());
+            gameList.put(i, game.gameID());
+            gameFromID.put(game.gameID(), game.game());
+            whitePlayersFromID.put(game.gameID(), game.whiteUsername());
+            blackPlayersFromID.put(game.gameID(), game.blackUsername());
+            i++;
         }
     }
 

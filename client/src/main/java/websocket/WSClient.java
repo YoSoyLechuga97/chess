@@ -33,26 +33,24 @@ public class WSClient extends Endpoint {
         this.session = container.connectToServer(this, uri);
 
         //Add Message handler and translate accordingly
-        this.session.addMessageHandler(new MessageHandler.Whole<String>() {
-            public void onMessage(String message) {
-                //Later we will deserialize it and use methods to translate it
-                ServerMessage.ServerMessageType type = parseMessage(message);
-                System.out.println();
-                switch (type) {
-                    case NOTIFICATION:
-                        readNotification(message);
-                        break;
-                    case LOAD_GAME:
-                        try {
-                            loadGame(message);
-                        } catch (InvalidMoveException e) {
-                            throw new RuntimeException(e);
-                        }
-                        break;
-                    case ERROR:
-                        readError(message);
-                        break;
-                }
+        this.session.addMessageHandler((MessageHandler.Whole<String>) message -> {
+            //Later we will deserialize it and use methods to translate it
+            ServerMessage.ServerMessageType type = parseMessage(message);
+            System.out.println();
+            switch (type) {
+                case NOTIFICATION:
+                    readNotification(message);
+                    break;
+                case LOAD_GAME:
+                    try {
+                        loadGame(message);
+                    } catch (InvalidMoveException e) {
+                        throw new RuntimeException(e);
+                    }
+                    break;
+                case ERROR:
+                    readError(message);
+                    break;
             }
         });
     }
