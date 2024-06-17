@@ -45,7 +45,8 @@ public class WSServer {
                 ConnectCommand connectCommand = gson.fromJson(message, ConnectCommand.class);
                 addToken(session, connectCommand.getAuthString());
                 addSession(connectCommand.getGameID(), session);
-                connectMessage(session, connectCommand);
+                //connectMessage(session, connectCommand);
+                sendLoadGame(session);
                 if (connectCommand.getJoined()) {
                     sendNotification(session, connectCommand.getGameID(), getUsername(connectCommand.getAuthString()) + " has joined the game as " + connectCommand.getColor() + "!");
                 } else {
@@ -90,6 +91,12 @@ public class WSServer {
     public void connectMessage(Session session, ConnectCommand connectCommand) throws IOException {
         int gameID = connectCommand.getGameID();
         session.getRemote().sendString("This was a user connecting to game: " + gameID);
+    }
+
+    public void sendLoadGame(Session session) throws IOException {
+        ServerMessage message = new ServerMessage(ServerMessage.ServerMessageType.LOAD_GAME);
+        String json = gson.toJson(message);
+        session.getRemote().sendString(json);
     }
 
     public void sendNotification(Session session, int gameID, String message) throws IOException {

@@ -1,8 +1,11 @@
 package websocket;
 
+import chess.ChessGame;
+import chess.InvalidMoveException;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import facade.ChessDisplay;
 import websocket.commands.UserGameCommand;
 import websocket.messages.NotificationMessage;
 import websocket.messages.ServerMessage;
@@ -11,15 +14,19 @@ import javax.websocket.*;
 import java.net.URI;
 
 public class WSClient extends Endpoint {
-    public static void run(int port) throws Exception {
-        var ws = new WSClient(port);
+    public static void run(int port, boolean watchFromWhite, ChessGame game) throws Exception {
+        var ws = new WSClient(port,watchFromWhite, game);
     }
 
     public Session session;
 
+    public boolean watchFromWhite;
+    public ChessGame game;
     public Gson gson = new Gson();
 
-    public WSClient(int port) throws Exception {
+    public WSClient(int port, boolean watchFromWhite, ChessGame game) throws Exception {
+        this.watchFromWhite = watchFromWhite;
+        this.game = game;
         URI uri = new URI("ws://localhost:" + port + "/ws");
         WebSocketContainer container = ContainerProvider.getWebSocketContainer();
         this.session = container.connectToServer(this, uri);
@@ -35,7 +42,11 @@ public class WSClient extends Endpoint {
                         readNotification(message);
                         break;
                     case LOAD_GAME:
-                        loadGame();
+                        try {
+                            loadGame();
+                        } catch (InvalidMoveException e) {
+                            throw new RuntimeException(e);
+                        }
                 }
             }
         });
@@ -65,7 +76,8 @@ public class WSClient extends Endpoint {
         System.out.println(message.getNotification());
     }
 
-    public void loadGame() {
-
+    public void loadGame() throws InvalidMoveException {
+        ChessDisplay chessDisplay = new ChessDisplay();
+        chessDisplay.run(game, watchFromWhite, null);
     }
 }
