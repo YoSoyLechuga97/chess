@@ -83,6 +83,9 @@ public class WSServer {
                 case RESIGN:
                     //Set game to finished
                     ResignCommand resignCommand = gson.fromJson(message, ResignCommand.class);
+                    if (!verifyPlayer(resignCommand)) {
+                        throw new Exception("Only players can resign");
+                    }
                     resignFromGame(resignCommand.getGameID());
                     notifyAllClients(resignCommand.getGameID(), getUsername(resignCommand.getAuthString()) + " has resigned from the game-GAME OVER");
                     break;
@@ -208,6 +211,14 @@ public class WSServer {
         } else {
             return username.equals(gameData.blackUsername());
         }
+    }
+
+    public boolean verifyPlayer(ResignCommand resignCommand) throws DataAccessException {
+        GameDAO gameDAO = new SQLGameDAO();
+        AuthDAO authDAO = new SQLAuthDAO();
+        GameData gameData = gameDAO.getGame(resignCommand.getGameID());
+        String username = authDAO.getUser(resignCommand.getAuthString());
+        return (gameData.whiteUsername().equals(username) || gameData.blackUsername().equals(username));
     }
 
     public void resignFromGame(int gameID) throws DataAccessException {
