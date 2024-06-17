@@ -109,7 +109,6 @@ public class TerminalUI {
                         boolean isWhite = userInput[2].equals("WHITE");
                         inGame = new InGame();
                         inGame.playGame(terminalAuthData, gameFromID.get(gameToJoin), isWhite, serverFacade.port);
-                        // chessDisplay.run(gameFromID.get(gameToJoin));
                         break;
                     }
                     //Observe
@@ -126,7 +125,6 @@ public class TerminalUI {
                         int gameToWatch = gameList.get(userNumber);
                         inGame = new InGame();
                         inGame.observeGame(terminalAuthData, gameFromID.get(gameToWatch));
-                        //chessDisplay.run(gameFromID.get(gameToWatch));
                         break;
                     }
                     //Logout

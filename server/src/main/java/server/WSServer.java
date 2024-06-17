@@ -11,18 +11,14 @@ import javax.websocket.server.ServerContainer;
 
 @WebSocket
 public class WSServer {
-    public WSServer(int port) {
-        //Spark.port(port);
-        ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
-        context.setContextPath("/");
-        try {
-
-        }
+    public void run(int port) {
         Spark.webSocket("/ws", WSServer.class);
     }
 
     @OnWebSocketMessage
     public void onMessage(Session session, String message) throws Exception {
+        //Save session with authToken
+        //Save Session with gameID
         session.getRemote().sendString("WebSocket response: " + message);
     }
 }
